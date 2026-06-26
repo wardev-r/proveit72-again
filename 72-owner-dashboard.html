@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>72 — Owner Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080808;
+      --surface: #111111;
+      --surface-2: #181818;
+      --border: #252525;
+      --text: #f0f0e8;
+      --muted: #777777;
+      --accent: #D4A017;
+      --accent-light: #f0c040;
+      --accent-dim: rgba(212, 160, 23, 0.12);
+      --red: #e05555;
+      --red-dim: rgba(224, 85, 85, 0.1);
+      --green: #4caf7d;
+      --green-dim: rgba(76, 175, 125, 0.1);
+      --blue: #5580e0;
+      --blue-dim: rgba(85, 128, 224, 0.1);
+      --radius: 12px;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      min-height: 100vh;
+    }
+    @media (max-width: 768px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 28px 20px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-logo {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--accent);
+      margin-bottom: 4px;
+      padding: 0 8px;
+      letter-spacing: -0.04em;
+    }
+    .sidebar-role {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--red);
+      padding: 0 8px;
+      margin-bottom: 28px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+      margin-bottom: 2px;
+    }
+    .nav-item:hover { background: var(--surface-2); color: var(--text); }
+    .nav-item.active { background: var(--accent-dim); color: var(--accent); }
+    .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+    .nav-divider { height: 1px; background: var(--border); margin: 12px 0; }
+    .sidebar-spacer { flex: 1; }
+    .owner-badge {
+      padding: 10px 12px;
+      background: rgba(224, 85, 85, 0.08);
+      border: 1px solid rgba(224, 85, 85, 0.2);
+      border-radius: 8px;
+      font-size: 0.78rem;
+      color: var(--red);
+      font-weight: 600;
+      text-align: center;
+    }
+
+    /* ── Main ── */
+    .main { padding: 40px; overflow-y: auto; }
+    @media (max-width: 640px) { .main { padding: 24px 20px; } }
+
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+    }
+    .page-header h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; }
+    .page-header p { color: var(--muted); font-size: 0.875rem; margin-top: 4px; }
+    .header-actions { display: flex; gap: 10px; flex-shrink: 0; }
+    .btn-outline {
+      padding: 8px 18px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text);
+      font-size: 0.82rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      text-decoration: none;
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Stats ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+    }
+    .stat-label { font-size: 0.72rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+    .stat-value { font-size: 1.9rem; font-weight: 900; letter-spacing: -0.04em; margin-top: 6px; }
+    .stat-value.gold { color: var(--accent); }
+    .stat-value.green { color: var(--green); }
+    .stat-value.blue { color: var(--blue); }
+    .stat-change { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+    .stat-change.up { color: var(--green); }
+
+    /* ── Charts row ── */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 900px) { .charts-row { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .chart-container { position: relative; }
+
+    /* ── Creator table ── */
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .search-input {
+      padding: 8px 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.82rem;
+      font-family: inherit;
+      outline: none;
+      width: 220px;
+      transition: border-color 0.2s;
+    }
+    .search-input:focus { border-color: var(--accent); }
+    .search-input::placeholder { color: var(--muted); }
+    .creator-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    .creator-table th {
+      text-align: left;
+      padding: 10px 14px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .creator-table th:hover { color: var(--text); }
+    .creator-table td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .creator-table tr:last-child td { border-bottom: none; }
+    .creator-table tbody tr:hover td { background: var(--surface-2); }
+    .creator-name { font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    .creator-avatar {
+      width: 30px; height: 30px;
+      background: var(--accent-dim);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 9px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+    .badge-green { background: var(--green-dim); color: var(--green); }
+    .badge-red { background: var(--red-dim); color: var(--red); }
+    .badge-blue { background: var(--blue-dim); color: var(--blue); }
+    .badge-muted { background: var(--surface-2); color: var(--muted); }
+    .action-btn {
+      padding: 5px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .action-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .table-scroll { overflow-x: auto; }
+
+    /* ── Revenue split info ── */
+    .split-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .split-item { text-align: center; }
+    .split-item .val { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.03em; }
+    .split-item .lbl { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+    .split-item.creator .val { color: var(--accent); }
+    .split-item.platform .val { color: var(--blue); }
+
+    /* ── Platform controls ── */
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .control-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .control-card h3 { font-size: 0.875rem; font-weight: 700; margin-bottom: 6px; }
+    .control-card p { font-size: 0.78rem; color: var(--muted); margin-bottom: 14px; }
+    .btn-danger {
+      padding: 8px 16px;
+      border: 1px solid rgba(224, 85, 85, 0.3);
+      border-radius: 8px;
+      background: rgba(224, 85, 85, 0.06);
+      color: var(--red);
+      font-size: 0.78rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-danger:hover { background: rgba(224, 85, 85, 0.15); }
+
+    /* ── Refresh ── */
+    .refresh-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: color 0.2s;
+    }
+    .refresh-btn:hover { color: var(--text); border-color: var(--text); }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">72</div>
+    <div class="sidebar-role">Owner console</div>
+    <a href="#" class="nav-item active"><span class="nav-icon">📊</span> Overview</a>
+    <a href="#creators" class="nav-item"><span class="nav-icon">👥</span> Creators</a>
+    <a href="#revenue" class="nav-item"><span class="nav-icon">💰</span> Revenue</a>
+    <a href="#controls" class="nav-item"><span class="nav-icon">⚙️</span> Controls</a>
+    <div class="nav-divider"></div>
+    <a href="72-landing-merged.html" class="nav-item" target="_blank"><span class="nav-icon">↗</span> Landing page</a>
+    <a href="72-app-dashboard.html" class="nav-item" target="_blank"><span class="nav-icon">↗</span> Creator view</a>
+    <div class="sidebar-spacer"></div>
+    <div class="owner-badge">🔐 Owner access</div>
+  </aside>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1>Platform overview</h1>
+        <p id="lastUpdated">Last updated just now</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-outline" onclick="loadData()">↻ Refresh</button>
+        <a href="https://dashboard.stripe.com" target="_blank" class="btn-outline">Stripe →</a>
+      </div>
+    </div>
+
+    <!-- Platform stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Platform revenue</div>
+        <div class="stat-value gold" id="statPlatformRevenue">$0.00</div>
+        <div class="stat-change" id="statPlatformChange">28% of gross</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Gross volume</div>
+        <div class="stat-value" id="statGross">$0.00</div>
+        <div class="stat-change up" id="statGrossChange">All time</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Active creators</div>
+        <div class="stat-value blue" id="statCreators">0</div>
+        <div class="stat-change" id="statCreatorsOnline">0 online now</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total calls</div>
+        <div class="stat-value green" id="statCalls">0</div>
+        <div class="stat-change">All time</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Subscribers</div>
+        <div class="stat-value" id="statSubscribers">0</div>
+        <div class="stat-change">$7.20/mo each</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">MRR</div>
+        <div class="stat-value gold" id="statMRR">$0.00</div>
+        <div class="stat-change">Monthly recurring</div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-row" id="revenue">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Revenue (last 30 days)</div>
+          <button class="refresh-btn" onclick="updateChart()">↻</button>
+        </div>
+        <div class="chart-container">
+          <canvas id="revenueChart" height="200"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Revenue split</div>
+        </div>
+        <div class="chart-container">
+          <canvas id="splitChart" height="180"></canvas>
+        </div>
+        <div class="split-info">
+          <div class="split-item creator">
+            <div class="val">72%</div>
+            <div class="lbl">Creators earn</div>
+          </div>
+          <div class="split-item platform">
+            <div class="val">28%</div>
+            <div class="lbl">Platform keeps</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Creator table -->
+    <div class="card" id="creators" style="margin-bottom:24px;">
+      <div class="table-header">
+        <div class="card-title">Creators</div>
+        <input type="text" class="search-input" placeholder="Search creators…" oninput="filterTable(this.value)" />
+      </div>
+      <div class="table-scroll">
+        <table class="creator-table" id="creatorTable">
+          <thead>
+            <tr>
+              <th onclick="sortTable('name')">Creator</th>
+              <th onclick="sortTable('status')">Status</th>
+              <th onclick="sortTable('price')">Rate</th>
+              <th onclick="sortTable('calls')">Calls</th>
+              <th onclick="sortTable('earned')">Earned</th>
+              <th onclick="sortTable('sub')">Subscription</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="creatorTableBody">
+            <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted);font-size:0.875rem;">Loading creators…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Platform controls -->
+    <div id="controls">
+      <div class="card-title" style="margin-bottom:16px;">Platform controls</div>
+      <div class="controls-grid">
+        <div class="control-card">
+          <h3>New creator invite</h3>
+          <p>Generate a magic signup link for a specific email.</p>
+          <button class="btn-outline" onclick="generateInvite()">Generate invite</button>
+        </div>
+        <div class="control-card">
+          <h3>Force creator offline</h3>
+          <p>Take a specific creator offline immediately.</p>
+          <button class="btn-danger" onclick="forceOffline()">Force offline</button>
+        </div>
+        <div class="control-card">
+          <h3>Export CSV</h3>
+          <p>Download all creator data as a spreadsheet.</p>
+          <button class="btn-outline" onclick="exportCSV()">Export data</button>
+        </div>
+        <div class="control-card">
+          <h3>Platform fee</h3>
+          <p>Current split: 72% creator / 28% platform.</p>
+          <button class="btn-outline" onclick="alert('Fee rate is set in the Worker. Edit PLATFORM_FEE_PERCENT in 72-stripe-worker.js')">Edit in Worker</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // ── Config ────────────────────────────────────────────────────────────────
+  const WORKER_URL = 'https://YOUR_WORKER.YOUR_SUBDOMAIN.workers.dev';
+  const OWNER_KEY  = 'YOUR_OWNER_API_KEY'; // set OWNER_API_KEY env var in Worker
+
+  // ── Mock data (replace with live Worker data) ─────────────────────────────
+  let allCreators = [
+    { userId: 'creator_001', displayName: 'Alex Rivera', email: 'alex@example.com', isOnline: true,  pricePerCall: 25, totalCalls: 42, totalEarningsCents: 75600, subscriptionStatus: 'active_trial', stripeAccountId: 'acct_demo1' },
+    { userId: 'creator_002', displayName: 'Jordan Lee',  email: 'jordan@example.com', isOnline: false, pricePerCall: 50, totalCalls: 18, totalEarningsCents: 64800, subscriptionStatus: 'active',       stripeAccountId: 'acct_demo2' },
+    { userId: 'creator_003', displayName: 'Sam Chen',    email: 'sam@example.com',    isOnline: true,  pricePerCall: 15, totalCalls: 91, totalEarningsCents: 97920, subscriptionStatus: 'active',       stripeAccountId: 'acct_demo3' },
+    { userId: 'creator_004', displayName: 'Taylor Kim',  email: 'taylor@example.com', isOnline: false, pricePerCall: 72, totalCalls:  5, totalEarningsCents: 25920, subscriptionStatus: 'cancelled',    stripeAccountId: null },
+  ];
+
+  // ── Boot ──────────────────────────────────────────────────────────────────
+  async function loadData() {
+    try {
+      const res = await fetch(`${WORKER_URL}/creators`, {
+        headers: { 'X-Owner-Key': OWNER_KEY },
+      });
+      if (res.ok) {
+        const { creators } = await res.json();
+        if (creators.length) allCreators = creators;
+      }
+    } catch (_) {}
+
+    updateStats();
+    renderTable(allCreators);
+    document.getElementById('lastUpdated').textContent = 'Last updated ' + new Date().toLocaleTimeString();
+  }
+
+  function updateStats() {
+    const total = allCreators.length;
+    const online = allCreators.filter(c => c.isOnline).length;
+    const totalCalls = allCreators.reduce((s, c) => s + (c.totalCalls || 0), 0);
+    const creatorEarningsCents = allCreators.reduce((s, c) => s + (c.totalEarningsCents || 0), 0);
+    const grossCents = Math.round(creatorEarningsCents / 0.72);
+    const platformCents = grossCents - creatorEarningsCents;
+    const activeSubs = allCreators.filter(c => c.subscriptionStatus === 'active' || c.subscriptionStatus === 'active_trial').length;
+    const mrr = activeSubs * 7.20;
+
+    document.getElementById('statPlatformRevenue').textContent = `$${(platformCents/100).toFixed(2)}`;
+    document.getElementById('statGross').textContent = `$${(grossCents/100).toFixed(2)}`;
+    document.getElementById('statCreators').textContent = total;
+    document.getElementById('statCreatorsOnline').textContent = `${online} online now`;
+    document.getElementById('statCalls').textContent = totalCalls;
+    document.getElementById('statSubscribers').textContent = activeSubs;
+    document.getElementById('statMRR').textContent = `$${mrr.toFixed(2)}`;
+  }
+
+  // ── Creator table ─────────────────────────────────────────────────────────
+  function renderTable(creators) {
+    const tbody = document.getElementById('creatorTableBody');
+    if (!creators.length) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted);font-size:0.875rem;">No creators yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = creators.map(c => `
+      <tr>
+        <td>
+          <div class="creator-name">
+            <div class="creator-avatar">${(c.displayName || c.email || '?').charAt(0).toUpperCase()}</div>
+            <div>
+              <div>${c.displayName || '—'}</div>
+              <div style="font-size:0.75rem;color:var(--muted)">${c.email || ''}</div>
+            </div>
+          </div>
+        </td>
+        <td>
+          ${c.isOnline
+            ? '<span class="badge badge-green">● Online</span>'
+            : '<span class="badge badge-muted">Offline</span>'}
+        </td>
+        <td><strong>$${c.pricePerCall || 0}</strong></td>
+        <td>${c.totalCalls || 0}</td>
+        <td>$${((c.totalEarningsCents || 0) / 100).toFixed(2)}</td>
+        <td>
+          ${c.subscriptionStatus === 'active'
+            ? '<span class="badge badge-green">Active</span>'
+            : c.subscriptionStatus === 'active_trial'
+              ? '<span class="badge badge-blue">Trial</span>'
+              : '<span class="badge badge-red">Cancelled</span>'}
+        </td>
+        <td>
+          <button class="action-btn" onclick="viewCreator('${c.userId}')">View</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function filterTable(q) {
+    const filtered = allCreators.filter(c =>
+      (c.displayName || '').toLowerCase().includes(q.toLowerCase()) ||
+      (c.email || '').toLowerCase().includes(q.toLowerCase())
+    );
+    renderTable(filtered);
+  }
+
+  let sortDir = {};
+  function sortTable(col) {
+    sortDir[col] = !sortDir[col];
+    const sorted = [...allCreators].sort((a, b) => {
+      const aVal = col === 'earned' ? a.totalEarningsCents : col === 'calls' ? a.totalCalls : col === 'price' ? a.pricePerCall : (a.displayName || '');
+      const bVal = col === 'earned' ? b.totalEarningsCents : col === 'calls' ? b.totalCalls : col === 'price' ? b.pricePerCall : (b.displayName || '');
+      return sortDir[col] ? (aVal > bVal ? 1 : -1) : (aVal < bVal ? 1 : -1);
+    });
+    renderTable(sorted);
+  }
+
+  function viewCreator(userId) {
+    window.open(`72-app-dashboard.html?userId=${userId}`, '_blank');
+  }
+
+  // ── Charts ────────────────────────────────────────────────────────────────
+  function buildCharts() {
+    // Revenue line chart (30 days mock)
+    const labels = Array.from({ length: 30 }, (_, i) => {
+      const d = new Date(); d.setDate(d.getDate() - (29 - i));
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    });
+    const data = Array.from({ length: 30 }, () => Math.round(Math.random() * 120));
+
+    const ctx1 = document.getElementById('revenueChart').getContext('2d');
+    new Chart(ctx1, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Gross revenue',
+          data,
+          fill: true,
+          borderColor: '#D4A017',
+          backgroundColor: 'rgba(212,160,23,0.07)',
+          tension: 0.4,
+          pointRadius: 0,
+          pointHoverRadius: 4,
+        }],
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: '#777', maxTicksLimit: 6 }, grid: { color: '#1a1a1a' } },
+          y: { ticks: { color: '#777', callback: v => `$${v}` }, grid: { color: '#1a1a1a' } },
+        },
+      },
+    });
+
+    // Split doughnut
+    const ctx2 = document.getElementById('splitChart').getContext('2d');
+    new Chart(ctx2, {
+      type: 'doughnut',
+      data: {
+        labels: ['Creators (72%)', 'Platform (28%)'],
+        datasets: [{
+          data: [72, 28],
+          backgroundColor: ['#D4A017', '#5580e0'],
+          borderWidth: 0,
+          hoverOffset: 4,
+        }],
+      },
+      options: {
+        responsive: true,
+        cutout: '68%',
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ` ${ctx.label}` } },
+        },
+      },
+    });
+  }
+
+  function updateChart() { loadData(); }
+
+  // ── Platform controls ─────────────────────────────────────────────────────
+  function generateInvite() {
+    const email = prompt('Enter creator email address:');
+    if (!email) return;
+    const link = `${window.location.origin}/72-landing-merged.html?invite=${btoa(email)}&email=${encodeURIComponent(email)}`;
+    prompt('Share this invite link:', link);
+  }
+
+  function forceOffline() {
+    const userId = prompt('Enter creator user ID to force offline:');
+    if (!userId) return;
+    fetch(`${WORKER_URL}/creator/${userId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'X-Owner-Key': OWNER_KEY },
+      body: JSON.stringify({ isOnline: false }),
+    }).then(() => {
+      alert(`Creator ${userId} set offline.`);
+      loadData();
+    }).catch(() => alert('Failed. Check Worker URL and OWNER_KEY.'));
+  }
+
+  function exportCSV() {
+    const rows = [
+      ['User ID', 'Name', 'Email', 'Status', 'Rate', 'Calls', 'Earned', 'Subscription'],
+      ...allCreators.map(c => [
+        c.userId, c.displayName, c.email,
+        c.isOnline ? 'Online' : 'Offline',
+        c.pricePerCall, c.totalCalls,
+        ((c.totalEarningsCents || 0) / 100).toFixed(2),
+        c.subscriptionStatus,
+      ]),
+    ];
+    const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `72-creators-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+  }
+
+  // ── Init ──────────────────────────────────────────────────────────────────
+  buildCharts();
+  loadData();
+</script>
+</body>
+</html>

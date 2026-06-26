@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>72 — Your calls. Your terms. 72% yours.</title>
+  <meta name="description" content="Get a dedicated phone number, set your own rate from $3 to $72 per call, and keep 72% of every conversation." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080808;
+      --surface: #111111;
+      --surface-2: #181818;
+      --border: #252525;
+      --text: #f0f0e8;
+      --muted: #777777;
+      --accent: #D4A017;
+      --accent-light: #f0c040;
+      --accent-dim: rgba(212, 160, 23, 0.12);
+      --red: #e05555;
+      --green: #4caf7d;
+      --radius: 12px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: url('wagoneer.png') center / cover no-repeat var(--bg);
+      overflow: hidden;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.60) 0%,
+        rgba(0,0,0,0.75) 50%,
+        rgba(8,8,8,0.95) 100%
+      );
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ── Nav ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 48px;
+    }
+    .logo {
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .nav-cta {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 1; }
+
+    /* ── Rotating headline ── */
+    .headline-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px 0;
+      text-align: center;
+    }
+    .eyebrow {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 28px;
+    }
+    .rotating-headline {
+      position: relative;
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .headline-slide {
+      position: absolute;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      pointer-events: none;
+      width: 100%;
+    }
+    .headline-slide.active {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .headline-slide h1 {
+      font-size: clamp(2.8rem, 7vw, 6rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      color: var(--text);
+    }
+    .headline-slide h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .sub-headline {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: rgba(240, 240, 232, 0.65);
+      margin-top: 20px;
+      font-weight: 400;
+    }
+
+    /* ── Dots ── */
+    .dots {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 36px;
+    }
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .dot.active {
+      background: var(--accent);
+      transform: scale(1.4);
+    }
+
+    /* ── Signup form ── */
+    .signup-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 24px 72px;
+    }
+    .signup-form {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+      max-width: 480px;
+      flex-wrap: wrap;
+    }
+    .signup-form input[type="email"] {
+      flex: 1;
+      min-width: 200px;
+      padding: 14px 18px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .signup-form input[type="email"]::placeholder { color: var(--muted); }
+    .signup-form input[type="email"]:focus { border-color: var(--accent); }
+    .btn-primary {
+      padding: 14px 28px;
+      background: var(--accent);
+      color: #000;
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: inherit;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      white-space: nowrap;
+    }
+    .btn-primary:hover { background: var(--accent-light); transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .signup-note {
+      margin-top: 14px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .signup-note strong { color: var(--text); }
+    .form-error {
+      color: var(--red);
+      font-size: 0.82rem;
+      margin-top: 8px;
+      display: none;
+    }
+    .form-error.show { display: block; }
+
+    /* ── Features ── */
+    .section { padding: 96px 24px; max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 56px;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      transition: border-color 0.25s;
+    }
+    .feature-card:hover { border-color: var(--accent); }
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--accent-dim);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+    }
+    .feature-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+    .feature-card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── Split bar ── */
+    .split-section {
+      padding: 0 24px 96px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .split-bar-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 40px;
+    }
+    .split-bar-wrap h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 28px;
+    }
+    .split-visual {
+      display: flex;
+      height: 20px;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .split-creator {
+      background: var(--accent);
+      width: 72%;
+      transition: width 0.8s ease;
+    }
+    .split-platform { background: var(--border); flex: 1; }
+    .split-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .split-labels .creator-pct { color: var(--accent); font-weight: 700; font-size: 1rem; }
+    .split-example {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .split-ex-item { font-size: 0.9rem; color: var(--muted); }
+    .split-ex-item strong { display: block; font-size: 1.2rem; color: var(--text); font-weight: 700; }
+
+    /* ── Pricing ── */
+    .pricing-section {
+      padding: 0 24px 96px;
+      max-width: 560px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .pricing-card {
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      border-radius: 16px;
+      padding: 48px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .pricing-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-light));
+    }
+    .pricing-badge {
+      display: inline-block;
+      background: var(--accent-dim);
+      color: var(--accent);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 999px;
+      margin-bottom: 24px;
+    }
+    .pricing-amount {
+      font-size: 3.5rem;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: var(--text);
+      line-height: 1;
+    }
+    .pricing-amount span { font-size: 1.5rem; font-weight: 500; color: var(--muted); vertical-align: super; }
+    .pricing-period { color: var(--muted); font-size: 0.9rem; margin-top: 8px; margin-bottom: 32px; }
+    .pricing-features {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 36px;
+    }
+    .pricing-features li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.9rem;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .pricing-features li:last-child { border-bottom: none; }
+    .check { color: var(--green); font-weight: 700; }
+    .pricing-note { font-size: 0.78rem; color: var(--muted); margin-top: 16px; }
+
+    /* ── Success state ── */
+    .success-screen {
+      display: none;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 48px 24px;
+      background: var(--bg);
+    }
+    .success-screen.show { display: flex; }
+    .success-icon {
+      width: 80px; height: 80px;
+      background: rgba(76, 175, 125, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin-bottom: 28px;
+    }
+    .success-screen h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+    }
+    .success-screen p { color: var(--muted); max-width: 400px; }
+    .btn-secondary {
+      display: inline-block;
+      margin-top: 28px;
+      padding: 13px 28px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 600;
+      font-family: inherit;
+      text-decoration: none;
+      cursor: pointer;
+      background: transparent;
+      transition: border-color 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    footer .logo-sm { font-size: 1.2rem; font-weight: 900; color: var(--accent); }
+    footer p { font-size: 0.78rem; color: var(--muted); }
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    @media (max-width: 640px) {
+      nav { padding: 20px 24px; }
+      .signup-form { flex-direction: column; }
+      .signup-form input[type="email"] { min-width: unset; }
+      footer { padding: 24px; flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Success screen (shown after Stripe redirect) ── -->
+<div class="success-screen" id="successScreen">
+  <div class="success-icon">✓</div>
+  <h2>You're in. Welcome to <em style="color:var(--accent)">72</em>.</h2>
+  <p>Your 30-day free trial has started. Check your email for next steps to claim your dedicated number.</p>
+  <a href="/72-app-dashboard.html" class="btn-secondary">Go to your dashboard →</a>
+</div>
+
+<!-- ── Main page ── -->
+<div id="mainPage">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <nav>
+        <a href="#" class="logo">72</a>
+        <a href="#pricing" class="nav-cta">See pricing</a>
+      </nav>
+
+      <div class="headline-area">
+        <div class="eyebrow">Creator phone marketplace</div>
+        <div class="rotating-headline" id="rotatingHeadline">
+
+          <div class="headline-slide active" data-index="0">
+            <h1>Your calls.<br>Your terms.<br><em>72% yours.</em></h1>
+            <p class="sub-headline">Set your rate and keep the majority of every call.</p>
+          </div>
+
+          <div class="headline-slide" data-index="1">
+            <h1>Fans pay<br>to talk.<br><em>You answer.</em></h1>
+            <p class="sub-headline">A dedicated number. Real money. No middleman.</p>
+          </div>
+
+          <div class="headline-slide" data-index="2">
+            <h1>From $3<br>to $72<br><em>per call.</em></h1>
+            <p class="sub-headline">You set the price. We handle billing and payouts.</p>
+          </div>
+
+          <div class="headline-slide" data-index="3">
+            <h1>One number.<br>Every fan.<br><em>All yours.</em></h1>
+            <p class="sub-headline">Your audience pays what your time is worth.</p>
+          </div>
+
+        </div>
+        <div class="dots" id="dots">
+          <div class="dot active" onclick="goToSlide(0)"></div>
+          <div class="dot" onclick="goToSlide(1)"></div>
+          <div class="dot" onclick="goToSlide(2)"></div>
+          <div class="dot" onclick="goToSlide(3)"></div>
+        </div>
+      </div>
+
+      <div class="signup-area">
+        <div class="signup-form" id="signupForm">
+          <input type="email" id="emailInput" placeholder="your@email.com" autocomplete="email" />
+          <button class="btn-primary" id="ctaBtn" onclick="startCheckout()">
+            Claim your number →
+          </button>
+        </div>
+        <p class="form-error" id="formError"></p>
+        <p class="signup-note">
+          <strong>First 30 days free.</strong> Then $7.20/month. Cancel anytime.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="section">
+    <div class="section-label">How it works</div>
+    <h2 class="section-title">Everything you need.<br>Nothing you don't.</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <h3>Your dedicated number</h3>
+        <p>Get a real phone number that's entirely yours. Share it, print it, put it in your bio — callers pay to connect.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💰</div>
+        <h3>You set the rate</h3>
+        <p>Choose your price per call anywhere from $3 to $72. Change it anytime. No one calls unless they've paid first.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Instant payouts</h3>
+        <p>72% of every call goes to you. Payments are processed by Stripe — the same infrastructure trusted by millions of businesses.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎛️</div>
+        <h3>Full control</h3>
+        <p>Set yourself online or offline with one tap. Your dashboard shows earnings, call history, and your QR code to share.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Revenue split -->
+  <div class="split-section">
+    <div class="split-bar-wrap">
+      <h2>The 72 split — you always come first.</h2>
+      <div class="split-visual">
+        <div class="split-creator"></div>
+        <div class="split-platform"></div>
+      </div>
+      <div class="split-labels">
+        <span class="creator-pct">72% → You</span>
+        <span>28% → Platform</span>
+      </div>
+      <div class="split-example">
+        <div class="split-ex-item">
+          <strong>$36.00</strong>on a $50 call
+        </div>
+        <div class="split-ex-item">
+          <strong>$51.84</strong>on a $72 call
+        </div>
+        <div class="split-ex-item">
+          <strong>$2.16</strong>on a $3 call
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pricing -->
+  <section class="pricing-section" id="pricing">
+    <div class="section-label">Pricing</div>
+    <div class="pricing-card">
+      <div class="pricing-badge">Creator plan</div>
+      <div class="pricing-amount"><span>$</span>7.20</div>
+      <div class="pricing-period">per month · billed monthly</div>
+      <ul class="pricing-features">
+        <li><span class="check">✓</span> Dedicated phone number</li>
+        <li><span class="check">✓</span> Set your own per-call rate</li>
+        <li><span class="check">✓</span> 72% of every call payment</li>
+        <li><span class="check">✓</span> QR code + shareable link</li>
+        <li><span class="check">✓</span> Creator dashboard</li>
+        <li><span class="check">✓</span> Stripe-powered payouts</li>
+        <li><span class="check">✓</span> Online / offline toggle</li>
+      </ul>
+      <div class="signup-form" style="max-width:100%; margin-bottom:0;">
+        <input type="email" id="emailInput2" placeholder="your@email.com" autocomplete="email" style="flex:1;min-width:0;" />
+        <button class="btn-primary" onclick="startCheckoutFromPricing()">Start free →</button>
+      </div>
+      <p class="pricing-note">30-day free trial. No card required until trial ends.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="logo-sm">72</div>
+    <p>© 2025 72 Marketplace · <a href="mailto:support@72.co">support@72.co</a></p>
+    <p><a href="#">Privacy</a> · <a href="#">Terms</a></p>
+  </footer>
+
+</div><!-- end #mainPage -->
+
+<script>
+  // ── Config ────────────────────────────────────────────────────────────────
+  // Replace with your deployed Cloudflare Worker URL
+  const WORKER_URL = 'https://YOUR_WORKER.YOUR_SUBDOMAIN.workers.dev';
+
+  // ── Rotating headline ─────────────────────────────────────────────────────
+  const slides = document.querySelectorAll('.headline-slide');
+  const dotEls = document.querySelectorAll('.dot');
+  let current = 0;
+  let timer;
+
+  function goToSlide(idx) {
+    slides[current].classList.remove('active');
+    dotEls[current].classList.remove('active');
+    current = idx;
+    slides[current].classList.add('active');
+    dotEls[current].classList.add('active');
+    resetTimer();
+  }
+
+  function nextSlide() {
+    goToSlide((current + 1) % slides.length);
+  }
+
+  function resetTimer() {
+    clearInterval(timer);
+    timer = setInterval(nextSlide, 4000);
+  }
+
+  resetTimer();
+
+  // ── Success check ─────────────────────────────────────────────────────────
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('success') === 'true' || params.get('signup') === 'success') {
+    document.getElementById('mainPage').style.display = 'none';
+    document.getElementById('successScreen').classList.add('show');
+  }
+
+  // ── Stripe checkout ───────────────────────────────────────────────────────
+  function getEmail() {
+    const e1 = document.getElementById('emailInput').value.trim();
+    const e2 = document.getElementById('emailInput2').value.trim();
+    return e1 || e2;
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('formError');
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+
+  function clearError() {
+    document.getElementById('formError').classList.remove('show');
+  }
+
+  function isValidEmail(e) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+  }
+
+  async function startCheckout() {
+    clearError();
+    const email = getEmail();
+    if (!email) { showError('Please enter your email address.'); return; }
+    if (!isValidEmail(email)) { showError('Please enter a valid email address.'); return; }
+    await doCheckout(email);
+  }
+
+  async function startCheckoutFromPricing() {
+    clearError();
+    const email = document.getElementById('emailInput2').value.trim();
+    if (!email) { showError('Please enter your email address.'); return; }
+    if (!isValidEmail(email)) { showError('Please enter a valid email address.'); return; }
+    await doCheckout(email);
+  }
+
+  async function doCheckout(email) {
+    const btn = document.getElementById('ctaBtn');
+    btn.disabled = true;
+    btn.textContent = 'Connecting…';
+
+    try {
+      const res = await fetch(`${WORKER_URL}/create-checkout-session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          successUrl: `${window.location.origin}${window.location.pathname}?success=true`,
+          cancelUrl: window.location.href,
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || `Request failed (${res.status})`);
+      }
+
+      const { url } = await res.json();
+      if (!url) throw new Error('No checkout URL returned. Check Worker configuration.');
+      window.location.href = url;
+    } catch (err) {
+      showError(err.message || 'Something went wrong. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Claim your number →';
+    }
+  }
+</script>
+</body>
+</html>

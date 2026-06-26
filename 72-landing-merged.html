@@ -41,17 +41,82 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      background: url('wagoneer.png') center / cover no-repeat var(--bg);
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 100%, rgba(212,160,23,0.13) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 20% 60%, rgba(180,90,0,0.07) 0%, transparent 60%),
+        linear-gradient(160deg, #050304 0%, #0e0800 40%, #160e00 70%, #1e1200 100%);
       overflow: hidden;
     }
+
+    /* Decorative: large watermark "72" */
+    .hero-watermark {
+      position: absolute;
+      font-size: clamp(280px, 45vw, 600px);
+      font-weight: 900;
+      letter-spacing: -0.06em;
+      color: rgba(212, 160, 23, 0.035);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -52%);
+      line-height: 1;
+      user-select: none;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    /* Decorative: horizon glow */
+    .hero-glow {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 45%;
+      background: radial-gradient(ellipse 70% 100% at 50% 100%, rgba(212,130,10,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Decorative: waveform bars */
+    .hero-waveform {
+      position: absolute;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      height: 40px;
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    .hero-waveform span {
+      display: block;
+      width: 3px;
+      border-radius: 2px;
+      background: var(--accent);
+      animation: waveAnim 2s ease-in-out infinite;
+    }
+    @keyframes waveAnim {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(2); }
+    }
+
+    /* Palm silhouettes via SVG */
+    .hero-palms {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 340px;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    /* Overlay fades bottom to body bg */
     .hero-overlay {
       position: absolute;
       inset: 0;
       background: linear-gradient(
         to bottom,
-        rgba(0,0,0,0.60) 0%,
-        rgba(0,0,0,0.75) 50%,
-        rgba(8,8,8,0.95) 100%
+        rgba(0,0,0,0) 0%,
+        rgba(0,0,0,0) 50%,
+        rgba(8,8,8,0.85) 85%,
+        #080808 100%
       );
     }
     .hero-content {
@@ -467,6 +532,59 @@
 
   <!-- Hero -->
   <section class="hero">
+    <div class="hero-watermark">72</div>
+    <div class="hero-glow"></div>
+
+    <!-- Waveform bars -->
+    <div class="hero-waveform" aria-hidden="true">
+      <span style="height:22%;animation-delay:0s"></span>
+      <span style="height:55%;animation-delay:0.08s"></span>
+      <span style="height:80%;animation-delay:0.16s"></span>
+      <span style="height:45%;animation-delay:0.24s"></span>
+      <span style="height:95%;animation-delay:0.32s"></span>
+      <span style="height:60%;animation-delay:0.40s"></span>
+      <span style="height:100%;animation-delay:0.48s"></span>
+      <span style="height:75%;animation-delay:0.56s"></span>
+      <span style="height:50%;animation-delay:0.64s"></span>
+      <span style="height:85%;animation-delay:0.72s"></span>
+      <span style="height:40%;animation-delay:0.80s"></span>
+      <span style="height:70%;animation-delay:0.88s"></span>
+      <span style="height:30%;animation-delay:0.96s"></span>
+      <span style="height:90%;animation-delay:1.04s"></span>
+      <span style="height:55%;animation-delay:1.12s"></span>
+      <span style="height:65%;animation-delay:1.20s"></span>
+      <span style="height:35%;animation-delay:1.28s"></span>
+      <span style="height:80%;animation-delay:1.36s"></span>
+      <span style="height:45%;animation-delay:1.44s"></span>
+      <span style="height:25%;animation-delay:1.52s"></span>
+    </div>
+
+    <!-- Palm silhouettes -->
+    <div class="hero-palms" aria-hidden="true">
+      <svg viewBox="0 0 1440 340" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg" style="position:absolute;bottom:0;width:100%;height:100%">
+        <!-- Left palm -->
+        <g fill="#0d0800" opacity="0.9">
+          <path d="M120 340 L128 200 L116 180 L140 185 L132 160 L152 170 L142 145 L165 158 L155 130 L178 148 L165 120 L190 140 L175 108 L175 340Z"/>
+          <path d="M175 108 Q140 80 100 95 Q130 90 145 108Z"/>
+          <path d="M175 108 Q155 70 120 75 Q150 72 165 92Z"/>
+          <path d="M175 108 Q195 75 230 88 Q200 82 185 102Z"/>
+          <path d="M175 108 Q200 65 235 72 Q205 68 188 95Z"/>
+          <path d="M175 108 Q160 60 185 45 Q175 70 178 95Z"/>
+        </g>
+        <!-- Right palm -->
+        <g fill="#0d0800" opacity="0.9">
+          <path d="M1280 340 L1272 190 L1284 168 L1260 175 L1268 150 L1248 162 L1258 136 L1235 150 L1245 122 L1222 142 L1235 112 L1210 133 L1225 100 L1225 340Z"/>
+          <path d="M1225 100 Q1260 72 1300 87 Q1270 82 1255 100Z"/>
+          <path d="M1225 100 Q1245 62 1280 67 Q1250 64 1235 84Z"/>
+          <path d="M1225 100 Q1205 67 1170 80 Q1200 74 1215 94Z"/>
+          <path d="M1225 100 Q1200 57 1165 64 Q1195 60 1212 87Z"/>
+          <path d="M1225 100 Q1240 52 1215 37 Q1225 62 1222 87Z"/>
+        </g>
+        <!-- Ground fade -->
+        <rect x="0" y="280" width="1440" height="60" fill="#080808" opacity="0.6"/>
+      </svg>
+    </div>
+
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <nav>
@@ -549,6 +667,18 @@
       </div>
     </div>
   </section>
+
+  <!-- Lifestyle section -->
+  <div style="max-width:1100px;margin:0 auto 80px;padding:0 24px;">
+    <div style="position:relative;border-radius:16px;overflow:hidden;min-height:340px;background:url('wagoneer.png') center/cover no-repeat #1a1000;display:flex;align-items:flex-end;">
+      <div style="position:absolute;inset:0;background:linear-gradient(to right, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0.1) 100%);"></div>
+      <div style="position:relative;z-index:1;padding:48px;">
+        <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">Built for creators who value their time</div>
+        <h2 style="font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:800;letter-spacing:-0.03em;line-height:1.1;max-width:440px;">Your time is the product.<br>Price it accordingly.</h2>
+        <p style="margin-top:14px;font-size:0.9rem;color:rgba(240,240,232,0.65);max-width:380px;">No gatekeepers. No middlemen. Just your number, your rate, and fans who pay to connect.</p>
+      </div>
+    </div>
+  </div>
 
   <!-- Revenue split -->
   <div class="split-section">

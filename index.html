@@ -499,9 +499,19 @@
     footer a:hover { color: var(--text); }
 
     @media (max-width: 640px) {
-      nav { padding: 20px 24px; }
+      nav { padding: 18px 20px; }
+      .headline-area { padding: 28px 20px 0; }
+      .eyebrow { margin-bottom: 16px; font-size: 0.68rem; }
+      .rotating-headline { min-height: 300px; }
+      .headline-slide h1 { font-size: clamp(2.4rem, 11vw, 3.6rem); }
+      .sub-headline { font-size: 0.92rem; margin-top: 14px; }
+      .dots { margin-top: 20px; }
+      .signup-area { padding: 28px 20px 48px; }
       .signup-form { flex-direction: column; }
       .signup-form input[type="email"] { min-width: unset; }
+      .hero-waveform { display: none; }
+      .hero-palms { width: 160px; height: 200px; opacity: 0.09; }
+      .hero-watermark { font-size: clamp(160px, 58vw, 260px); }
       footer { padding: 24px; flex-direction: column; text-align: center; }
     }
   </style>
@@ -625,8 +635,8 @@
     <div class="features-grid">
       <div class="feature-card">
         <div class="feature-icon">📱</div>
-        <h3>Your dedicated number</h3>
-        <p>Get a real phone number that's entirely yours. Share it, print it, put it in your bio — callers pay to connect.</p>
+        <h3>Your 772 number</h3>
+        <p>Get a real 772 number that's entirely yours. Share it, print it, put it in your bio — callers pay to connect.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon">💰</div>
@@ -692,7 +702,7 @@
       <div class="pricing-amount"><span>$</span>7.20</div>
       <div class="pricing-period">per month · billed monthly</div>
       <ul class="pricing-features">
-        <li><span class="check">✓</span> Dedicated phone number</li>
+        <li><span class="check">✓</span> Real 772 phone number</li>
         <li><span class="check">✓</span> Set your own per-call rate</li>
         <li><span class="check">✓</span> 72% of every call payment</li>
         <li><span class="check">✓</span> QR code + shareable link</li>

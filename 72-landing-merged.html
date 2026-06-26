@@ -610,9 +610,10 @@
 </div><!-- end #mainPage -->
 
 <script>
-  // ── Config ────────────────────────────────────────────────────────────────
-  // Replace with your deployed Cloudflare Worker URL
-  const WORKER_URL = 'https://YOUR_WORKER.YOUR_SUBDOMAIN.workers.dev';
+  // ── Config — paste your Stripe Payment Link here ──────────────────────────
+  // Get it from: stripe.com/dashboard → Payment Links → Create
+  // Set product: "72 – First month free", $7.20/mo, 30-day trial
+  const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/YOUR_LINK_HERE';
 
   // ── Rotating headline ─────────────────────────────────────────────────────
   const slides = document.querySelectorAll('.headline-slide');
@@ -629,9 +630,7 @@
     resetTimer();
   }
 
-  function nextSlide() {
-    goToSlide((current + 1) % slides.length);
-  }
+  function nextSlide() { goToSlide((current + 1) % slides.length); }
 
   function resetTimer() {
     clearInterval(timer);
@@ -647,12 +646,8 @@
     document.getElementById('successScreen').classList.add('show');
   }
 
-  // ── Stripe checkout ───────────────────────────────────────────────────────
-  function getEmail() {
-    const e1 = document.getElementById('emailInput').value.trim();
-    const e2 = document.getElementById('emailInput2').value.trim();
-    return e1 || e2;
-  }
+  // ── Checkout — direct to Stripe Payment Link ──────────────────────────────
+  function isValidEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
 
   function showError(msg) {
     const el = document.getElementById('formError');
@@ -660,59 +655,24 @@
     el.classList.add('show');
   }
 
-  function clearError() {
-    document.getElementById('formError').classList.remove('show');
-  }
-
-  function isValidEmail(e) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
-  }
-
-  async function startCheckout() {
-    clearError();
-    const email = getEmail();
+  function startCheckout() {
+    const email = document.getElementById('emailInput').value.trim();
     if (!email) { showError('Please enter your email address.'); return; }
-    if (!isValidEmail(email)) { showError('Please enter a valid email address.'); return; }
-    await doCheckout(email);
+    if (!isValidEmail(email)) { showError('Please enter a valid email.'); return; }
+    goToStripe(email);
   }
 
-  async function startCheckoutFromPricing() {
-    clearError();
+  function startCheckoutFromPricing() {
     const email = document.getElementById('emailInput2').value.trim();
     if (!email) { showError('Please enter your email address.'); return; }
-    if (!isValidEmail(email)) { showError('Please enter a valid email address.'); return; }
-    await doCheckout(email);
+    if (!isValidEmail(email)) { showError('Please enter a valid email.'); return; }
+    goToStripe(email);
   }
 
-  async function doCheckout(email) {
-    const btn = document.getElementById('ctaBtn');
-    btn.disabled = true;
-    btn.textContent = 'Connecting…';
-
-    try {
-      const res = await fetch(`${WORKER_URL}/create-checkout-session`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          successUrl: `${window.location.origin}${window.location.pathname}?success=true`,
-          cancelUrl: window.location.href,
-        }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || `Request failed (${res.status})`);
-      }
-
-      const { url } = await res.json();
-      if (!url) throw new Error('No checkout URL returned. Check Worker configuration.');
-      window.location.href = url;
-    } catch (err) {
-      showError(err.message || 'Something went wrong. Please try again.');
-      btn.disabled = false;
-      btn.textContent = 'Claim your number →';
-    }
+  function goToStripe(email) {
+    const url = new URL(STRIPE_PAYMENT_LINK);
+    url.searchParams.set('prefilled_email', email);
+    window.location.href = url.toString();
   }
 </script>
 </body>

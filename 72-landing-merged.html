@@ -35,24 +35,77 @@
       min-height: 100vh;
     }
 
-    /* ── Hero ── */
+    /* ── Hero (CSS branded — no image dependency) ── */
     .hero {
       position: relative;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      background: url('wagoneer.png') center / cover no-repeat var(--bg);
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 100%, rgba(212,160,23,0.22) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 20% 55%, rgba(180,90,0,0.12) 0%, transparent 60%),
+        linear-gradient(160deg, #060405 0%, #100900 40%, #190e00 70%, #211300 100%);
       overflow: hidden;
     }
-    .hero-overlay {
+    .hero-watermark {
       position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        to bottom,
-        rgba(0,0,0,0.55) 0%,
-        rgba(0,0,0,0.65) 50%,
-        rgba(8,8,8,0.97) 100%
-      );
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: clamp(260px, 42vw, 560px);
+      font-weight: 900;
+      letter-spacing: -0.08em;
+      color: var(--accent);
+      opacity: 0.08;
+      pointer-events: none;
+      user-select: none;
+      line-height: 1;
+      z-index: 0;
+    }
+    .hero-glow {
+      position: absolute;
+      bottom: -8%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 75%;
+      height: 55%;
+      background: radial-gradient(ellipse, rgba(212,160,23,0.26) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero-waveform {
+      position: absolute;
+      bottom: 44px;
+      right: 52px;
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      height: 52px;
+      opacity: 0.5;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero-waveform span {
+      display: block;
+      width: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+      transform-origin: bottom;
+      animation: wave72 1.5s ease-in-out infinite;
+    }
+    @keyframes wave72 {
+      0%, 100% { transform: scaleY(0.25); }
+      50%       { transform: scaleY(1); }
+    }
+    .hero-palms {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 340px;
+      height: 420px;
+      pointer-events: none;
+      opacity: 0.11;
+      z-index: 0;
     }
     .hero-content {
       position: relative;
@@ -467,7 +520,49 @@
 
   <!-- Hero -->
   <section class="hero">
-    <div class="hero-overlay"></div>
+    <div class="hero-watermark">72</div>
+    <div class="hero-glow"></div>
+    <div class="hero-waveform">
+      <span style="height:30%;animation-delay:0s"></span>
+      <span style="height:58%;animation-delay:0.07s"></span>
+      <span style="height:82%;animation-delay:0.14s"></span>
+      <span style="height:100%;animation-delay:0.21s"></span>
+      <span style="height:68%;animation-delay:0.28s"></span>
+      <span style="height:48%;animation-delay:0.35s"></span>
+      <span style="height:88%;animation-delay:0.42s"></span>
+      <span style="height:38%;animation-delay:0.49s"></span>
+      <span style="height:74%;animation-delay:0.56s"></span>
+      <span style="height:96%;animation-delay:0.63s"></span>
+      <span style="height:54%;animation-delay:0.70s"></span>
+      <span style="height:78%;animation-delay:0.77s"></span>
+      <span style="height:34%;animation-delay:0.84s"></span>
+      <span style="height:64%;animation-delay:0.91s"></span>
+      <span style="height:100%;animation-delay:0.98s"></span>
+      <span style="height:44%;animation-delay:1.05s"></span>
+      <span style="height:72%;animation-delay:1.12s"></span>
+      <span style="height:52%;animation-delay:1.19s"></span>
+      <span style="height:82%;animation-delay:1.26s"></span>
+      <span style="height:40%;animation-delay:1.33s"></span>
+    </div>
+    <svg class="hero-palms" viewBox="0 0 340 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Left palm trunk -->
+      <path d="M90 420 C88 395 84 358 78 318 C72 278 65 238 62 198 C59 168 56 142 60 118" stroke="white" stroke-width="7" stroke-linecap="round" fill="none"/>
+      <!-- Left fronds -->
+      <path d="M60 118 C42 98 14 88 -8 73" stroke="white" stroke-width="5" stroke-linecap="round" fill="none"/>
+      <path d="M60 118 C52 93 47 65 52 42" stroke="white" stroke-width="5" stroke-linecap="round" fill="none"/>
+      <path d="M60 118 C74 96 88 76 108 64" stroke="white" stroke-width="5" stroke-linecap="round" fill="none"/>
+      <path d="M60 118 C68 108 82 96 96 82" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/>
+      <path d="M60 118 C44 112 22 106 6 90" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/>
+      <!-- Right palm trunk (taller) -->
+      <path d="M230 420 C235 392 240 355 248 315 C255 275 264 235 272 195 C278 165 284 138 290 112" stroke="white" stroke-width="9" stroke-linecap="round" fill="none"/>
+      <!-- Right fronds -->
+      <path d="M290 112 C314 88 342 76 368 60" stroke="white" stroke-width="6" stroke-linecap="round" fill="none"/>
+      <path d="M290 112 C296 84 298 52 292 26" stroke="white" stroke-width="6" stroke-linecap="round" fill="none"/>
+      <path d="M290 112 C268 88 252 64 242 40" stroke="white" stroke-width="6" stroke-linecap="round" fill="none"/>
+      <path d="M290 112 C310 100 328 84 344 68" stroke="white" stroke-width="5" stroke-linecap="round" fill="none"/>
+      <path d="M290 112 C272 100 256 86 244 70" stroke="white" stroke-width="5" stroke-linecap="round" fill="none"/>
+      <path d="M290 112 C302 94 316 80 330 62" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/>
+    </svg>
     <div class="hero-content">
       <nav>
         <a href="#" class="logo">72</a>

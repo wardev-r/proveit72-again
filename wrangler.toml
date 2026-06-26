@@ -1,0 +1,18 @@
+name = "72-marketplace"
+main = "72-stripe-worker.js"
+compatibility_date = "2024-09-23"
+
+# After running: wrangler kv namespace create "KV_72"
+# paste the printed id below
+[[kv_namespaces]]
+binding = "KV_72"
+id = "PASTE_KV_NAMESPACE_ID_HERE"
+
+[vars]
+# Non-secret config — secrets go via: wrangler secret put <NAME>
+
+# Secrets to set (run each command separately):
+#   wrangler secret put STRIPE_SECRET_KEY
+#   wrangler secret put STRIPE_WEBHOOK_SECRET
+#   wrangler secret put PLATFORM_URL
+#   wrangler secret put OWNER_API_KEY

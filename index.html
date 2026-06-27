@@ -726,7 +726,9 @@
       <p style="color:rgba(240,240,232,0.6);font-size:0.95rem;max-width:520px;margin:0 auto;line-height:1.7;">Open your 72 number for a 2-hour window. Fans call in, hear your message, get a codephrase — unlocks merch, a discount, a meet, whatever you decide. Transparent, real, and yours. We work with you on the first one.</p>
     </div>
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:40px;">
-      <form id="collabForm" action="https://formspree.io/ward602@gmail.com" method="POST" onsubmit="handleCollabSubmit(event)">
+      <form id="collabForm" action="https://api.web3forms.com/submit" method="POST" onsubmit="handleCollabSubmit(event)">
+        <input type="hidden" name="access_key" value="0ff639a9-d79c-4607-899f-ce160d5e4ca9">
+        <input type="hidden" name="subject" value="New 72 Creator Partnership Inquiry">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
           <div>
             <label style="display:block;font-size:0.78rem;font-weight:600;color:var(--muted);margin-bottom:8px;letter-spacing:0.05em;">YOUR NAME</label>

@@ -6,7 +6,7 @@ compatibility_date = "2024-09-23"
 # paste the printed id below
 [[kv_namespaces]]
 binding = "KV_72"
-id = "PASTE_KV_NAMESPACE_ID_HERE"
+id = "0fb09e694dcc4b2fa5bab232724482f8"
 
 [vars]
 # Non-secret config — secrets go via: wrangler secret put <NAME>

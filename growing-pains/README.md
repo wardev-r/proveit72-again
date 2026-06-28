@@ -1,15 +1,20 @@
-# Growing Pain Relics 🪦
+# Growing Pain Relics 🪦 → ♻️
 
-The folder of shame — but the kinder name. These are **abandoned directions that
-cost real iteration** before we found the right one. We keep them on purpose:
-they're cheaper to look at than to rebuild, and they stop us from re-pitching an
-idea we already killed.
+The folder of shame, but the honest name. These are **directions that cost real
+iteration** before we landed the right one — *and* they're salvage. None of it
+fit the 72 landing, but the pieces can be tweaked into other things later. A
+graveyard you can shop in.
+
+Two kinds of stuff lives here:
+- **Screenshots** = the memory. What it looked like, why we killed it. Keeps us
+  from re-pitching a dead idea.
+- **`parts/`** = the reusable bits. Actual CSS/SVG lifted out so future-you can
+  drop them into something else and tweak — not a PNG you'd have to rebuild from.
 
 **Rules:**
-- Nothing in here is used in production. It's a graveyard, not a source tree.
-- Each relic gets a line below: *what it was* and *why it died*.
-- When a thing dies, it comes here with a screenshot — not deleted, not left
-  rotting in the working tree pretending to be alive.
+- Nothing here is used in production. It's a parts bin, not a source tree.
+- A thing that dies comes here *with its code*, not just a picture of it.
+- Each entry gets a line: *what it was*, *why it died*, *what it's good for*.
 
 ---
 
@@ -27,6 +32,18 @@ horizon line, a sun and its reflection on the water.
 **Died because:** "make it a colour-change film instead of a semi pic." Replaced
 by an abstract drifting warm-opal gradient (no representational elements, no hard
 lines). That's the version that shipped as `72-landing-opal.html`.
+
+---
+
+## Salvageable parts (`parts/`)
+
+Lifted out so they can be tweaked into other projects:
+
+| File | What it is | Good for |
+|------|------------|----------|
+| `palm-silhouette.svg` | Coconut-palm silhouette, pure SVG | Any tropical / beach / vacation visual; recolor + scale freely |
+| `beach-scene.css` | Warm golden-hour sunset background (sky, sun, sea, reflection) + palm placement | A drop-in sunset backdrop for some future page |
+| `cool-opal-palette.css` | Pearly periwinkle/lilac/blush palette + gradient | A calmer, cooler brand than 72 |
 
 ---
 

@@ -1,0 +1,43 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   "Semi-pic beach" — warm golden-hour scene, pure CSS, no image.
+   Rejected for the 72 landing (wanted an abstract film, not a depiction),
+   but it's a solid drop-in sunset background for some OTHER future thing.
+
+   Needs three layers in the DOM:
+     <div class="bx-bg"></div>           fixed background
+     <div class="bx-reflection"></div>   sun glint on the water
+     <svg class="bx-palm bx-palm-left">  + a mirrored .bx-palm-right
+   (palm markup lives in ../parts/palm-silhouette.svg)
+   ────────────────────────────────────────────────────────────────────────── */
+
+.bx-bg {
+  position: fixed; inset: 0; z-index: -3;
+  background:
+    /* low sun just above the horizon */
+    radial-gradient(circle at 40% 47%,
+      rgba(255,247,226,0.98) 0%,
+      rgba(255,216,150,0.70) 4%,
+      rgba(245,176,104,0.40) 10%,
+      rgba(228,150,96,0.16) 18%,
+      transparent 28%),
+    /* warm sky → luminous horizon (hard line at ~50%) → amber sea → dusk sand */
+    linear-gradient(to bottom,
+      #8a7c92 0%, #b08e90 12%, #d9a98f 26%, #efbf86 38%, #f8d27a 47%,
+      #ffe39a 50%, #e7a558 51.5%, #b07a44 60%, #774e2c 72%, #432c1a 84%, #241710 100%);
+}
+
+/* soft glow pooling under the sun */
+.bx-reflection {
+  position: fixed; left: 40%; top: 50%;
+  height: 26vh; width: 17vw; transform: translateX(-50%);
+  z-index: -3; pointer-events: none; opacity: 0.6;
+  background: linear-gradient(to bottom,
+    rgba(255,250,236,0.55) 0%, rgba(238,222,210,0.14) 60%, transparent 100%);
+  clip-path: polygon(43% 0, 57% 0, 84% 100%, 16% 100%);
+  filter: blur(7px);
+}
+
+/* palms framing the scene (see palm-silhouette.svg) */
+.bx-palm { position: fixed; bottom: 0; z-index: -2; pointer-events: none; fill: #2a1d12; opacity: 0.9; }
+.bx-palm-left  { left: -2vw;  height: 82vh; }
+.bx-palm-right { right: -3vw; height: 66vh; transform: scaleX(-1); opacity: 0.8; }

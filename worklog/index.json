@@ -1,0 +1,15 @@
+{
+  "$comment": "Worklog for the 72 repo. Dated essence-cards of each work session. Same shape as the creator-tool log so any tool can read it. Each entry's `detail` points to the full markdown card. Data lives here; tools read FROM here.",
+  "log": "72 marketplace — session worklog",
+  "entries": [
+    {
+      "id": 1,
+      "number": 1,
+      "title": "Opal landing + boneyard + memory system",
+      "date": "2026-06-28",
+      "summary": "Built 72-landing-opal.html (animated warm-opal 'colour film' background, shimmer headlines, red-carpet velvet-rope accent, responsive, wired signup). Stood up the boneyard salvage system (relics + reusable parts + index.json rolo). Added CLAUDE.md pointer and a docs/ claude.ai Project bundle. Opened PR #1 and backlog issues #2-#6. Established working principles: secrets out of repo, killed builds to boneyard with code, scan the rolo before building UI, data != tool, capture essence not transcripts.",
+      "tags": ["72", "landing", "boneyard", "memory-system", "CLAUDE.md", "workflow", "essence"],
+      "detail": "2026-06-28-opal-landing-and-memory-system.md"
+    }
+  ]
+}

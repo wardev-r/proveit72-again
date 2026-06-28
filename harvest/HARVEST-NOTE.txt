@@ -1,0 +1,56 @@
+
+####################################################################
+#                                                                  #
+#   ####   #####  #####  #####                                     #
+#   #   #  #      #   #  #  #                                      #
+#   ####   ###    #   #  #  #     >>>  H A R V E S T  <<<          #
+#   #   #  #      #####  #  #                                      #
+#   #   #  #####  #   #  #####                                     #
+#                                                                  #
+#        STOP. READ THIS WHOLE BOX BEFORE YOU START.               #
+#                                                                  #
+####################################################################
+
+
+  >>>  YOUR ONLY JOB:  look at a chat,  jot ONE line if it's gold,  move on.
+  >>>  You do NOT run anything.  You do NOT ask any Claude.  Just look + jot.
+
+
+==================================================================
+  THE LOOP   ( do this -- don't think )
+==================================================================
+
+   1.  Click a chat from your list.
+
+   2.  Skim 30 seconds.  Ask ONE question:
+
+              "Worth money,  or  worth reusing?"
+
+   3.  YES  ->  type ONE line below.
+       NO   ->  next chat.   no guilt.
+
+   4.  Tired or done  ->  paste this WHOLE note to Claude in the repo.
+                          ( Claude does ALL the rest. )
+
+   RULE:  jotting is NOT committing.  You're taking inventory,
+          not pushing any button.  Low stakes.  Keep moving.
+
+
+==================================================================
+  FINDS     ( one line each:   chat name  -  what the thing is )
+==================================================================
+
+   -
+   -
+   -
+   -
+   -
+   -
+
+
+##################################################################
+#                                                                #
+#   WHEN STUCK:  just paste this whole note to Claude.           #
+#   That is ALWAYS the right move.  You can't do it wrong.       #
+#                                                                #
+##################################################################

@@ -1,9 +1,9 @@
-# Growing Pain Relics 🪦 → ♻️
+# Boneyard 🦴 → ♻️
 
-The folder of shame, but the honest name. These are **directions that cost real
-iteration** before we landed the right one — *and* they're salvage. None of it
-fit the 72 landing, but the pieces can be tweaked into other things later. A
-graveyard you can shop in.
+A mechanic's boneyard: dead builds kept around so you can pull a good part off
+one to fix (or build) another. These are **directions that cost real iteration**
+before we landed the right one — none of it fit the 72 landing, but the pieces
+strip down and bolt onto something else just fine. A graveyard you shop in.
 
 Two kinds of stuff lives here:
 - **Screenshots** = the memory. What it looked like, why we killed it. Keeps us

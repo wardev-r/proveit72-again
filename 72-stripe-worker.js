@@ -432,17 +432,21 @@ async function onCallPaymentSucceeded(paymentIntent, env) {
 // ─── Twilio voice — MVP: connect a caller to the creator's real phone ─────────
 // Phase 2: gate on payment before <Dial> (Stripe pre-pay or Twilio <Pay>).
 async function handleVoice(request, env) {
+  const url = new URL(request.url);
   const form = await request.formData();
   const called = form.get('To') || '';
-  const creator = await findCreatorByTwilioNumber(env, called);
   const xml = (body) => new Response(
     `<?xml version="1.0" encoding="UTF-8"?><Response>${body}</Response>`,
     { headers: { 'Content-Type': 'text/xml' } }
   );
-  if (!creator || !creator.forwardNumber || creator.isOnline === false) {
-    return xml(`<Say>This 72 number isn't taking calls right now. Goodbye.</Say>`);
+  // Quick demo: webhook URL ?fwd=+1XXXXXXXXXX dials that number directly (no KV needed).
+  let forward = url.searchParams.get('fwd');
+  if (!forward) {
+    const creator = await findCreatorByTwilioNumber(env, called);
+    if (creator && creator.isOnline !== false) forward = creator.forwardNumber;
   }
-  return xml(`<Say>Connecting you on 72.</Say><Dial callerId="${called}">${creator.forwardNumber}</Dial>`);
+  if (!forward) return xml(`<Say>This 72 number isn't taking calls right now. Goodbye.</Say>`);
+  return xml(`<Say>Connecting you on 72.</Say><Dial callerId="${called}">${forward}</Dial>`);
 }
 
 async function findCreatorByTwilioNumber(env, number) {

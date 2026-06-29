@@ -1,0 +1,18 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   "Cool opal" palette — pearly periwinkle / lilac / blush.
+   Rejected for 72 (read too cold/grey here), but it's a clean, calm,
+   spa/tech-y palette that could suit a cooler brand later.
+   ────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  --co-accent: #9db8d6;   /* pearly periwinkle */
+  --co-rose:   #b78793;   /* muted opal rose   */
+  --co-opal:   linear-gradient(120deg, #cdd9f0 0%, #dccaec 28%, #f0d2da 55%, #f4e6c4 80%, #cfe0d6 100%);
+}
+
+/* full-bleed cool-opal sky→sea gradient (had a hard horizon at ~50%) */
+.co-bg {
+  background: linear-gradient(to bottom,
+    #aeb9d6 0%, #c4c2da 12%, #ddc8d4 26%, #efd6c2 38%, #f6e6b8 47%,
+    #fbf1d8 50%, #e6cbb0 51.5%, #b9c2bf 60%, #7f8a8c 72%, #4b5356 84%, #2b3033 100%);
+}

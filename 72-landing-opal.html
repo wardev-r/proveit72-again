@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>72 — Your Access. Your Rules.</title>
+<style>
+/* ROOT — opalescent palette (no Boost orange) */
+:root {
+  --bg: #11131c;
+  --text-main: #f6f3ef;
+  --text-soft: #cfd3dd;
+  --accent: #e6b07a;          /* warm amber for links */
+  --gold: #ecc488;            /* soft wagoneer gold for the "72" */
+  --rose: #a81e2e;            /* deep red-carpet velvet-rope red */
+  --opal: linear-gradient(120deg, #f6e0c8 0%, #f0cdba 26%, #f0c4cc 52%, #f3deb4 78%, #ecdcc0 100%);
+  --overlay-tint: rgba(20, 12, 6, 0.14);
+  --max-width: 880px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #11131c;
+  color: var(--text-main);
+  overflow-x: hidden;
+}
+
+/* ── PARALLAX BACKGROUND — pure-CSS opal golden-hour beach, no image ── */
+.parallax-bg {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 120vh; z-index: -3;
+  background:
+    /* soft warm-opal colour blobs that slowly drift = a colour-change film */
+    radial-gradient(46% 42% at 28% 30%, rgba(255,212,168,0.50) 0%, transparent 66%),
+    radial-gradient(50% 46% at 72% 56%, rgba(234,150,168,0.42) 0%, transparent 66%),
+    radial-gradient(46% 42% at 50% 82%, rgba(255,196,118,0.44) 0%, transparent 66%),
+    radial-gradient(40% 38% at 80% 18%, rgba(196,174,224,0.32) 0%, transparent 66%),
+    radial-gradient(44% 40% at 16% 72%, rgba(244,176,132,0.34) 0%, transparent 66%),
+    /* smooth warm base, no hard horizon line */
+    linear-gradient(165deg, #5b4a63 0%, #8a6a74 24%, #c08a7e 46%, #e3a96f 64%, #b9763f 82%, #5a3a23 100%);
+  background-size: 170% 170%, 170% 170%, 170% 170%, 170% 170%, 170% 170%, 100% 100%;
+  background-repeat: no-repeat;
+  animation: filmDrift 28s ease-in-out infinite;
+}
+@keyframes filmDrift {
+  0%   { background-position:  0% 10%, 100% 0%, 50% 100%,  0% 50%, 100% 60%, center; }
+  50%  { background-position: 55% 45%, 40% 65%, 30% 55%,  70% 25%,  20% 30%, center; }
+  100% { background-position:  0% 10%, 100% 0%, 50% 100%,  0% 50%, 100% 60%, center; }
+}
+@media (prefers-reduced-motion: reduce) { .parallax-bg { animation: none; } }
+/* soft opal reflection pooling on the water */
+.sun-reflection {
+  position: fixed; left: 40%; top: 50%;
+  height: 26vh; width: 17vw; transform: translateX(-50%);
+  z-index: -3; pointer-events: none; opacity: 0.6;
+  background: linear-gradient(to bottom,
+    rgba(255,250,236,0.55) 0%,
+    rgba(238,222,210,0.14) 60%,
+    transparent 100%);
+  clip-path: polygon(43% 0, 57% 0, 84% 100%, 16% 100%);
+  filter: blur(7px);
+}
+/* palm silhouettes framing the scene */
+.palm { position: fixed; bottom: 0; z-index: -2; pointer-events: none; fill: #2a1d12; opacity: 0.9; }
+.palm-left  { left: -2vw;  height: 82vh; }
+.palm-right { right: -3vw; height: 66vh; transform: scaleX(-1); opacity: 0.8; }
+/* legibility vignette — darker at top (nav/hero) & bottom (footer), airy middle */
+.parallax-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(140% 95% at 50% 0%, rgba(26,14,6,0.55) 0%, rgba(26,14,6,0.12) 42%, transparent 70%),
+    radial-gradient(120% 80% at 50% 100%, rgba(22,12,5,0.5) 0%, transparent 60%),
+    var(--overlay-tint);
+}
+/* PAGE WRAPPER */
+.page { width: 100%; max-width: var(--max-width); margin: 0 auto; padding: 0 20px; }
+.screen {
+  position: relative; z-index: 0;
+  min-height: 100vh; padding: 14vh 20px; display: flex; flex-direction: column; justify-content: center;
+}
+/* full-bleed legibility scrim behind each section — no centre seam */
+.screen::before {
+  content: ""; position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100vw; z-index: -1; pointer-events: none;
+  background: radial-gradient(120% 64% at 50% 50%, rgba(22,12,5,0.5) 0%, rgba(22,12,5,0.18) 55%, transparent 82%);
+}
+
+/* ── Opalescent shimmer for headlines (iridescent text, no stickered shadow) ── */
+@keyframes opalShift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+.opal-text {
+  background: linear-gradient(100deg,
+    #fff4e8 0%, #f4d6c2 14%, #f0c6d2 26%, #d9e6dc 38%,
+    #ecd9a4 52%, #f6e2bf 66%, #f0c6d2 80%, #fff4e8 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+  animation: opalShift 7s linear infinite;
+  filter: drop-shadow(0 2px 7px rgba(18,14,28,0.5));
+}
+/* HERO */
+.hero-title { font-size: clamp(2.2rem, 6vw, 3.4rem); font-weight: 800; text-align: center; margin-bottom: 10px; letter-spacing: -0.01em; max-width: 100%; overflow-wrap: break-word; }
+.hero-title span { -webkit-text-fill-color: transparent; }
+.hero-subtitle { font-size: clamp(1.1rem, 3vw, 1.4rem); text-align: center; color: #f3eee6; margin-bottom: 24px; line-height: 1.6; text-shadow: 0 1px 3px rgba(0,0,0,0.45); }
+.hero-subtitle span { font-weight: 800; letter-spacing: 0.01em; text-shadow: 0 1px 2px rgba(0,0,0,0.55); }
+.stats { text-align: center; font-size: 0.95rem; line-height: 1.8; margin-bottom: 24px; color: var(--text-soft); }
+.rotate-line { text-align: center; font-size: 1rem; color: #ece6dd; margin-top: 16px; opacity: 0.95; font-weight: 600; letter-spacing: 0.02em; }
+/* CTA — opal gradient, dark text */
+.cta { display: flex; justify-content: center; margin-top: 32px; padding: 24px; }
+.cta button {
+  background: var(--opal); color: #2c2740; border: none; padding: 16px 48px; border-radius: 14px;
+  font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease;
+  box-shadow: 0 10px 28px rgba(150,160,200,0.35), inset 0 1px 0 rgba(255,255,255,0.7), inset 0 -2px 6px rgba(120,110,150,0.2);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.cta button:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(150,160,200,0.45), inset 0 1px 0 rgba(255,255,255,0.85); }
+/* INFO SECTIONS */
+.section-title { font-size: clamp(1.6rem, 5vw, 2.4rem); font-weight: 800; text-align: center; margin-bottom: 20px; }
+.section-title .highlight { -webkit-text-fill-color: var(--gold); color: var(--gold); }
+.section-text { font-size: 1.05rem; color: #f3eee6; max-width: 700px; margin: 0 auto 24px auto; text-align: center; line-height: 1.7; text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+/* VELVET ROPE */
+.rope-section { background: linear-gradient(135deg, rgba(18, 16, 26, 0.28), rgba(24, 20, 34, 0.34)); padding: 90px 20px; margin-top: 60px; border-top: 1px solid rgba(157,184,214,0.25); border-bottom: 1px solid rgba(157,184,214,0.25); }
+.rope-inner { max-width: 620px; margin: 0 auto; text-align: center; }
+.rope-title { font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 800; letter-spacing: 0.08em; margin-bottom: 20px; text-transform: uppercase; }
+.rope-text { font-size: 1.1rem; color: #f1ece4; line-height: 1.8; }
+/* ONBOARDING */
+.onboard-box { background: rgba(14,12,20,0.5); border: 1px solid rgba(255,255,255,0.18); padding: 32px; border-radius: 16px; max-width: 480px; margin: 0 auto; backdrop-filter: blur(12px); }
+.onboard-box h2 { font-size: 1.6rem; margin-bottom: 8px; text-align: center; color: #fffdf9; }
+.onboard-box p { text-align: center; color: var(--text-soft); margin-bottom: 28px; font-size: 1rem; }
+.onboard-box input { width: 100%; padding: 14px 16px; margin-bottom: 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.08); color: #fff; font-size: 1rem; }
+.onboard-box input::placeholder { color: rgba(255,255,255,0.45); }
+.onboard-box input:focus { outline: none; background: rgba(255,255,255,0.12); border-color: rgba(157,184,214,0.55); box-shadow: 0 0 14px rgba(157,184,214,0.25); }
+.onboard-box button { width: 100%; padding: 16px; background: var(--opal); border: none; border-radius: 12px; color: #2c2740; font-weight: 700; font-size: 1rem; margin-top: 8px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.05em; box-shadow: 0 8px 24px rgba(150,160,200,0.3), inset 0 1px 0 rgba(255,255,255,0.6); }
+.onboard-box button:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(150,160,200,0.4); }
+/* REVIEWS */
+.review { text-align: center; font-size: 1.05rem; color: #FBF8F2; margin-bottom: 28px; line-height: 1.7; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+/* FOOTER */
+.footer { text-align: center; padding: 40px 0; font-size: 0.85rem; color: var(--text-soft); }
+.footer a { color: var(--text-soft); text-decoration: none; margin: 0 8px; transition: color 0.2s ease; }
+.footer a:hover { color: var(--accent); }
+/* NAV CORNER — pearly, not orange */
+.nav-corner { position: fixed; top: 24px; right: 24px; z-index: 999; display: flex; gap: 12px; }
+.nav-link { padding: 10px 20px; background: rgba(205,217,240,0.14); border: 1px solid rgba(157,184,214,0.35); color: var(--text-main); text-decoration: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(10px); }
+.nav-link:hover { background: rgba(205,217,240,0.24); border-color: rgba(157,184,214,0.55); color: var(--accent); }
+.nav-share { padding: 8px 14px; background: var(--opal); border: 1px solid rgba(255,255,255,0.4); color: #2c2740; text-decoration: none; border-radius: 6px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(8px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.5); }
+.nav-share:hover { transform: scale(1.05); box-shadow: 0 6px 18px rgba(150,160,200,0.4); }
+
+/* ── Mobile (placed last so it actually overrides the base rules) ── */
+@media (max-width: 680px) {
+  .nav-corner { top: 12px; right: 10px; gap: 7px; }
+  .nav-link { padding: 8px 12px; font-size: 0.8rem; }
+  .nav-share { padding: 8px 11px; font-size: 0.74rem; }
+  .hero-title { font-size: clamp(1.8rem, 8.5vw, 3rem); letter-spacing: -0.02em; }
+  .hero-subtitle { font-size: 1.05rem; }
+  .hero-subtitle + div[style] { height: 80px !important; }
+  .section-title { font-size: clamp(1.5rem, 7vw, 2.2rem); }
+  .screen { padding: 16vh 18px 9vh; min-height: auto; }
+  .onboard-box { padding: 24px 20px; }
+  .rope-section { padding: 64px 18px; }
+}
+@media (max-width: 400px) {
+  .nav-corner { gap: 6px; right: 8px; }
+  .nav-link { padding: 7px 9px; font-size: 0.72rem; }
+  .nav-share { padding: 7px 9px; font-size: 0.68rem; }
+  .hero-title { font-size: 1.7rem; }
+}
+</style>
+<script>
+/* ─── Endpoints / config ─────────────────────────────────────────────
+   Signup works TODAY via the hosted Stripe Payment Link (no backend deploy).
+   When the Cloudflare Worker is deployed, set WORKER_URL and the form will
+   POST to it for the richer flow (collects name/phone, server-side checkout). */
+const ENDPOINTS = {
+  STRIPE_PAYMENT_LINK: 'https://buy.stripe.com/dRm3cx8RTaPE1eD2Mq2kw05',
+  WORKER_URL: '',                 // e.g. 'https://72-marketplace.<sub>.workers.dev'
+  CHECKOUT_PATH: '/create-checkout-session',
+  LOGIN_URL: '72-app-dashboard.html'
+};
+
+const lines = [
+  "Getting control of your time.",
+  "Your time has value.",
+  "Set your price. Protect your peace.",
+  "Everyone deserves a velvet rope.",
+  "Control over your most valuable asset."
+];
+let idx = 0;
+setInterval(() => {
+  const rotLine = document.querySelector('.rotate-line');
+  if (rotLine) { rotLine.textContent = lines[idx]; idx = (idx + 1) % lines.length; }
+}, 2600);
+
+const isEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+const isPhone = v => /^\+?[\d\s\-().]{10,}$/.test(v);
+
+function scrollToSignup() {
+  document.getElementById('onboard-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  setTimeout(() => document.getElementById('name').focus(), 450);
+}
+
+async function handleOnboard(event) {
+  event.preventDefault();
+  const name  = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const msg   = document.getElementById('form-message');
+  const btn   = document.getElementById('prove-btn');
+  const show  = t => { msg.textContent = t; msg.style.display = 'block'; };
+  msg.style.display = 'none';
+
+  if (!name || !email || !phone) return show('Please fill in all fields.');
+  if (!isEmail(email))          return show('Please enter a valid email.');
+  if (!isPhone(phone))          return show('Please enter a valid phone number.');
+
+  btn.disabled = true; btn.textContent = 'Redirecting…';
+
+  // Preferred path: deployed Worker creates a Checkout Session.
+  if (ENDPOINTS.WORKER_URL) {
+    try {
+      const res = await fetch(ENDPOINTS.WORKER_URL + ENDPOINTS.CHECKOUT_PATH, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, name, phone })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Checkout failed');
+      window.location.href = data.url || data.checkoutUrl;
+      return;
+    } catch (err) {
+      show('Error: ' + err.message); btn.disabled = false; btn.textContent = 'Prove It';
+      return;
+    }
+  }
+
+  // Fallback (live today): hosted Stripe Payment Link, email prefilled.
+  const url = new URL(ENDPOINTS.STRIPE_PAYMENT_LINK);
+  url.searchParams.set('prefilled_email', email);
+  window.location.href = url.toString();
+}
+</script>
+</head>
+<body>
+<div class="parallax-bg"></div>
+<div class="parallax-overlay"></div>
+<div class="nav-corner">
+  <a href="72-app-dashboard.html" class="nav-link">Login</a>
+  <a onclick="scrollToSignup()" class="nav-link" style="cursor: pointer;">Sign Up</a>
+  <a onclick="navigator.share ? navigator.share({title: '72', text: 'Your time has value. 72% paid directly to you.', url: window.location.href}) : alert('Share: 72 — Your time has value.')" class="nav-share" style="cursor: pointer;">Share 72</a>
+</div>
+<div class="page">
+<section class="screen">
+  <div class="hero-title opal-text">Your time has <span>value</span>.</div>
+  <div class="hero-subtitle">Proven access to you, on your terms. The <span style="color: var(--rose);">velvet rope</span> to your time.</div>
+  <div style="height: 140px;"></div>
+  <div class="rotate-line" style="margin-bottom: 8px;">Your time has value.</div>
+  <div class="cta"><button onclick="scrollToSignup()">Claim Your 72</button></div>
+</section>
+<section class="screen">
+  <h2 class="section-title opal-text">Your <span class="highlight">72</span> =</h2>
+  <p class="section-text">Control over your most valuable asset, your time.<br>It's a boundary. It's showing you value your time.<br>Others can prove their time is worth yours.</p>
+  <h2 class="section-title opal-text" style="margin-top: 60px;">Why Your <span class="highlight">72</span> Exists</h2>
+  <p class="section-text">You pay for the convenience a phone brings to your life. Access to you and your time are undervalued commodities. Your 72 establishes and redefines the access point to both.<br><br>Spammers, tire-kickers, lowballers, and general annoyance or harassment are cut from the equation.</p>
+</section>
+<section class="rope-section">
+  <div class="rope-inner">
+    <div class="rope-title opal-text">Now's the Time</div>
+    <div class="rope-text">Take back control, set a price, a schedule set on your terms. Let your 72 help prove that access isn't free.</div>
+  </div>
+</section>
+<section class="screen">
+  <div class="onboard-box">
+    <h2>Ready to prove it?</h2>
+    <p>Create Your 72</p>
+    <form id="onboard-form" onsubmit="handleOnboard(event)">
+      <input type="text" id="name" placeholder="Your Name" required />
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="tel" id="phone" placeholder="Phone Number" required />
+      <button type="submit" id="prove-btn">Prove It</button>
+      <p id="form-message" style="margin-top: 12px; font-size: 0.9rem; color: var(--rose); display: none;"></p>
+    </form>
+  </div>
+</section>
+<section class="screen">
+  <h2 class="section-title opal-text" style="margin-bottom: 40px;">Member <span class="highlight">Testimonials</span></h2>
+  <div class="review">"72 gave me my evenings back."</div>
+  <div class="review">"People stopped blowing up my phone."</div>
+  <div class="review">"I finally control who gets through."</div>
+  <div class="review">"Worth every penny."</div>
+  <div class="footer">
+    <a href="#">Privacy</a> • <a href="#">Terms</a> • <a href="#">Feedback</a> • <a href="#">Contact</a><br><br>
+    © 2026 72. All rights reserved.
+  </div>
+</section>
+</div>
+</body>
+</html>

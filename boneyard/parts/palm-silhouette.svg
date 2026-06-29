@@ -1,0 +1,17 @@
+<!--
+  Coconut-palm silhouette. Pure SVG, no image.
+  Reuse: drop inline, set `fill` to taste, scale with height/width.
+  Mirror a second copy with `transform: scaleX(-1)` for a framing pair.
+  Came from the rejected "semi-pic beach" landing background.
+-->
+<svg viewBox="0 0 300 520" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path fill="#2a1d12" d="M150 520 C150 430 150 340 152 270 C153 230 158 195 168 165 L150 158 C140 190 134 228 132 270 C129 345 131 432 132 520 Z
+           M160 158 C152 110 158 70 176 38 C170 78 170 116 168 160 Z
+           M160 158 C118 126 76 120 40 130 C80 122 124 134 162 162 Z
+           M160 162 C120 160 80 174 50 206 C86 178 124 168 162 168 Z
+           M159 166 C126 178 96 206 82 248 C106 210 132 184 161 172 Z
+           M160 158 C202 126 244 120 280 130 C240 122 196 134 162 162 Z
+           M160 162 C200 160 240 174 270 206 C234 178 196 168 162 168 Z
+           M161 166 C194 178 224 206 238 248 C214 210 188 184 161 172 Z
+           M160 158 C176 112 196 80 224 56 C190 92 172 124 168 160 Z"/>
+</svg>

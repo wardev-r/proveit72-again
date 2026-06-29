@@ -1,0 +1,24 @@
+{
+  "$comment": "Harv-Sift catch-store. Ranked menu of assets mined from past chats/sessions. Driven by the harv-sift skill. score = marketable x {S:3,M:2,L:1}. Sort desc to see what to build first. Keep a second copy on the SD card / a private repo.",
+  "updated": "2026-06-28",
+  "scale": {
+    "marketable": "1 = niche/me-only, 5 = lots of people would pay",
+    "effort": "S = a day or less, M = a week-ish, L = a real project",
+    "buckets": ["asset", "boneyard", "nothing"]
+  },
+  "finds": [
+    {
+      "id": 1,
+      "source": "Cross-session work — Claude Desktop, 2026-06",
+      "name": "Cross-Session Brief",
+      "one_line": "Generates framed handoff briefs so one AI session can brief another without hijacking it. Already built + saved as a skill.",
+      "who_wants_it": "Anyone who uses 2+ AIs and loses context between them; devs on Claude Code; multi-agent workflows",
+      "bucket": "asset",
+      "marketable": 5,
+      "effort": "M",
+      "score": 10,
+      "next_step": "Genericize (strip personal/examples), name it, ship as a skill/plugin + a tiny store-and-generate tool",
+      "status": "caught"
+    }
+  ]
+}

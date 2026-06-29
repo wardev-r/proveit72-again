@@ -1,0 +1,36 @@
+{
+  "$comment": "Boneyard Rolodex — one card per salvageable part. Scan this BEFORE building any UI/visual from scratch; a part here may already do the job. When a build is killed, add its card here with its code under parts/.",
+  "updated": "2026-06-28",
+  "cards": [
+    {
+      "id": "palm-silhouette",
+      "title": "Coconut palm silhouette",
+      "type": "svg",
+      "file": "parts/palm-silhouette.svg",
+      "preview": "02-semipic-beach-rejected.png",
+      "tags": ["tropical", "beach", "vacation", "decor", "silhouette", "svg"],
+      "good_for": "Any tropical/beach/vacation visual. Recolor via `fill`, scale via height/width, mirror a copy with transform: scaleX(-1) to frame.",
+      "from": "Rejected semi-pic beach landing background"
+    },
+    {
+      "id": "beach-scene",
+      "title": "Warm golden-hour sunset background",
+      "type": "css",
+      "file": "parts/beach-scene.css",
+      "preview": "02-semipic-beach-rejected.png",
+      "tags": ["background", "sunset", "golden-hour", "warm", "gradient", "scene"],
+      "good_for": "A drop-in sunset backdrop (sky + low sun + sea + glint + palm placement) for a future page that actually wants a depicted scene.",
+      "from": "Rejected because 72 wanted an abstract film, not a depiction"
+    },
+    {
+      "id": "cool-opal-palette",
+      "title": "Cool opal palette (periwinkle / lilac / blush)",
+      "type": "css",
+      "file": "parts/cool-opal-palette.css",
+      "preview": "01-cool-opal-too-grey.png",
+      "tags": ["palette", "opal", "pearly", "cool", "gradient", "tokens"],
+      "good_for": "A calm, cool, spa/tech-y brand. Palette vars + a full-bleed sky→sea gradient.",
+      "from": "Rejected for 72 — read too cold/grey for a warm brand"
+    }
+  ]
+}

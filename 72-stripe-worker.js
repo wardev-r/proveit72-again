@@ -139,7 +139,7 @@ async function handleCheckout(request, env) {
       trial_period_days: TRIAL_DAYS,
       metadata: { creator_id: creatorId || '' },
     },
-    success_url: successUrl || `${platformUrl}/dashboard.html?signup=success&session={CHECKOUT_SESSION_ID}`,
+    success_url: successUrl || `${platformUrl}/72-app-dashboard.html?signup=success&session={CHECKOUT_SESSION_ID}`,
     cancel_url: cancelUrl || `${platformUrl}/`,
     metadata: { creator_id: creatorId || '', source: '72-landing' },
   });
@@ -212,8 +212,8 @@ async function handleConnectOnboard(request, env) {
 
   const link = await stripe(env, 'POST', '/account_links', {
     account: account.id,
-    refresh_url: `${platformUrl}/dashboard.html?onboard=refresh&userId=${userId}`,
-    return_url: `${platformUrl}/dashboard.html?onboard=complete&userId=${userId}`,
+    refresh_url: `${platformUrl}/72-app-dashboard.html?onboard=refresh&userId=${userId}`,
+    return_url: `${platformUrl}/72-app-dashboard.html?onboard=complete&userId=${userId}`,
     type: 'account_onboarding',
   });
 
@@ -252,7 +252,8 @@ async function handleListCreators(request, env) {
       return raw ? JSON.parse(raw) : null;
     })
   );
-  return { creators: creators.filter(Boolean), total: creators.length };
+  const valid = creators.filter(Boolean);
+  return { creators: valid, total: valid.length };
 }
 
 async function handleCreatorRoute(request, env, path) {

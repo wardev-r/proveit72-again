@@ -14,6 +14,7 @@ Cloudflare Worker.
 - Wants you to **exercise judgment and act**, not over-ask. Confirm only genuine,
   hard-to-reverse forks.
 - Hates clutter and "hackshow" repos — he's onboarding people and wants it clean.
+- **Surface tells you the mode.** In **Claude Code** he's in *purpose mode* — there to actually build, on-task; help him stay pointed and don't wander. In **Desktop / chat** he's in *explore mode* — talking, thinking out loud, surface-hopping; roll with the tangents there.
 
 ## Shared vocabulary
 - **Boneyard** = `boneyard/` — a mechanic's parts bin of *killed builds*, kept so good

@@ -54,6 +54,8 @@ export default {
         result = await handleDashboardLink(request, env, url);
       } else if (path === '/creators' && request.method === 'GET') {
         result = await handleListCreators(request, env);
+      } else if (path === '/voice' && request.method === 'POST') {
+        return await handleVoice(request, env);
       } else if (path === '/webhook' && request.method === 'POST') {
         return await handleWebhook(request, env);
       } else if (path.startsWith('/creator/')) {
@@ -268,7 +270,7 @@ async function handleCreatorRoute(request, env, path) {
 
   if (request.method === 'PUT') {
     const body = await request.json();
-    const allowed = ['pricePerCall', 'isOnline', 'displayName', 'bio', 'phoneNumber', 'username'];
+    const allowed = ['pricePerCall', 'isOnline', 'displayName', 'bio', 'phoneNumber', 'username', 'twilioNumber', 'forwardNumber'];
     const updates = {};
     for (const key of allowed) {
       if (key in body) updates[key] = body[key];
@@ -425,6 +427,32 @@ async function onCallPaymentSucceeded(paymentIntent, env) {
       break;
     }
   }
+}
+
+// ─── Twilio voice — MVP: connect a caller to the creator's real phone ─────────
+// Phase 2: gate on payment before <Dial> (Stripe pre-pay or Twilio <Pay>).
+async function handleVoice(request, env) {
+  const form = await request.formData();
+  const called = form.get('To') || '';
+  const creator = await findCreatorByTwilioNumber(env, called);
+  const xml = (body) => new Response(
+    `<?xml version="1.0" encoding="UTF-8"?><Response>${body}</Response>`,
+    { headers: { 'Content-Type': 'text/xml' } }
+  );
+  if (!creator || !creator.forwardNumber || creator.isOnline === false) {
+    return xml(`<Say>This 72 number isn't taking calls right now. Goodbye.</Say>`);
+  }
+  return xml(`<Say>Connecting you on 72.</Say><Dial callerId="${called}">${creator.forwardNumber}</Dial>`);
+}
+
+async function findCreatorByTwilioNumber(env, number) {
+  if (!env.KV_72 || !number) return null;
+  const list = await env.KV_72.list({ prefix: 'creator:' });
+  for (const k of list.keys) {
+    const raw = await env.KV_72.get(k.name);
+    if (raw) { const c = JSON.parse(raw); if (c.twilioNumber === number) return c; }
+  }
+  return null;
 }
 
 // ─── KV helpers ───────────────────────────────────────────────────────────────

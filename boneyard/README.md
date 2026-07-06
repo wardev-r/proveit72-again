@@ -1,9 +1,10 @@
 # Boneyard 🦴 → ♻️
 
-A mechanic's boneyard: dead builds kept around so you can pull a good part off
-one to fix (or build) another. These are **directions that cost real iteration**
-before we landed the right one — none of it fit the 72 landing, but the pieces
-strip down and bolt onto something else just fine. A graveyard you shop in.
+Not a graveyard — a **percolator.** A hands-on teardown bench where parts *and*
+ideas sit, stay organized, and get reused. Same instinct as ripping apart a pile
+of electronics just to learn how they're built: nothing's discarded, the good
+parts are kept, and ideas percolate here until it's their time. Pull a piece off
+one build to bolt onto another; let a parked idea simmer until you revisit it.
 
 Two kinds of stuff lives here:
 - **Screenshots** = the memory. What it looked like, why we killed it. Keeps us

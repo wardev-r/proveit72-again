@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>72 — QR Maker</title>
+<meta name="robots" content="noindex" />
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#080808;--surface:#111;--border:#252525;--text:#f0f0e8;--muted:#888;--accent:#D4A017;--accent-dim:rgba(212,160,23,.12);--radius:12px}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;padding:32px 20px;max-width:640px;margin:0 auto}
+  h1{font-size:1.6rem;font-weight:900;letter-spacing:-.03em;color:var(--accent)}
+  .sub{color:var(--muted);font-size:.9rem;margin:6px 0 28px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:20px}
+  .step{font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+  label{display:block;font-size:.8rem;color:var(--muted);margin:12px 0 6px}
+  input{width:100%;padding:12px 14px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:.95rem;font-family:inherit;outline:none}
+  input:focus{border-color:var(--accent)}
+  button{margin-top:14px;padding:12px 20px;background:var(--accent);color:#000;border:none;border-radius:var(--radius);font-weight:700;font-size:.9rem;cursor:pointer}
+  button.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent-dim)}
+  .out{margin-top:14px;padding:12px 14px;background:var(--accent-dim);border-radius:var(--radius);font-size:.85rem;word-break:break-all;display:none}
+  .out.show{display:block}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  #qrWrap{text-align:center;margin-top:16px;display:none}
+  #qrImg{background:#fff;padding:12px;border-radius:12px;max-width:280px;width:100%}
+  .hint{font-size:.78rem;color:var(--muted);margin-top:8px}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+  <h1>72 · QR Maker</h1>
+  <p class="sub">Spin up a creator's shareable QR in 30 seconds. No phone number needed.</p>
+
+  <div class="card">
+    <div class="step">Step 1 · Creator room</div>
+    <label>Creator handle (letters/numbers)</label>
+    <input id="handle" placeholder="jane" autocomplete="off" />
+    <button onclick="makeRoom()">Make room link</button>
+    <div class="out" id="roomOut"></div>
+    <p class="hint">Paste this room link as the <strong>success / redirect URL</strong> on their Stripe Payment Link. It's where the caller lands after paying — the live call.</p>
+  </div>
+
+  <div class="card">
+    <div class="step">Step 2 · The QR (what fans scan)</div>
+    <label>Their Stripe Payment Link URL</label>
+    <input id="pay" placeholder="https://buy.stripe.com/..." autocomplete="off" />
+    <div class="row">
+      <button onclick="makeQR()">Generate QR</button>
+      <button class="ghost" onclick="dl()">Download PNG</button>
+    </div>
+    <div id="qrWrap"><img id="qrImg" alt="QR code" /></div>
+    <p class="hint">Fan scans → pays → auto-dropped into the room. Creator hops in when they get Stripe's payment email.</p>
+  </div>
+
+<script>
+  const $ = id => document.getElementById(id);
+  function slug(s){return (s||'').toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,20)}
+  function makeRoom(){
+    const h = slug($('handle').value);
+    if(!h){ $('roomOut').textContent='Enter a handle first.'; $('roomOut').classList.add('show'); return; }
+    const room = 'https://meet.jit.si/velvetrope-'+h+'-'+Math.random().toString(36).slice(2,7);
+    $('roomOut').innerHTML = room + '<br><button class="ghost" style="margin-top:8px" onclick="navigator.clipboard.writeText(\''+room+'\')">Copy</button>';
+    $('roomOut').classList.add('show');
+  }
+  let qrUrl='';
+  function makeQR(){
+    const p = $('pay').value.trim();
+    if(!p){ alert('Paste the Stripe Payment Link first.'); return; }
+    qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=560x560&margin=12&data='+encodeURIComponent(p);
+    $('qrImg').src = qrUrl;
+    $('qrWrap').style.display='block';
+  }
+  function dl(){
+    if(!qrUrl){ makeQR(); if(!qrUrl) return; }
+    const a=document.createElement('a'); a.href=qrUrl; a.download='72-qr.png'; a.target='_blank'; a.click();
+  }
+</script>
+</body>
+</html>

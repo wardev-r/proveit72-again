@@ -143,6 +143,7 @@
   </aside>
 
   <main id="main-content">
+    <div id="health-banner" style="background:var(--steel);border:1px solid var(--border);border-radius:var(--radius);padding:10px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"></div>
     <div class="panel-hdr">
       <h2 id="panel-title">PAGES</h2>
       <span class="pill pill-cyan" id="panel-count">0</span>
@@ -251,6 +252,25 @@ const PACK = {
         {id:'MB-01',name:'(example) Jane Doe',handle:'@janedoe',email:'jane@email.com',rate:'$15',status:'planned',payLink:'',room:'https://meet.jit.si/vr72-jane-7x9k2',notes:'Example row — delete me. This is where each member gets their OWN pay link + room recorded.'},
       ],
     },
+    tasks: {
+      label:'TASKS', icon:'✅', singular:'Task', idPrefix:'TK',
+      fields:[
+        {id:'name',  label:'TASK',    col:true, ph:'Move domain to vrpi72-home'},
+        {id:'phase', label:'PHASE',   col:true, ph:'Phase 2'},
+        {id:'status',label:'STATUS',  col:true, type:'status'},
+        {id:'notes', label:'DETAILS', col:false, full:true, type:'textarea'},
+      ],
+      seed:[
+        {id:'TK-01',name:'Confirm domain fully live',phase:'Phase 2',status:'wip',notes:'velvetrope2you.com moved to vrpi72-home. Verify www + hard-refresh shows the current site.'},
+        {id:'TK-02',name:'Kill Netlify',phase:'Phase 3',status:'planned',notes:'Remove domain from Netlify, delete/pause the project, cancel any paid plan (no $9 charge).'},
+        {id:'TK-03',name:'Delete stale Pages project (vrpiold)',phase:'Phase 3',status:'planned',notes:'Old project holds nothing now — safe to delete once the domain is confirmed on vrpi72-home.'},
+        {id:'TK-04',name:'Check Railway',phase:'Phase 3',status:'planned',notes:'Open it, see what it runs. Delete only if nothing is needed.'},
+        {id:'TK-05',name:'Cancel Twilio paid support + refund',phase:'Phase 4',status:'planned',notes:'Revert to free, request refund for the early/miscued charge. Keep the account.'},
+        {id:'TK-06',name:'Stripe → Live mode',phase:'Earning',status:'wip',notes:'Flip to Live, remake Buy Button + Payment Link in Live = real money.'},
+        {id:'TK-07',name:'Decide fee / cost model on small calls',phase:'Earning',status:'wip',notes:'The $0.30 fixed fee per charge kills $3 calls (~13% gone). Real lever = aggregate the BUYER side (prepaid bundles / credits / weekly tab) so the fixed fee is paid once, not per call. Weekly PAYOUTS are already free and do NOT change processing fees.'},
+        {id:'TK-08',name:'Consolidate duplicate landing',phase:'Cleanup',status:'planned',notes:'72-landing-merged.html is a byte-copy of index.html. Point the dashboards at one file.'},
+      ],
+    },
   },
 };
 
@@ -343,6 +363,15 @@ function updateStats(){
   document.getElementById('stat-attention').textContent = attention;
   document.getElementById('stat-pages').textContent = (state.data.pages||[]).length;
   document.getElementById('stat-members').textContent = (state.data.members||[]).filter(m=>!/^\(example\)/.test(m.name||'')).length;
+  const countBy = s=>all.filter(r=>r.status===s).length;
+  const banner = document.getElementById('health-banner');
+  if(banner){
+    banner.innerHTML = [
+      ['live','LIVE','var(--green)'],['wip','IN PROGRESS','var(--gold)'],
+      ['broken','NEEDS FIX','#ff6b6b'],['planned','PLANNED','var(--muted)'],
+      ['parked','PARKED','var(--cyan)'],
+    ].map(([s,lbl,col])=>`<span style="display:inline-flex;align-items:center;gap:6px"><strong style="color:${col};font-family:'Rajdhani',sans-serif;font-size:17px">${countBy(s)}</strong><span style="color:var(--muted);font-size:10px;letter-spacing:.5px">${lbl}</span></span>`).join('<span style="color:var(--border)">·</span>');
+  }
 }
 
 function findItem(id){

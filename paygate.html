@@ -76,16 +76,17 @@
     </div>
 
     <div class="bundle-head">
-      <div class="eyebrow" style="justify-content:center">Pay once, talk more</div>
-      <h2>Bundles keep more in your pocket.</h2>
-      <p>Buy a block up front. Lower price per call for the fan — and one payment instead of many means less lost to processing fees, so more stays with the member.</p>
+      <div class="eyebrow" style="justify-content:center">Your time, by the block</div>
+      <h2>Buy time. The more you book, the less per minute.</h2>
+      <p>Pay for a block of the member's time up front. Longer blocks cost less per minute — and one payment instead of many means less lost to processing fees, so more stays with the member.</p>
     </div>
 
     <!--
       ══════════════════════════════════════════════════════════════════
-      BUNDLES — how to wire each button (2 min each in Stripe):
+      TIME BLOCKS — how to wire each button (2 min each in Stripe):
       1. Stripe dashboard → Payment Links → + New
-      2. Set the price (e.g. $40 for the 5-pack). Add a clear product name.
+      2. Set the price (e.g. $39 for the 30-min block). Name it clearly
+         (e.g. "30 minutes with @member").
       3. After payment → "Don't show confirmation page" → Redirect →
          paste your Jitsi room URL (e.g. https://meet.jit.si/vr72-yourname-7x9k2)
       4. Copy the link it gives you (https://buy.stripe.com/...) and paste it
@@ -95,26 +96,26 @@
     -->
     <div class="tiers">
       <div class="tier">
-        <div class="tname">Single</div>
-        <div class="price"><small>$</small>9</div>
-        <div class="per">1 call · $9 each</div>
-        <span class="save ghost">Pay as you go</span>
-        <a class="tbtn ghost" href="PASTE_SINGLE_LINK">Buy 1 →</a>
+        <div class="tname">Quick</div>
+        <div class="price">10<small>min</small></div>
+        <div class="per">$15 · $1.50/min</div>
+        <span class="save ghost">A quick word</span>
+        <a class="tbtn ghost" href="PASTE_10MIN_LINK">Book 10 min →</a>
       </div>
       <div class="tier featured">
         <div class="featured-tag">Most popular</div>
-        <div class="tname">5-pack</div>
-        <div class="price"><small>$</small>40</div>
-        <div class="per">5 calls · $8 each</div>
-        <span class="save">Save 11%</span>
-        <a class="tbtn primary" href="PASTE_5PACK_LINK">Buy 5 →</a>
+        <div class="tname">Standard</div>
+        <div class="price">30<small>min</small></div>
+        <div class="per">$39 · $1.30/min</div>
+        <span class="save">Save 13%</span>
+        <a class="tbtn primary" href="PASTE_30MIN_LINK">Book 30 min →</a>
       </div>
       <div class="tier">
-        <div class="tname">10-pack</div>
-        <div class="price"><small>$</small>72</div>
-        <div class="per">10 calls · $7.20 each</div>
+        <div class="tname">The hour</div>
+        <div class="price">60<small>min</small></div>
+        <div class="per">$72 · $1.20/min</div>
         <span class="save">Best value · Save 20%</span>
-        <a class="tbtn ghost" href="PASTE_10PACK_LINK">Buy 10 →</a>
+        <a class="tbtn ghost" href="PASTE_60MIN_LINK">Book 60 min →</a>
       </div>
     </div>
 
@@ -142,15 +143,15 @@
         </div>
         <div class="row">
           <div><label>YOUR EMAIL</label><input type="email" name="email" required placeholder="you@email.com" /></div>
-          <div><label>RATE PER CALL</label>
+          <div><label>YOUR RATE / MINUTE</label>
             <select name="rate" required>
-              <option value="" disabled selected style="background:#111">Pick a price</option>
-              <option style="background:#111">$3</option>
-              <option style="background:#111">$7</option>
-              <option style="background:#111">$15</option>
-              <option style="background:#111">$25</option>
-              <option style="background:#111">$50</option>
-              <option style="background:#111">$72</option>
+              <option value="" disabled selected style="background:#111">Pick a rate</option>
+              <option style="background:#111">$0.50/min</option>
+              <option style="background:#111">$1/min</option>
+              <option style="background:#111">$1.50/min</option>
+              <option style="background:#111">$2/min</option>
+              <option style="background:#111">$3/min</option>
+              <option style="background:#111">$5/min</option>
             </select>
           </div>
         </div>

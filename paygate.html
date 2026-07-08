@@ -76,48 +76,42 @@
     </div>
 
     <div class="bundle-head">
-      <div class="eyebrow" style="justify-content:center">Your time, by the block</div>
-      <h2>Buy time. The more you book, the less per minute.</h2>
-      <p>Pay for a block of the member's time up front. Longer blocks cost less per minute — and one payment instead of many means less lost to processing fees, so more stays with the member.</p>
+      <div class="eyebrow" style="justify-content:center">Five ring free · the rest pay the toll</div>
+      <h2>Your attention isn't free.</h2>
+      <p>Your 5 people reach you free, always. Everyone else buys their way past the rope — a pack of calls at 72¢ each. Toll goes live the moment your number's on.</p>
     </div>
 
     <!--
       ══════════════════════════════════════════════════════════════════
-      TIME BLOCKS — how to wire each button (2 min each in Stripe):
-      1. Stripe dashboard → Payment Links → + New
-      2. Set the price (e.g. $39 for the 30-min block). Name it clearly
-         (e.g. "30 minutes with @member").
-      3. After payment → "Don't show confirmation page" → Redirect →
-         paste your Jitsi room URL (e.g. https://meet.jit.si/vr72-yourname-7x9k2)
-      4. Copy the link it gives you (https://buy.stripe.com/...) and paste it
-         below in place of the matching PASTE_..._LINK.
-      Do it in TEST mode first, then remake in LIVE mode for real money.
+      THE TOLL — per-call model:
+        • Whitelist of 5 numbers = free, always (no charge)
+        • Everyone else buys a 10-call pack for $7.20 (72¢/call)
+      NOTE: this is a PHONE model — it needs Twilio (numbers + call routing)
+      working first. Whitelist + toll enforcement live in the Worker/Twilio,
+      not this page. Wire the pack button once numbers are on:
+        1. Stripe → Payment Links → + New → price $7.20, name "10-call pack"
+        2. After payment → Redirect → your unlock/confirmation URL
+        3. Paste the buy.stripe.com/... link over PASTE_TOLL_PACK_LINK.
       ══════════════════════════════════════════════════════════════════
     -->
-    <div class="tiers">
+    <div class="tiers" style="grid-template-columns:repeat(2,1fr);max-width:560px;margin-left:auto;margin-right:auto">
       <div class="tier">
-        <div class="tname">Quick</div>
-        <div class="price">10<small>min</small></div>
-        <div class="per">$15 · $1.50/min</div>
-        <span class="save ghost">A quick word</span>
-        <a class="tbtn ghost" href="PASTE_10MIN_LINK">Book 10 min →</a>
+        <div class="tname">Your 5</div>
+        <div class="price">Free</div>
+        <div class="per">5 whitelisted numbers</div>
+        <span class="save ghost">Always ring through</span>
+        <a class="tbtn ghost" href="#" style="pointer-events:none;opacity:.6">Set in dashboard</a>
       </div>
       <div class="tier featured">
-        <div class="featured-tag">Most popular</div>
-        <div class="tname">Standard</div>
-        <div class="price">30<small>min</small></div>
-        <div class="per">$39 · $1.30/min</div>
-        <span class="save">Save 13%</span>
-        <a class="tbtn primary" href="PASTE_30MIN_LINK">Book 30 min →</a>
-      </div>
-      <div class="tier">
-        <div class="tname">The hour</div>
-        <div class="price">60<small>min</small></div>
-        <div class="per">$72 · $1.20/min</div>
-        <span class="save">Best value · Save 20%</span>
-        <a class="tbtn ghost" href="PASTE_60MIN_LINK">Book 60 min →</a>
+        <div class="featured-tag">The toll</div>
+        <div class="tname">10-call pack</div>
+        <div class="price"><small>$</small>7.20</div>
+        <div class="per">10 calls · 72¢ each</div>
+        <span class="save">Past the rope</span>
+        <a class="tbtn primary" href="PASTE_TOLL_PACK_LINK">Get the pack →</a>
       </div>
     </div>
+    <p style="text-align:center;font-size:.8rem;color:var(--muted);margin:-12px auto 28px;max-width:460px">⚙️ Activates when your 72 number goes live (Twilio). Until then this is the plan, not a live toll.</p>
 
     <div class="paybox">
       <div class="eyebrow" style="justify-content:center">Or — the live checkout (test mode)</div>

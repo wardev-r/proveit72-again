@@ -40,6 +40,24 @@
   .fine{text-align:center;font-size:.78rem;color:var(--muted);margin-top:12px}
   .success{display:none;text-align:center;padding:40px 0}
   .success .tick{font-size:2rem;margin-bottom:16px}
+  .bundle-head{text-align:center;margin-bottom:24px}
+  .bundle-head h2{font-size:clamp(1.4rem,3.5vw,1.9rem);font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
+  .bundle-head p{color:var(--muted);font-size:.92rem;max-width:480px;margin:0 auto;line-height:1.6}
+  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px}
+  .tier{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:26px 20px;text-align:center;position:relative;display:flex;flex-direction:column}
+  .tier.featured{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 16px 44px rgba(212,160,23,.16);transform:translateY(-6px)}
+  .featured-tag{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--accent);color:#0a0a0a;font-size:.6rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:4px 13px;border-radius:999px;white-space:nowrap}
+  .tier .tname{font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+  .tier .price{font-size:2.6rem;font-weight:900;letter-spacing:-.03em;line-height:1;color:var(--text)}
+  .tier .price small{font-size:1.05rem;font-weight:700;color:var(--muted);vertical-align:super}
+  .tier .per{font-size:.82rem;color:var(--muted);margin-top:8px}
+  .tier .save{display:inline-block;margin-top:12px;font-size:.68rem;font-weight:700;letter-spacing:.04em;color:#0a0a0a;background:var(--accent);padding:4px 11px;border-radius:999px}
+  .tier .save.ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
+  .tier .tbtn{margin-top:auto;display:block;padding:13px;border-radius:12px;font-weight:800;font-size:.9rem;text-decoration:none;transition:transform .15s;margin-top:20px}
+  .tier .tbtn.primary{background:var(--accent);color:#000}
+  .tier .tbtn.ghost{background:transparent;color:var(--accent);border:1px solid rgba(212,160,23,.4)}
+  .tier .tbtn:hover{transform:translateY(-2px)}
+  @media(max-width:640px){.tiers{grid-template-columns:1fr;gap:16px}.tier.featured{transform:none}}
   @media(max-width:520px){.row{grid-template-columns:1fr}.card,.paybox{padding:24px}}
 </style>
 <script async src="https://js.stripe.com/v3/buy-button.js"></script>
@@ -57,10 +75,52 @@
       <div class="step"><div class="n">3</div><div><h3>They land in your room</h3><p>Payment sends them straight to your private call — audio or video, their choice.</p></div></div>
     </div>
 
+    <div class="bundle-head">
+      <div class="eyebrow" style="justify-content:center">Pay once, talk more</div>
+      <h2>Bundles keep more in your pocket.</h2>
+      <p>Buy a block up front. Lower price per call for the fan — and one payment instead of many means less lost to processing fees, so more stays with the member.</p>
+    </div>
+
+    <!--
+      ══════════════════════════════════════════════════════════════════
+      BUNDLES — how to wire each button (2 min each in Stripe):
+      1. Stripe dashboard → Payment Links → + New
+      2. Set the price (e.g. $40 for the 5-pack). Add a clear product name.
+      3. After payment → "Don't show confirmation page" → Redirect →
+         paste your Jitsi room URL (e.g. https://meet.jit.si/vr72-yourname-7x9k2)
+      4. Copy the link it gives you (https://buy.stripe.com/...) and paste it
+         below in place of the matching PASTE_..._LINK.
+      Do it in TEST mode first, then remake in LIVE mode for real money.
+      ══════════════════════════════════════════════════════════════════
+    -->
+    <div class="tiers">
+      <div class="tier">
+        <div class="tname">Single</div>
+        <div class="price"><small>$</small>9</div>
+        <div class="per">1 call · $9 each</div>
+        <span class="save ghost">Pay as you go</span>
+        <a class="tbtn ghost" href="PASTE_SINGLE_LINK">Buy 1 →</a>
+      </div>
+      <div class="tier featured">
+        <div class="featured-tag">Most popular</div>
+        <div class="tname">5-pack</div>
+        <div class="price"><small>$</small>40</div>
+        <div class="per">5 calls · $8 each</div>
+        <span class="save">Save 11%</span>
+        <a class="tbtn primary" href="PASTE_5PACK_LINK">Buy 5 →</a>
+      </div>
+      <div class="tier">
+        <div class="tname">10-pack</div>
+        <div class="price"><small>$</small>72</div>
+        <div class="per">10 calls · $7.20 each</div>
+        <span class="save">Best value · Save 20%</span>
+        <a class="tbtn ghost" href="PASTE_10PACK_LINK">Buy 10 →</a>
+      </div>
+    </div>
+
     <div class="paybox">
-      <div class="eyebrow">Try it — pay to connect</div>
-      <h2>Ready to talk?</h2>
-      <p>Tap below to pay and get your call link.</p>
+      <div class="eyebrow" style="justify-content:center">Or — the live checkout (test mode)</div>
+      <p>This is the working Stripe button, running in test mode. Real money once you flip Stripe to Live.</p>
       <stripe-buy-button
         buy-button-id="buy_btn_1Tqn8pLXf4KncHAn13XjOenm"
         publishable-key="pk_test_51Tdr5pLXf4KncHAn7L3ylOg3Ao5f4XvwkAlvPFNsBLeyhEfqH12YXaRCRPVJTHEjxT1kmHoaLrTRCkcjKlk1AboG00iCbDwAxb">

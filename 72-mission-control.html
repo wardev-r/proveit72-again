@@ -214,6 +214,7 @@ const PACK = {
         {id:'PG-09',name:'Owner dashboard',file:'72-owner-dashboard.html',url:'',status:'wip',purpose:'Internal owner/admin view',depends:'Cloudflare Worker, KV',notes:'Internal. Left as-is for now.'},
         {id:'PG-10',name:'Opal landing variant',file:'72-landing-opal.html',url:'',status:'parked',purpose:'Alternate velvet-rope landing (opal gradient)',depends:'Cloudflare Worker',notes:'Parked variant. Not linked from live site.'},
         {id:'PG-11',name:'Merged landing (dupe)',file:'72-landing-merged.html',url:'',status:'broken',purpose:'Byte-copy of index.html the dashboards link to',depends:'—',notes:'CLEANUP: duplicate of index.html. Consolidate so there is one landing, not two to keep in sync.'},
+        {id:'PG-12',name:'1·72·COLLECT (brand #2)',file:'172collect/index.html',url:'',status:'wip',purpose:'Second brand — telecom/collect-call skin on the same engine, for 172collect.com',depends:'Cloudflare Pages (new project, root=172collect)',notes:'Built + committed. Not deployed yet. Same backend as velvetrope. Retire the old poker React app once this is live.'},
       ],
     },
     functions: {
@@ -272,6 +273,7 @@ const PACK = {
         {id:'TK-07',name:'Decide fee / cost model on small calls',phase:'Earning',status:'wip',notes:'The $0.30 fixed fee per charge kills $3 calls (~13% gone). Real lever = aggregate the BUYER side (prepaid bundles / credits / weekly tab) so the fixed fee is paid once, not per call. Weekly PAYOUTS are already free and do NOT change processing fees.'},
         {id:'TK-08',name:'Consolidate duplicate landing',phase:'Cleanup',status:'planned',notes:'72-landing-merged.html is a byte-copy of index.html. Point the dashboards at one file.'},
         {id:'TK-09',name:'Price-change lock rule',phase:'Backend',status:'planned',notes:'SPEC: member sets per-call price with a slider. Each move shows "Are you sure?" (it regenerates their QR + Stripe amount). Cap = 3 changes total, then LOCKED. Owner grants extra moves from the Members tab (LOCK → "UNLOCKED x1" = one more move). After unlocks are used up, member must email owner. Tamper-proof enforcement (count + lock) must live in the Worker/KV — localStorage alone can be reset by the member.'},
+        {id:'TK-10',name:'Deploy 172collect.com (brand #2)',phase:'Brands',status:'wip',notes:'New Cloudflare Pages project → same repo → Build output dir = 172collect → verify on .pages.dev → attach 172collect.com. Then retire the old poker React app (remove its domain + delete that Netlify/Vercel deploy, killing the disqometer script).'},
       ],
     },
   },

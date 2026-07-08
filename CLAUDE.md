@@ -1,8 +1,8 @@
 # 72 — project guide for Claude (and humans)
 
-72 is a creator phone marketplace: claim a number, set a per-call price ($3–$72),
-keep 72%, platform takes 28% via Stripe. Static HTML front-ends + one Cloudflare
-Worker backend.
+72 is a creator phone marketplace: claim a number, set a per-call price ($5 base,
+no ceiling), keep 72%, platform takes 28% via Stripe. Static HTML front-ends + one
+Cloudflare Worker backend.
 
 ## Repo map
 - `index.html` — live marketing landing (gold design, Stripe Payment Link)

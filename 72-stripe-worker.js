@@ -154,8 +154,8 @@ async function handleCallPayment(request, env) {
   if (!amountDollars || !creatorStripeAccountId) {
     throw new Error('amountDollars and creatorStripeAccountId are required');
   }
-  if (amountDollars < 3 || amountDollars > 72) {
-    throw new Error('Call amount must be between $3 and $72');
+  if (amountDollars < 5) {
+    throw new Error('Call amount must be at least $5');
   }
 
   const amountCents = Math.round(amountDollars * 100);
@@ -276,8 +276,8 @@ async function handleCreatorRoute(request, env, path) {
       if (key in body) updates[key] = body[key];
     }
     if (updates.pricePerCall !== undefined) {
-      if (updates.pricePerCall < 3 || updates.pricePerCall > 72) {
-        throw new Error('Price must be between $3 and $72');
+      if (updates.pricePerCall < 5) {
+        throw new Error('Price must be at least $5');
       }
     }
     const existing = await getCreator(env, userId) || { userId };

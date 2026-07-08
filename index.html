@@ -642,6 +642,16 @@
         <p class="signup-note">
           <strong>First 30 days free.</strong> Then $7.20/month. Cancel anytime.
         </p>
+
+        <!-- ── Stripe Buy Button — direct pay ── -->
+        <div style="margin-top:22px;padding-top:22px;border-top:1px solid rgba(212,160,23,0.18);text-align:center;">
+          <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;">Or pay now</div>
+          <script async src="https://js.stripe.com/v3/buy-button.js"></script>
+          <stripe-buy-button
+            buy-button-id="buy_btn_1Tqn8pLXf4KncHAn13XjOenm"
+            publishable-key="pk_test_51Tdr5pLXf4KncHAn7L3ylOg3Ao5f4XvwkAlvPFNsBLeyhEfqH12YXaRCRPVJTHEjxT1kmHoaLrTRCkcjKlk1AboG00iCbDwAxb">
+          </stripe-buy-button>
+        </div>
       </div>
     </div>
   </section>

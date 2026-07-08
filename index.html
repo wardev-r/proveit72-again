@@ -642,16 +642,6 @@
         <p class="signup-note">
           <strong>First 30 days free.</strong> Then $7.20/month. Cancel anytime.
         </p>
-
-        <!-- ── Stripe Buy Button — direct pay ── -->
-        <div style="margin-top:22px;padding-top:22px;border-top:1px solid rgba(212,160,23,0.18);text-align:center;">
-          <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;">Or pay now</div>
-          <script async src="https://js.stripe.com/v3/buy-button.js"></script>
-          <stripe-buy-button
-            buy-button-id="buy_btn_1Tqn8pLXf4KncHAn13XjOenm"
-            publishable-key="pk_test_51Tdr5pLXf4KncHAn7L3ylOg3Ao5f4XvwkAlvPFNsBLeyhEfqH12YXaRCRPVJTHEjxT1kmHoaLrTRCkcjKlk1AboG00iCbDwAxb">
-          </stripe-buy-button>
-        </div>
       </div>
     </div>
   </section>
@@ -746,68 +736,18 @@
     </div>
   </section>
 
-  <!-- Creator Partnership -->
-  <section style="padding:80px 24px;max-width:720px;margin:0 auto;" id="collab">
-    <div style="text-align:center;margin-bottom:48px;">
-      <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;">Member Partnerships</div>
-      <h2 style="font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;letter-spacing:-0.03em;line-height:1.1;margin-bottom:18px;">Fan appreciation events<br>that actually pay.</h2>
-      <p style="color:rgba(240,240,232,0.6);font-size:0.95rem;max-width:520px;margin:0 auto;line-height:1.7;">Open your 72 number for a 2-hour window. Fans call in, hear your message, get a codephrase — unlocks merch, a discount, a meet, whatever you decide. Transparent, real, and yours. We work with you on the first one.</p>
-    </div>
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:40px;">
-      <form id="collabForm" action="https://api.web3forms.com/submit" method="POST" onsubmit="handleCollabSubmit(event)">
-        <input type="hidden" name="access_key" value="0ff639a9-d79c-4607-899f-ce160d5e4ca9">
-        <input type="hidden" name="subject" value="New 72 Member Partnership Inquiry">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-          <div>
-            <label style="display:block;font-size:0.78rem;font-weight:600;color:var(--muted);margin-bottom:8px;letter-spacing:0.05em;">YOUR NAME</label>
-            <input type="text" name="name" required placeholder="First Last" style="width:100%;padding:12px 16px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:0.9rem;font-family:inherit;outline:none;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" />
-          </div>
-          <div>
-            <label style="display:block;font-size:0.78rem;font-weight:600;color:var(--muted);margin-bottom:8px;letter-spacing:0.05em;">HANDLE</label>
-            <input type="text" name="handle" required placeholder="@yourhandle" style="width:100%;padding:12px 16px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:0.9rem;font-family:inherit;outline:none;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" />
-          </div>
+  <!-- Fan appreciation events — compact band -->
+  <section style="padding:56px 24px;max-width:900px;margin:0 auto;">
+    <a href="/events.html" style="display:block;text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px 32px;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:240px;">
+          <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;">Member Partnerships</div>
+          <h2 style="font-size:clamp(1.3rem,3vw,1.8rem);font-weight:800;letter-spacing:-0.02em;line-height:1.15;color:var(--text);">Fan appreciation events that actually pay.</h2>
+          <p style="color:var(--muted);font-size:0.9rem;margin-top:6px;">Open your number for a window. Fans call in, unlock something real. We build the first one with you.</p>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-          <div>
-            <label style="display:block;font-size:0.78rem;font-weight:600;color:var(--muted);margin-bottom:8px;letter-spacing:0.05em;">PLATFORM</label>
-            <select name="platform" required style="width:100%;padding:12px 16px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:0.9rem;font-family:inherit;outline:none;appearance:none;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
-              <option value="" disabled selected style="background:#111;">Select one</option>
-              <option value="Instagram" style="background:#111;">Instagram</option>
-              <option value="TikTok" style="background:#111;">TikTok</option>
-              <option value="YouTube" style="background:#111;">YouTube</option>
-              <option value="Twitter/X" style="background:#111;">Twitter / X</option>
-              <option value="Twitch" style="background:#111;">Twitch</option>
-              <option value="Other" style="background:#111;">Other</option>
-            </select>
-          </div>
-          <div>
-            <label style="display:block;font-size:0.78rem;font-weight:600;color:var(--muted);margin-bottom:8px;letter-spacing:0.05em;">FOLLOWERS</label>
-            <select name="followers" required style="width:100%;padding:12px 16px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:0.9rem;font-family:inherit;outline:none;appearance:none;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
-              <option value="" disabled selected style="background:#111;">Select range</option>
-              <option value="10k-50k" style="background:#111;">10k – 50k</option>
-              <option value="50k-250k" style="background:#111;">50k – 250k</option>
-              <option value="250k-1M" style="background:#111;">250k – 1M</option>
-              <option value="1M+" style="background:#111;">1M+</option>
-            </select>
-          </div>
-        </div>
-        <div style="margin-bottom:16px;">
-          <label style="display:block;font-size:0.78rem;font-weight:600;color:var(--muted);margin-bottom:8px;letter-spacing:0.05em;">YOUR EMAIL</label>
-          <input type="email" name="email" required placeholder="you@email.com" style="width:100%;padding:12px 16px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:0.9rem;font-family:inherit;outline:none;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" />
-        </div>
-        <div style="margin-bottom:24px;">
-          <label style="display:block;font-size:0.78rem;font-weight:600;color:var(--muted);margin-bottom:8px;letter-spacing:0.05em;">WHAT ARE YOU THINKING?</label>
-          <textarea name="pitch" required placeholder="Tell us about your audience, what you'd offer fans, and what a collaboration looks like to you." rows="4" style="width:100%;padding:12px 16px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:0.9rem;font-family:inherit;outline:none;resize:vertical;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
-        </div>
-        <button type="submit" class="btn-primary" style="width:100%;padding:16px;" id="collabBtn">Send it →</button>
-        <p style="text-align:center;font-size:0.78rem;color:var(--muted);margin-top:12px;">We only work with members who have a real audience and a real idea.</p>
-      </form>
-      <div id="collabSuccess" style="display:none;text-align:center;padding:40px 0;">
-        <div style="font-size:2rem;margin-bottom:16px;">✓</div>
-        <h3 style="font-size:1.3rem;font-weight:800;margin-bottom:8px;">Got it. We'll be in touch.</h3>
-        <p style="color:var(--muted);font-size:0.9rem;">If the fit is right we'll reach out within 72 hours.</p>
+        <span style="flex-shrink:0;font-size:0.85rem;font-weight:700;color:var(--accent);white-space:nowrap;">Read more →</span>
       </div>
-    </div>
+    </a>
   </section>
 
   <!-- Footer -->

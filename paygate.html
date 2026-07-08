@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Paid calls — 72</title>
+<meta name="theme-color" content="#D4A017" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23080808'/%3E%3Ctext x='32' y='45' font-family='Inter,Arial,sans-serif' font-size='34' font-weight='800' fill='%23D4A017' text-anchor='middle'%3E72%3C/text%3E%3C/svg%3E" />
+<style>
+  :root{--bg:#080808;--surface:#111;--border:#252525;--text:#f0f0e8;--muted:#777;--accent:#D4A017;--accent-light:#f0c040;--accent-dim:rgba(212,160,23,.12);--radius:12px}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto;padding:40px 24px 80px}
+  .back{display:inline-block;font-size:.82rem;font-weight:700;color:var(--accent);text-decoration:none;margin-bottom:36px}
+  .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+  h1{font-size:clamp(2rem,5vw,2.8rem);font-weight:900;letter-spacing:-.03em;line-height:1.08;margin-bottom:18px}
+  h1 em{font-style:normal;color:var(--accent)}
+  .lead{color:rgba(240,240,232,.7);font-size:1.02rem;line-height:1.7;margin-bottom:36px;max-width:560px}
+  .steps{display:grid;gap:14px;margin:0 0 44px}
+  .step{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;display:flex;gap:16px;align-items:flex-start}
+  .step .n{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--accent-dim);border:1px solid rgba(212,160,23,.4);color:var(--accent);font-weight:800;font-size:.9rem;display:flex;align-items:center;justify-content:center}
+  .step h3{font-size:1rem;font-weight:800;margin-bottom:4px}
+  .step p{font-size:.9rem;color:var(--muted);line-height:1.6}
+  .paybox{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px;text-align:center;margin-bottom:44px}
+  .paybox .eyebrow{margin-bottom:6px}
+  .paybox h2{font-size:1.4rem;font-weight:800;margin-bottom:6px}
+  .paybox p{color:var(--muted);font-size:.9rem;margin-bottom:24px}
+  .divider{display:flex;align-items:center;gap:14px;margin:44px 0;color:var(--muted);font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+  .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px}
+  .card h2{font-size:1.3rem;font-weight:800;margin-bottom:6px}
+  .card .sub{color:var(--muted);font-size:.9rem;margin-bottom:24px}
+  label{display:block;font-size:.78rem;font-weight:600;color:var(--muted);margin-bottom:8px;letter-spacing:.05em}
+  input,select,textarea{width:100%;padding:12px 16px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:.9rem;font-family:inherit;outline:none}
+  input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+  .field{margin-bottom:16px}
+  .btn{width:100%;padding:16px;background:var(--accent);color:#000;font-weight:800;font-size:.95rem;border:none;border-radius:var(--radius);cursor:pointer;transition:transform .15s}
+  .btn:hover{transform:translateY(-2px)}
+  .fine{text-align:center;font-size:.78rem;color:var(--muted);margin-top:12px}
+  .success{display:none;text-align:center;padding:40px 0}
+  .success .tick{font-size:2rem;margin-bottom:16px}
+  @media(max-width:520px){.row{grid-template-columns:1fr}.card,.paybox{padding:24px}}
+</style>
+<script async src="https://js.stripe.com/v3/buy-button.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="/">← Back to 72</a>
+    <div class="eyebrow">Get paid to talk</div>
+    <h1>Paid calls.<br><em>No phone number needed.</em></h1>
+    <p class="lead">Someone wants your time? They pay first, then land in your private call room. No number to hand out, no backend to run — just a link you share. Powered by Stripe for the money and a secure room for the call.</p>
+
+    <div class="steps">
+      <div class="step"><div class="n">1</div><div><h3>Share your pay link</h3><p>Drop it in your bio, a DM, a post — anywhere. One tap to pay.</p></div></div>
+      <div class="step"><div class="n">2</div><div><h3>They pay your rate</h3><p>Secure checkout through Stripe. You keep 72% of every call.</p></div></div>
+      <div class="step"><div class="n">3</div><div><h3>They land in your room</h3><p>Payment sends them straight to your private call — audio or video, their choice.</p></div></div>
+    </div>
+
+    <div class="paybox">
+      <div class="eyebrow">Try it — pay to connect</div>
+      <h2>Ready to talk?</h2>
+      <p>Tap below to pay and get your call link.</p>
+      <stripe-buy-button
+        buy-button-id="buy_btn_1Tqn8pLXf4KncHAn13XjOenm"
+        publishable-key="pk_test_51Tdr5pLXf4KncHAn7L3ylOg3Ao5f4XvwkAlvPFNsBLeyhEfqH12YXaRCRPVJTHEjxT1kmHoaLrTRCkcjKlk1AboG00iCbDwAxb">
+      </stripe-buy-button>
+    </div>
+
+    <div class="divider">Are you a member?</div>
+
+    <div class="card">
+      <h2>Set up your own paid-call link</h2>
+      <p class="sub">Tell us your rate and we'll wire your pay link + private room. Takes a day, and you're earning.</p>
+      <form id="pgForm" action="https://api.web3forms.com/submit" method="POST" onsubmit="handlePgSubmit(event)">
+        <input type="hidden" name="access_key" value="0ff639a9-d79c-4607-899f-ce160d5e4ca9">
+        <input type="hidden" name="subject" value="New 72 Paid-Call Setup Request">
+        <input type="hidden" name="from_page" value="paygate.html">
+        <div class="row">
+          <div><label>YOUR NAME</label><input type="text" name="name" required placeholder="First Last" /></div>
+          <div><label>HANDLE</label><input type="text" name="handle" required placeholder="@yourhandle" /></div>
+        </div>
+        <div class="row">
+          <div><label>YOUR EMAIL</label><input type="email" name="email" required placeholder="you@email.com" /></div>
+          <div><label>RATE PER CALL</label>
+            <select name="rate" required>
+              <option value="" disabled selected style="background:#111">Pick a price</option>
+              <option style="background:#111">$3</option>
+              <option style="background:#111">$7</option>
+              <option style="background:#111">$15</option>
+              <option style="background:#111">$25</option>
+              <option style="background:#111">$50</option>
+              <option style="background:#111">$72</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label>WHAT'S THE CALL FOR? (optional)</label><textarea name="notes" rows="3" placeholder="Coaching, fan chats, consults, Q&amp;A — whatever you're offering."></textarea></div>
+        <button type="submit" class="btn" id="pgBtn">Set it up →</button>
+        <p class="fine">We'll email you your link within a day.</p>
+      </form>
+      <div class="success" id="pgSuccess">
+        <div class="tick">✓</div>
+        <h2>Got it. Setting you up.</h2>
+        <p class="sub" style="margin-top:8px">We'll email your pay link within a day.</p>
+      </div>
+    </div>
+  </div>
+
+<script>
+async function handlePgSubmit(e){
+  e.preventDefault();
+  const btn=document.getElementById('pgBtn');
+  btn.textContent='Sending…';btn.disabled=true;
+  try{
+    const data=new FormData(e.target);
+    const res=await fetch('https://api.web3forms.com/submit',{method:'POST',body:data});
+    if(res.ok){
+      document.getElementById('pgForm').style.display='none';
+      document.getElementById('pgSuccess').style.display='block';
+    }else{throw new Error('failed');}
+  }catch(err){
+    btn.textContent='Set it up →';btn.disabled=false;
+    alert('Something went wrong. Please try again or email support@velvetrope2you.com');
+  }
+}
+</script>
+</body>
+</html>

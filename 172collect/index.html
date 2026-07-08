@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>1·72·COLLECT — reverse the charges</title>
+<meta name="description" content="The collect call, reborn. Get a line, set your toll, and the caller pays to reach you. You keep 72%." />
+<meta name="theme-color" content="#06111f" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2306111f'/%3E%3Ctext x='32' y='44' font-family='monospace' font-size='30' font-weight='700' fill='%2324e08a' text-anchor='middle'%3E72%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#06111f; --surface:#0c1c30; --surface2:#102640; --border:#1c3350;
+    --text:#e6f0f5; --muted:#7d99b0; --accent:#24e08a; --accent-dim:rgba(36,224,138,.12);
+    --amber:#ffb703; --radius:12px;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Space Grotesk',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(ellipse 70% 50% at 50% -10%,rgba(36,224,138,.10) 0%,transparent 60%),linear-gradient(180deg,#06111f 0%,#081627 100%);min-height:100vh}
+  .mono{font-family:'DM Mono',monospace}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  /* header */
+  header{position:sticky;top:0;z-index:50;background:rgba(6,17,31,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+  .navrow{display:flex;align-items:center;gap:14px;height:60px}
+  .logo{font-family:'DM Mono',monospace;font-weight:500;font-size:1.05rem;letter-spacing:1px;color:var(--text)}
+  .logo b{color:var(--accent);font-weight:500}
+  .pillnav{margin-left:auto;display:flex;gap:8px}
+  .pill{font-size:.8rem;font-weight:600;color:var(--muted);border:1px solid var(--border);background:var(--surface);padding:7px 15px;border-radius:999px;text-decoration:none;transition:all .2s}
+  .pill:hover{border-color:var(--accent);color:var(--text)}
+  .pill.solid{background:var(--accent);color:#04120b;border-color:var(--accent)}
+  /* hero */
+  .hero{text-align:center;padding:72px 0 40px}
+  .tag{display:inline-flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);background:var(--accent-dim);border:1px solid rgba(36,224,138,.3);padding:6px 14px;border-radius:999px;margin-bottom:26px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:blink 1.6s infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+  h1{font-size:clamp(2.6rem,7vw,5rem);font-weight:700;letter-spacing:-.03em;line-height:.98}
+  h1 em{font-style:normal;color:var(--accent)}
+  .sub{color:var(--muted);font-size:clamp(1rem,2.2vw,1.25rem);max-width:560px;margin:22px auto 0;line-height:1.6}
+  .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+  .btn{font-family:'Space Grotesk';font-weight:700;font-size:.98rem;padding:15px 28px;border-radius:12px;border:none;cursor:pointer;text-decoration:none;transition:transform .15s}
+  .btn.primary{background:var(--accent);color:#04120b}
+  .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+  .btn:hover{transform:translateY(-2px)}
+  .receipt{max-width:360px;margin:44px auto 0;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;text-align:left;font-family:'DM Mono',monospace;font-size:.82rem;color:var(--muted);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+  .receipt .rrow{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed var(--border)}
+  .receipt .rrow:last-child{border-bottom:none;color:var(--text)}
+  .receipt .rrow b{color:var(--accent);font-weight:500}
+  /* sections */
+  section{padding:56px 0}
+  .label{font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);text-align:center;margin-bottom:14px}
+  h2{font-size:clamp(1.7rem,4vw,2.5rem);font-weight:700;letter-spacing:-.02em;text-align:center;line-height:1.1}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+  .step{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:26px 22px}
+  .step .n{font-family:'DM Mono',monospace;font-size:.8rem;color:var(--accent);border:1px solid rgba(36,224,138,.4);background:var(--accent-dim);width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+  .step h3{font-size:1.1rem;font-weight:600;margin-bottom:6px}
+  .step p{color:var(--muted);font-size:.92rem}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:640px;margin:26px auto 0}
+  .chip{font-family:'DM Mono',monospace;font-size:.8rem;color:var(--text);background:var(--surface);border:1px solid var(--border);padding:8px 15px;border-radius:999px}
+  .who-p{color:var(--muted);font-size:1rem;max-width:560px;margin:0 auto;text-align:center;line-height:1.7}
+  /* signup */
+  .signup{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:44px 28px;text-align:center;max-width:600px;margin:0 auto}
+  .signup h2{margin-bottom:10px}
+  .signup p{color:var(--muted);font-size:.95rem;margin-bottom:24px}
+  .field{display:flex;gap:10px;max-width:420px;margin:0 auto;flex-wrap:wrap}
+  .field input{flex:1;min-width:200px;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:14px 16px;border-radius:12px;font-family:'DM Mono',monospace;font-size:.9rem;outline:none}
+  .field input:focus{border-color:var(--accent)}
+  .note{font-family:'DM Mono',monospace;font-size:.78rem;color:var(--muted);margin-top:16px}
+  .note b{color:var(--accent);font-weight:500}
+  /* footer */
+  footer{border-top:1px solid var(--border);padding:32px 0;text-align:center;color:var(--muted);font-size:.84rem}
+  footer a{color:var(--muted);text-decoration:none}
+  footer a:hover{color:var(--accent)}
+  @media(max-width:680px){.steps{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+  <header>
+    <div class="wrap navrow">
+      <div class="logo">1<b>·</b>72<b>·</b>COLLECT</div>
+      <nav class="pillnav">
+        <a class="pill" href="#how">How it works</a>
+        <a class="pill" href="#claim">Get a line</a>
+        <a class="pill solid" href="#claim">Sign up</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="tag"><span class="dot"></span> The collect call, reborn</div>
+      <h1>Reverse<br>the <em>charges.</em></h1>
+      <p class="sub">Get a line. Set your toll. When someone calls, <b style="color:var(--text)">they</b> pay to reach <b style="color:var(--text)">you</b> — not the other way around. You keep 72%.</p>
+      <div class="cta-row">
+        <a class="btn primary" href="#claim">Get your line →</a>
+        <a class="btn ghost" href="#how">How it works</a>
+      </div>
+
+      <div class="receipt">
+        <div class="rrow"><span>INCOMING CALL</span><span>+1 ···· ·· 72</span></div>
+        <div class="rrow"><span>CALLER</span><span>unknown</span></div>
+        <div class="rrow"><span>WHITELIST</span><span>not listed</span></div>
+        <div class="rrow"><span>TOLL</span><span>$5.00</span></div>
+        <div class="rrow"><span>STATUS</span><b>PAID · CONNECTED</b></div>
+      </div>
+    </section>
+
+    <!-- HOW -->
+    <section id="how">
+      <div class="label">// how it works</div>
+      <h2>Three steps. Then the phone pays.</h2>
+      <div class="steps">
+        <div class="step"><div class="n">01</div><h3>Claim a line</h3><p>Get your dedicated number. Whitelist up to 5 people who always ring free.</p></div>
+        <div class="step"><div class="n">02</div><h3>Set the toll</h3><p>Name your price to be reached — $5 and up, no ceiling. Move it anytime.</p></div>
+        <div class="step"><div class="n">03</div><h3>They pay, you talk</h3><p>Anyone not on your list pays the toll before the call connects. You keep 72%.</p></div>
+      </div>
+    </section>
+
+    <!-- WHO -->
+    <section>
+      <div class="label">// who uses it</div>
+      <h2>If your phone's a firehose,<br>put a meter on it.</h2>
+      <p class="who-p" style="margin-top:18px">Freelancers dodging "quick question" calls. Experts done giving it away free. Anyone whose attention got too cheap. Charge the toll — the serious callers pay it, the time-wasters don't.</p>
+      <div class="chips">
+        <span class="chip">consultants</span>
+        <span class="chip">tradespeople</span>
+        <span class="chip">advisors</span>
+        <span class="chip">coaches</span>
+        <span class="chip">fixers</span>
+        <span class="chip">the too-busy</span>
+      </div>
+    </section>
+
+    <!-- CLAIM -->
+    <section id="claim">
+      <div class="signup">
+        <div class="label">// get on the line</div>
+        <h2>Put a price on your attention.</h2>
+        <p>Drop your email — we'll set you up with a line as numbers roll out to early users.</p>
+        <div class="field">
+          <input type="email" id="email" placeholder="you@email.com" autocomplete="email" />
+          <button class="btn primary" onclick="claim()">Claim →</button>
+        </div>
+        <p class="note" id="note"><b>First 30 days free.</b> Then $7.20/mo. Cancel anytime.</p>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="wrap">
+      1·72·COLLECT — reverse the charges · <a href="mailto:hello@172collect.com">hello@172collect.com</a><br>
+      <span style="font-size:.78rem;opacity:.7">Runs on the same engine as velvetrope2you. Different rope, same lock.</span>
+    </div>
+  </footer>
+
+<script>
+  function claim(){
+    var e=document.getElementById('email').value.trim();
+    var n=document.getElementById('note');
+    if(!e || e.indexOf('@')<1){ n.innerHTML='<b style="color:var(--amber)">Enter a valid email.</b>'; return; }
+    n.innerHTML='<b>✓ On the list.</b> We\'ll reach out as lines open up.';
+  }
+</script>
+</body>
+</html>

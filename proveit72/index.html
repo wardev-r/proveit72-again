@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ProveIt 72 — go all in on the shit hand</title>
+<meta name="description" content="Your number. Your price. Anyone who wants to reach you pays to prove it. Bots fold. Creeps fold. The ones who matter don't even flinch. You keep 72%." />
+<meta name="theme-color" content="#0b0a09" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230b0a09'/%3E%3Ctext x='20' y='30' font-family='Georgia,serif' font-size='22' font-weight='700' fill='%23e0755c' text-anchor='middle'%3E7%3C/text%3E%3Ctext x='42' y='46' font-family='Georgia,serif' font-size='22' font-weight='700' fill='%23ece7dd' text-anchor='middle'%3E2%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0a09; --bg2:#0f0d0b; --surface:#141210; --surface2:#1b1815; --border:#2a2622;
+    --text:#ece7dd; --muted:#8f8578; --coral:#e0755c; --coral-soft:#ec8a72;
+    --gold:#d8b878; --green:#4a9e6a; --radius:12px;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(ellipse 60% 40% at 50% 8%,rgba(224,117,92,.10) 0%,transparent 60%),radial-gradient(ellipse 80% 50% at 50% 108%,rgba(224,117,92,.08) 0%,transparent 60%);min-height:100vh}
+  .serif{font-family:'DM Serif Display',serif}
+  .mono{font-family:'DM Mono',monospace}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 24px}
+  .label{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
+  .coral{color:var(--coral)}
+
+  /* header */
+  header{position:sticky;top:0;z-index:50;background:rgba(11,10,9,.8);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+  .navrow{display:flex;align-items:center;gap:14px;height:62px}
+  .brand{font-family:'DM Serif Display',serif;font-size:1.35rem;letter-spacing:-.01em}
+  .brand i{font-style:italic;color:var(--text)}
+  .brand b{color:var(--gold);font-weight:400}
+  .pillnav{margin-left:auto;display:flex;gap:10px;align-items:center}
+  .link{font-size:.85rem;color:var(--muted);text-decoration:none;padding:8px 6px}
+  .link:hover{color:var(--text)}
+  .btn{font-family:'DM Sans';font-weight:700;font-size:.88rem;letter-spacing:.02em;padding:11px 22px;border-radius:10px;border:none;cursor:pointer;text-decoration:none;display:inline-block;transition:transform .15s,background .2s}
+  .btn.coral{background:var(--coral);color:#1a0f0b}
+  .btn.coral:hover{background:var(--coral-soft);transform:translateY(-2px)}
+  .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+  .btn.ghost:hover{border-color:var(--coral);transform:translateY(-2px)}
+  .btn.lg{font-size:1rem;padding:15px 30px}
+
+  /* cards */
+  .fan{display:flex;justify-content:center;align-items:flex-end;height:120px;margin-bottom:6px}
+  .card{width:62px;height:88px;background:linear-gradient(160deg,#f8f5ef,#e7e1d4);border-radius:8px;box-shadow:0 10px 26px rgba(0,0,0,.5);position:relative;flex:0 0 auto}
+  .card .tl{position:absolute;top:7px;left:9px;font-family:'DM Serif Display',serif;font-size:17px;line-height:.9;text-align:center}
+  .card .tl .su{font-size:12px}
+  .card .big{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:30px}
+  .red{color:#bf3a2f}.blk{color:#17150f}
+  .fan .card:not(:first-child){margin-left:-20px}
+  .fan .c1{transform:rotate(-14deg) translateY(6px)}
+  .fan .c2{transform:rotate(-6deg) translateY(-2px)}
+  .fan .c3{transform:rotate(2deg) translateY(-6px);z-index:2}
+  .fan .c4{transform:rotate(9deg) translateY(0)}
+  .fan .c5{transform:rotate(16deg) translateY(8px)}
+
+  /* hero */
+  .hero{text-align:center;padding:60px 0 38px}
+  .hero .label{display:block;margin:6px 0 20px}
+  h1{font-family:'DM Serif Display',serif;font-size:clamp(2.6rem,7vw,4.6rem);line-height:1.0;letter-spacing:-.01em}
+  h1 .sig{display:block;font-style:italic;color:var(--coral)}
+  .sub{color:var(--muted);font-size:clamp(1rem,2.1vw,1.18rem);max-width:540px;margin:22px auto 0}
+  .sub b{color:var(--text);font-weight:600}
+  .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:32px}
+
+  /* creed */
+  .creed{text-align:center;padding:30px 0 8px}
+  .creed .line{font-family:'DM Serif Display',serif;font-size:clamp(1.5rem,4vw,2.3rem);line-height:1.2;letter-spacing:-.01em}
+  .creed .line em{font-style:italic;color:var(--coral)}
+  .creed .small{color:var(--muted);font-size:.92rem;margin-top:12px;max-width:460px;margin-left:auto;margin-right:auto}
+
+  /* sections */
+  section{padding:56px 0}
+  .center{text-align:center}
+  h2{font-family:'DM Serif Display',serif;font-size:clamp(1.8rem,4.4vw,2.7rem);line-height:1.1;letter-spacing:-.01em}
+  h2 em{font-style:italic;color:var(--coral)}
+
+  /* phone card widget */
+  .phone{max-width:420px;margin:26px auto 0;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:34px 28px;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.5)}
+  .phone .pi{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--gold);margin-bottom:14px}
+  .phone .num{font-family:'DM Mono',monospace;font-size:1.35rem;letter-spacing:1px;color:var(--text)}
+  .phone .toll{font-family:'DM Mono',monospace;font-size:.8rem;color:var(--coral);letter-spacing:.1em;margin:8px 0 18px}
+  .phone .done{font-family:'DM Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-top:14px}
+  .cap{color:var(--muted);font-size:.92rem;max-width:460px;margin:18px auto 0;text-align:center}
+  .cap b{color:var(--text)}
+
+  /* table steps */
+  .table-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:38px}
+  .cell{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 20px}
+  .cell .mini{display:flex;gap:4px;margin-bottom:16px;height:44px;align-items:flex-end}
+  .cell .mc{width:30px;height:42px;background:linear-gradient(160deg,#f8f5ef,#e7e1d4);border-radius:5px;position:relative;box-shadow:0 4px 10px rgba(0,0,0,.4)}
+  .cell .mc span{position:absolute;top:3px;left:4px;font-family:'DM Serif Display',serif;font-size:11px;line-height:1}
+  .cell .mc .s2{top:auto;bottom:3px;right:4px;left:auto}
+  .cell .pct{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--green);height:44px;display:flex;align-items:center}
+  .cell h3{font-size:1.05rem;font-weight:700;margin-bottom:6px}
+  .cell p{color:var(--muted);font-size:.9rem}
+
+  /* bluff */
+  .bluff{text-align:center}
+  .board{display:flex;gap:8px;justify-content:center;margin:26px 0 10px;flex-wrap:wrap}
+  .bstage{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);text-align:center;margin-top:6px}
+
+  /* rake */
+  .rake-bar{display:flex;max-width:440px;margin:24px auto 0;border-radius:12px;overflow:hidden;border:1px solid var(--border);height:88px}
+  .rake-you{flex:0 0 72%;background:linear-gradient(135deg,#1c3a28,#204d31);display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .rake-you .p{font-family:'DM Serif Display',serif;font-size:1.9rem;color:#6fce93}
+  .rake-you .l,.rake-house .l{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+  .rake-house{flex:1;background:var(--surface2);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted)}
+  .rake-house .p{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--muted)}
+
+  /* final */
+  .final{text-align:center;padding:70px 0}
+  .final h2{margin-bottom:8px}
+  .final .yourprice{color:var(--text)}
+  .final .theirmove{font-style:italic;color:var(--coral)}
+  .note{font-family:'DM Mono',monospace;font-size:.76rem;color:var(--muted);margin-top:20px}
+
+  footer{border-top:1px solid var(--border);padding:34px 0;text-align:center;color:var(--muted);font-size:.85rem}
+  footer .tat{font-family:'DM Serif Display',serif;font-style:italic;color:var(--coral);font-size:1.05rem;margin-bottom:8px}
+  footer a{color:var(--muted);text-decoration:none}footer a:hover{color:var(--coral)}
+
+  @media(max-width:720px){.table-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:460px){.table-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+  <header>
+    <div class="wrap navrow">
+      <div class="brand">Prove<i>It</i> <b>72</b></div>
+      <nav class="pillnav">
+        <a class="link" href="#how">How it works</a>
+        <a class="link" href="#in">Sign In</a>
+        <a class="btn coral" href="#in">GO ALL IN</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="fan">
+        <div class="card c1"><div class="tl red">7<span class="su">♦</span></div><div class="big red">♦</div></div>
+        <div class="card c2"><div class="tl blk">7<span class="su">♠</span></div><div class="big blk">♠</div></div>
+        <div class="card c3"><div class="tl red">7<span class="su">♥</span></div><div class="big red">♥</div></div>
+        <div class="card c4"><div class="tl blk">7<span class="su">♣</span></div><div class="big blk">♣</div></div>
+        <div class="card c5"><div class="tl red">2<span class="su">♥</span></div><div class="big red">♥</div></div>
+      </div>
+      <span class="label">7 · 2 · offsuit</span>
+      <h1>Filters the noise.<span class="sig">Keeps the signal.</span></h1>
+      <p class="sub">Your number. Your price. Anyone who wants to reach you pays it. <b>Bots don't pay. Creeps don't pay.</b> The ones who matter? They don't even flinch.</p>
+      <div class="cta-row">
+        <a class="btn coral lg" href="#in">SET MY PRICE</a>
+        <a class="btn ghost lg" href="#how">How it works</a>
+      </div>
+    </section>
+
+    <!-- CREED -->
+    <section class="creed">
+      <div class="line">Dealt the worst hand in the deck?<br><em>Go all in anyway.</em></div>
+      <p class="small">7-2 offsuit. The hand you're supposed to fold. Play it right and they fold instead. That's the whole idea — make them <b style="color:var(--text)">prove it</b>, or get out of your way.</p>
+    </section>
+
+    <!-- WHAT THEY SEE -->
+    <section class="center">
+      <span class="label">// what they see</span>
+      <div class="phone">
+        <div class="pi">Prove It.</div>
+        <div class="num">+1 (555) 072-7772</div>
+        <div class="toll">$5 TO CONNECT</div>
+        <a class="btn coral" href="#in" style="width:100%">PAY &amp; CONNECT</a>
+        <div class="done">scan · dial · done</div>
+      </div>
+      <p class="cap">They scan your card. Or dial the number. Either way — <b>Prove It</b> is the first thing they see. Pay to proceed. No exceptions.</p>
+    </section>
+
+    <!-- HOW THE TABLE WORKS -->
+    <section id="how">
+      <div class="center"><span class="label">// the hand</span></div>
+      <h2 class="serif" style="text-align:left;margin-top:10px">How the table works</h2>
+      <div class="table-grid">
+        <div class="cell">
+          <div class="mini"><div class="mc"><span class="red">7</span><span class="s2 red">♥</span></div><div class="mc"><span class="blk">2</span><span class="s2 blk">♠</span></div></div>
+          <h3>Set your price</h3>
+          <p>$5 and up, no ceiling. Your table, your blinds. Nobody haggles at the door.</p>
+        </div>
+        <div class="cell">
+          <div class="mini"><div class="mc"><span class="blk">Q</span><span class="s2 blk">♣</span></div></div>
+          <h3>Share your number</h3>
+          <p>Business card. QR code. Link. They get a real phone number with a price tag on it.</p>
+        </div>
+        <div class="cell">
+          <div class="mini"><div class="mc"><span class="red">7</span><span class="s2 red">♦</span></div><div class="mc"><span class="blk">7</span><span class="s2 blk">♠</span></div></div>
+          <h3>They pay or fold</h3>
+          <p>Stripe handles the charge. Bots fold. Creeps fold. Real ones don't blink.</p>
+        </div>
+        <div class="cell">
+          <div class="pct">72%</div>
+          <h3>You get paid</h3>
+          <p>72% yours. Paid weekly. No minimums. First month free — then a small sub keeps the lights on.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLUFF -->
+    <section class="bluff">
+      <div class="fan" style="height:104px">
+        <div class="card c2"><div class="tl blk">7<span class="su">♠</span></div><div class="big blk">♠</div></div>
+        <div class="card c4"><div class="tl red">2<span class="su">♥</span></div><div class="big red">♥</div></div>
+      </div>
+      <span class="label">// worst hand · best move</span>
+      <h2 style="margin-top:14px">Nobody calls a 7-2 bluff —<br>unless they've got the jack to <em>Prove It.</em></h2>
+      <p class="cap">The ones who fold on a $5 call? Not worth your time.<br>The ones who go <b style="color:var(--coral)">all in</b>? Those are your people.</p>
+    </section>
+
+    <!-- RAKE -->
+    <section class="center">
+      <span class="label">// the rake</span>
+      <h2 style="margin-top:10px">The house doesn't <em>win this one.</em></h2>
+      <div class="rake-bar">
+        <div class="rake-you"><div class="p">72%</div><div class="l">yours</div></div>
+        <div class="rake-house"><div class="p">28%</div><div class="l">house</div></div>
+      </div>
+      <p class="cap">Paid weekly. No minimums. We cover Stripe. You keep the lion's share, every hand.</p>
+    </section>
+  </div>
+
+  <!-- FINAL -->
+  <section class="final" id="in">
+    <div class="wrap">
+      <span class="label">// ready?</span>
+      <h2 style="margin-top:12px"><span class="yourprice">Your price.</span> <span class="theirmove">Their move.</span></h2>
+      <div style="margin-top:26px"><a class="btn coral lg" href="#">GO ALL IN →</a></div>
+      <p class="note">First month free · card on file · cancel anytime.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <div class="tat">Go all in on the shit hand.</div>
+      Prove<span style="color:var(--gold)"> It </span>72 · <a href="mailto:hello@proveit72.com">hello@proveit72.com</a><br>
+      <span style="font-size:.78rem;opacity:.7">Same engine as velvetrope2you. Different table, same lock.</span>
+    </div>
+  </footer>
+</body>
+</html>

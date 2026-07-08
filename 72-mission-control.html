@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>72 · Mission Control</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23080808'/%3E%3Ctext x='32' y='45' font-family='Inter,Arial,sans-serif' font-size='34' font-weight='800' fill='%23D4A017' text-anchor='middle'%3E72%3C/text%3E%3C/svg%3E" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+  :root{
+    --navy:#0D0B06; --steel:#1a1509; --blue:#8a6d10; --cyan:#D4A017; --gold:#FFB300;
+    --green:#00C853; --red:#D32F2F; --warn:#F57F17;
+    --text:#E8E4D8; --muted:#8A8270; --border:#2a2410; --card:#151206; --input:#0F0D06; --radius:6px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--navy);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:13px;min-height:100vh}
+  header{background:linear-gradient(90deg,#0D0B06 0%,#1a1509 60%,#241a02 100%);border-bottom:2px solid var(--cyan);padding:0 24px;display:flex;align-items:center;gap:16px;height:56px;position:sticky;top:0;z-index:100}
+  header .logo{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--cyan);letter-spacing:2px;white-space:nowrap}
+  header .logo span{color:var(--gold)}
+  header .brands{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px}
+  header nav{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}
+  header nav button{background:transparent;border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:var(--radius);cursor:pointer;font-family:'IBM Plex Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:.5px;transition:all .2s}
+  header nav button.active,header nav button:hover{background:var(--blue);border-color:var(--cyan);color:var(--text)}
+  .app{display:flex;min-height:calc(100vh - 56px)}
+  aside{width:240px;min-width:240px;background:var(--steel);border-right:1px solid var(--border);overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+  .aside-section{font-size:10px;color:var(--cyan);letter-spacing:1.5px;font-weight:600;margin-bottom:6px}
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .stat-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:8px 10px}
+  .stat-box .val{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--gold);line-height:1}
+  .stat-box .lbl{font-size:9px;color:var(--muted);margin-top:2px}
+  aside select{width:100%;background:var(--input);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:var(--radius);font-family:'IBM Plex Sans',sans-serif;font-size:12px;margin-bottom:6px}
+  aside label{font-size:10px;color:var(--muted);display:block;margin-bottom:3px}
+  .legend{display:flex;flex-direction:column;gap:5px;margin-top:4px}
+  .legend-row{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted)}
+  main{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+  .panel-hdr{display:flex;align-items:center;gap:10px;background:var(--steel);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;flex-wrap:wrap}
+  .panel-hdr h2{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;letter-spacing:1px}
+  .pill{font-size:9px;padding:3px 8px;border-radius:20px;font-weight:600;letter-spacing:.5px}
+  .pill-cyan{background:rgba(212,160,23,.15);color:var(--cyan);border:1px solid var(--cyan)}
+  .search-wrap{position:relative;width:200px}
+  .search-wrap input{width:100%;background:var(--input);border:1px solid var(--border);color:var(--text);padding:9px 12px 9px 34px;border-radius:var(--radius);font-family:'IBM Plex Mono',monospace;font-size:12px;transition:border-color .2s}
+  .search-wrap input:focus{outline:none;border-color:var(--cyan)}
+  .search-wrap .icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px}
+  .btn{background:var(--blue);color:#fff;border:none;padding:9px 16px;border-radius:var(--radius);cursor:pointer;font-size:12px;font-weight:600;font-family:'IBM Plex Sans',sans-serif;transition:background .2s;white-space:nowrap}
+  .btn:hover{background:#a5820f}
+  .btn-gold{background:#B8860B;color:var(--navy)}
+  .btn-gold:hover{background:var(--gold)}
+  .btn-sm{padding:5px 10px;font-size:11px}
+  .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted);padding:9px 14px;border-radius:var(--radius);cursor:pointer;font-size:11px;transition:all .2s}
+  .btn-ghost:hover{border-color:var(--cyan);color:var(--cyan)}
+  .tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border)}
+  table{width:100%;border-collapse:collapse;min-width:720px}
+  thead tr{background:var(--steel)}
+  thead th{padding:9px 10px;text-align:left;font-size:9px;color:var(--cyan);letter-spacing:1px;font-weight:600;border-bottom:1px solid var(--border);white-space:nowrap}
+  tbody tr{border-bottom:1px solid var(--border);transition:background .15s;cursor:pointer}
+  tbody tr:last-child{border-bottom:none}
+  tbody tr:hover{background:rgba(138,109,16,.12)}
+  tbody td{padding:8px 10px;font-size:12px;vertical-align:middle}
+  .sku-tag{font-family:'IBM Plex Mono',monospace;font-size:11px;background:rgba(212,160,23,.1);color:var(--cyan);padding:2px 6px;border-radius:3px;border:1px solid rgba(212,160,23,.2)}
+  .muted-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted)}
+  a.ext{color:var(--cyan);font-size:11px;text-decoration:none;font-family:'IBM Plex Mono',monospace}
+  a.ext:hover{text-decoration:underline}
+  .status-pill{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.4px;white-space:nowrap}
+  .st-live{background:rgba(0,200,83,.15);color:var(--green);border:1px solid rgba(0,200,83,.4)}
+  .st-wip{background:rgba(255,179,0,.15);color:var(--gold);border:1px solid rgba(255,179,0,.4)}
+  .st-broken{background:rgba(211,47,47,.15);color:#ff6b6b;border:1px solid rgba(211,47,47,.5)}
+  .st-planned{background:rgba(138,130,112,.12);color:var(--muted);border:1px solid var(--border)}
+  .st-parked{background:rgba(212,160,23,.1);color:var(--cyan);border:1px solid rgba(212,160,23,.3)}
+  .drawer{display:none;position:fixed;right:0;top:56px;width:420px;max-width:95vw;height:calc(100vh - 56px);background:var(--steel);border-left:1px solid var(--cyan);z-index:150;overflow-y:auto;padding:20px;box-shadow:-4px 0 20px rgba(0,0,0,.4)}
+  .drawer.open{display:block}
+  .drawer-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  .drawer-hdr h3{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--cyan)}
+  .close-btn{background:none;border:1px solid var(--border);color:var(--muted);width:28px;height:28px;border-radius:4px;cursor:pointer;font-size:14px}
+  .close-btn:hover{border-color:var(--red);color:var(--red)}
+  .detail-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);gap:12px}
+  .detail-row:last-child{border-bottom:none}
+  .detail-label{font-size:10px;color:var(--muted);letter-spacing:.5px;white-space:nowrap}
+  .detail-val{font-size:12px;text-align:right;word-break:break-word}
+  .section-divider{font-size:10px;color:var(--cyan);letter-spacing:1.5px;font-weight:600;margin:14px 0 6px}
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center}
+  .modal-overlay.open{display:flex}
+  .modal{background:var(--steel);border:1px solid var(--cyan);border-radius:8px;padding:24px;width:620px;max-width:95vw;max-height:90vh;overflow-y:auto}
+  .modal h3{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--cyan);margin-bottom:16px}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .form-full{grid-column:1/-1}
+  .form-group label{display:block;font-size:10px;color:var(--muted);margin-bottom:4px;letter-spacing:.5px}
+  .form-group input,.form-group select,.form-group textarea{width:100%;background:var(--input);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:var(--radius);font-family:'IBM Plex Sans',sans-serif;font-size:12px}
+  .form-group textarea{resize:vertical;min-height:60px}
+  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--cyan)}
+  .modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+  .empty-state{text-align:center;padding:40px;color:var(--muted);font-size:13px}
+  .empty-state .icon{font-size:36px;margin-bottom:10px}
+  .notif{position:fixed;bottom:20px;right:20px;z-index:300;background:var(--steel);border:1px solid var(--cyan);border-radius:var(--radius);padding:10px 16px;font-size:12px;color:var(--text);transform:translateY(60px);opacity:0;transition:all .3s;pointer-events:none}
+  .notif.show{transform:translateY(0);opacity:1}
+  ::-webkit-scrollbar{width:5px;height:5px}
+  ::-webkit-scrollbar-track{background:var(--navy)}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">MISSION<span>72</span> <span style="font-size:10px;color:var(--gold);letter-spacing:1px">CONTROL</span></div>
+  <div class="brands">velvetrope2you.com · internal ops board</div>
+  <nav id="tabnav"></nav>
+</header>
+
+<div class="app">
+  <aside>
+    <div class="aside-section">HEALTH</div>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="val" id="stat-live">0</div><div class="lbl">LIVE</div></div>
+      <div class="stat-box"><div class="val" id="stat-attention" style="color:var(--warn)">0</div><div class="lbl">NEEDS WORK</div></div>
+      <div class="stat-box"><div class="val" id="stat-pages">0</div><div class="lbl">PAGES</div></div>
+      <div class="stat-box"><div class="val" id="stat-members">0</div><div class="lbl">MEMBERS</div></div>
+    </div>
+
+    <div class="aside-section" style="margin-top:8px">FILTER STATUS</div>
+    <select id="filter-status" onchange="renderActive()">
+      <option value="">All statuses</option>
+      <option value="live">Live</option>
+      <option value="wip">In progress</option>
+      <option value="broken">Needs fix</option>
+      <option value="planned">Planned</option>
+      <option value="parked">Parked</option>
+    </select>
+
+    <div class="aside-section" style="margin-top:8px">LEGEND</div>
+    <div class="legend">
+      <div class="legend-row"><span class="status-pill st-live">LIVE</span> shipped &amp; working</div>
+      <div class="legend-row"><span class="status-pill st-wip">IN PROGRESS</span> being built</div>
+      <div class="legend-row"><span class="status-pill st-broken">NEEDS FIX</span> broken / blocked</div>
+      <div class="legend-row"><span class="status-pill st-planned">PLANNED</span> not started</div>
+      <div class="legend-row"><span class="status-pill st-parked">PARKED</span> on the shelf</div>
+    </div>
+
+    <div class="aside-section" style="margin-top:8px">DATA</div>
+    <button class="btn btn-sm btn-ghost" style="width:100%" onclick="exportJSON()">⬇ BACKUP (JSON)</button>
+    <button class="btn btn-sm btn-ghost" style="width:100%" onclick="document.getElementById('import-file').click()">⬆ RESTORE</button>
+    <input type="file" id="import-file" accept="application/json" style="display:none" onchange="importJSON(event)">
+    <button class="btn btn-sm btn-ghost" style="width:100%" onclick="exportCSV()">⬇ CSV (current tab)</button>
+  </aside>
+
+  <main id="main-content">
+    <div class="panel-hdr">
+      <h2 id="panel-title">PAGES</h2>
+      <span class="pill pill-cyan" id="panel-count">0</span>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+        <div class="search-wrap"><span class="icon">🔍</span><input type="text" id="search" placeholder="Search…" oninput="renderActive()"></div>
+        <button class="btn" onclick="openAddModal()">+ ADD</button>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table id="grid"><thead id="grid-head"></thead><tbody id="grid-body"></tbody></table>
+    </div>
+  </main>
+</div>
+
+<div class="drawer" id="detail-drawer">
+  <div class="drawer-hdr"><h3 id="drawer-title">DETAIL</h3><button class="close-btn" onclick="closeDrawer()">✕</button></div>
+  <div id="drawer-body"></div>
+</div>
+
+<div class="modal-overlay" id="add-modal">
+  <div class="modal">
+    <h3 id="modal-title">ADD</h3>
+    <div class="form-grid" id="modal-fields"></div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal()">CANCEL</button>
+      <button class="btn" onclick="saveItem()">SAVE</button>
+    </div>
+  </div>
+</div>
+
+<div class="notif" id="notif"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// LANGUAGE PACK — everything domain-specific lives here.
+// Swap this object to retarget the engine to anything.
+// ═══════════════════════════════════════════════════════════════════
+const STATUSES = {
+  live:    { label:'LIVE',        cls:'st-live' },
+  wip:     { label:'IN PROGRESS', cls:'st-wip' },
+  broken:  { label:'NEEDS FIX',   cls:'st-broken' },
+  planned: { label:'PLANNED',     cls:'st-planned' },
+  parked:  { label:'PARKED',      cls:'st-parked' },
+};
+
+const PACK = {
+  categories: {
+    pages: {
+      label:'PAGES', icon:'📄', singular:'Page', idPrefix:'PG',
+      fields:[
+        {id:'name',   label:'NAME',        col:true,  ph:'Landing page'},
+        {id:'file',   label:'FILE',        col:true,  ph:'index.html', mono:true},
+        {id:'url',    label:'LIVE URL',    col:true,  ph:'https://velvetrope2you.com/', type:'url'},
+        {id:'status', label:'STATUS',      col:true,  type:'status'},
+        {id:'purpose',label:'PURPOSE',     col:false, full:true, ph:'What this page is for'},
+        {id:'depends',label:'DEPENDS ON',  col:false, full:true, ph:'Stripe, Worker, Web3Forms…'},
+        {id:'notes',  label:'NOTES',       col:false, full:true, type:'textarea'},
+      ],
+      seed:[
+        {id:'PG-01',name:'Landing (gold)',file:'index.html',url:'https://velvetrope2you.com/',status:'live',purpose:'Main marketing landing + signup',depends:'Cloudflare Pages, Web3Forms',notes:'Live on the domain. Hero, pills, BETA badge, "Your time is money."'},
+        {id:'PG-02',name:'Fan events',file:'events.html',url:'https://velvetrope2you.com/events.html',status:'live',purpose:'Fan appreciation event pitch + partnership form',depends:'Web3Forms',notes:'Slimmed off homepage into its own page; band on index links here.'},
+        {id:'PG-03',name:'Paid calls / paygate',file:'paygate.html',url:'https://velvetrope2you.com/paygate.html',status:'live',purpose:'Pay-to-call via Jitsi; holds the Stripe Buy Button',depends:'Stripe, Jitsi, Web3Forms',notes:'Stripe button lives here now (moved off homepage). Buy button is still TEST mode.'},
+        {id:'PG-04',name:'Terms',file:'terms.html',url:'https://velvetrope2you.com/terms.html',status:'live',purpose:'Terms of Service',depends:'—',notes:'Template — get an attorney to review before relying on it.'},
+        {id:'PG-05',name:'Privacy',file:'privacy.html',url:'https://velvetrope2you.com/privacy.html',status:'live',purpose:'Privacy Policy',depends:'—',notes:'Template. Mentions Stripe/Twilio/Jitsi/Cloudflare/Netlify — trim Netlify once it is gone.'},
+        {id:'PG-06',name:'Why 72',file:'why72.html',url:'https://velvetrope2you.com/why72.html',status:'wip',purpose:'The pitch / story page',depends:'—',notes:'Under-construction placeholder. Needs real content.'},
+        {id:'PG-07',name:'QR maker',file:'qr.html',url:'https://velvetrope2you.com/qr.html',status:'live',purpose:'Generate room + payment-link QR codes',depends:'api.qrserver.com',notes:'Internal tool, noindex.'},
+        {id:'PG-08',name:'Member dashboard',file:'72-app-dashboard.html',url:'',status:'wip',purpose:'Creator/member dashboard',depends:'Cloudflare Worker, KV',notes:'Wired to Worker URL but Worker KV + secrets not fully set, so data is not live yet.'},
+        {id:'PG-09',name:'Owner dashboard',file:'72-owner-dashboard.html',url:'',status:'wip',purpose:'Internal owner/admin view',depends:'Cloudflare Worker, KV',notes:'Internal. Left as-is for now.'},
+        {id:'PG-10',name:'Opal landing variant',file:'72-landing-opal.html',url:'',status:'parked',purpose:'Alternate velvet-rope landing (opal gradient)',depends:'Cloudflare Worker',notes:'Parked variant. Not linked from live site.'},
+        {id:'PG-11',name:'Merged landing (dupe)',file:'72-landing-merged.html',url:'',status:'broken',purpose:'Byte-copy of index.html the dashboards link to',depends:'—',notes:'CLEANUP: duplicate of index.html. Consolidate so there is one landing, not two to keep in sync.'},
+      ],
+    },
+    functions: {
+      label:'FUNCTIONS', icon:'⚙️', singular:'Function', idPrefix:'FN',
+      fields:[
+        {id:'name',    label:'FUNCTION',    col:true,  ph:'Payments'},
+        {id:'provider',label:'PROVIDER',    col:true,  ph:'Stripe'},
+        {id:'status',  label:'STATUS',      col:true,  type:'status'},
+        {id:'configAt',label:'CONFIGURED AT',col:true, full:true, ph:'Stripe dashboard / wrangler secret', mono:true},
+        {id:'does',    label:'WHAT IT DOES',col:false, full:true, ph:'Handles checkout + 72/28 split'},
+        {id:'notes',   label:'NOTES / NEXT',col:false, full:true, type:'textarea'},
+      ],
+      seed:[
+        {id:'FN-01',name:'Hosting',provider:'Cloudflare Pages (vrpi72-home)',status:'live',configAt:'Cloudflare → Workers & Pages → vrpi72-home',does:'Serves the static site, auto-deploys from the git branch on every push',notes:'This is THE live host. Production branch: claude/72-marketplace-deployment-ax8w3w.'},
+        {id:'FN-02',name:'Domain / DNS',provider:'Cloudflare Registrar',status:'live',configAt:'Cloudflare → vrpi72-home → Custom domains',does:'velvetrope2you.com points at the Pages site',notes:'Just moved onto vrpi72-home. DNS may show "up to 48h" but usually flips fast. Confirm www works too.'},
+        {id:'FN-03',name:'Backend Worker',provider:'Cloudflare Worker (lively-mud-9c4b)',status:'wip',configAt:'wrangler.toml / Cloudflare dashboard',does:'Stripe checkout, KV data, voice/TwiML routing',notes:'Deployed at lively-mud-9c4b.ward602.workers.dev but KV binding + secrets not fully set. Not powering dashboards yet.'},
+        {id:'FN-04',name:'Payments',provider:'Stripe',status:'wip',configAt:'Stripe dashboard → Payment Links / Buy Button',does:'Takes payment, 72% creator / 28% platform',notes:'TEST mode. No real money yet. TODO: activate Live mode, remake Buy Button + Payment Link in Live.'},
+        {id:'FN-05',name:'Paid calls transport',provider:'Jitsi (meet.jit.si)',status:'planned',configAt:'meet.jit.si room URLs',does:'Free web call room a fan lands in after paying',notes:'Manual for now: pay link redirects to a room URL. No account/backend needed.'},
+        {id:'FN-06',name:'Form capture',provider:'Web3Forms',status:'live',configAt:'access_key in events.html / paygate.html',does:'Emails you every form submission (partnership + paygate setup)',notes:'This is the interim "keep track" — every signup hits your inbox.'},
+        {id:'FN-07',name:'Member data store',provider:'Cloudflare KV',status:'planned',configAt:'wrangler.toml KV binding',does:'Would hold per-member profiles, links, online/offline',notes:'Not bound yet. Needed for automated per-member links + live dashboards.'},
+      ],
+    },
+    members: {
+      label:'MEMBERS', icon:'🎟️', singular:'Member', idPrefix:'MB',
+      fields:[
+        {id:'name',   label:'NAME',        col:true,  ph:'First Last'},
+        {id:'handle', label:'HANDLE',      col:true,  ph:'@handle', mono:true},
+        {id:'email',  label:'EMAIL',       col:false, ph:'you@email.com', mono:true},
+        {id:'rate',   label:'RATE',        col:true,  ph:'$15'},
+        {id:'status', label:'STATUS',      col:true,  type:'status'},
+        {id:'payLink',label:'THEIR PAY LINK',col:false,full:true,type:'url',ph:'https://buy.stripe.com/…'},
+        {id:'room',   label:'THEIR ROOM',  col:false, full:true, type:'url', ph:'https://meet.jit.si/…'},
+        {id:'notes',  label:'NOTES',       col:false, full:true, type:'textarea'},
+      ],
+      seed:[
+        {id:'MB-01',name:'(example) Jane Doe',handle:'@janedoe',email:'jane@email.com',rate:'$15',status:'planned',payLink:'',room:'https://meet.jit.si/vr72-jane-7x9k2',notes:'Example row — delete me. This is where each member gets their OWN pay link + room recorded.'},
+      ],
+    },
+  },
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// ENGINE (domain-agnostic)
+// ═══════════════════════════════════════════════════════════════════
+const STORE_KEY = 'mc72_state_v1';
+let state = { data:{}, activeTab:null, editId:null };
+
+function catKeys(){ return Object.keys(PACK.categories); }
+
+function loadState(){
+  try{
+    const s = localStorage.getItem(STORE_KEY);
+    if(s){ const p = JSON.parse(s); if(p && p.data) state.data = p.data; }
+  }catch(e){}
+  // seed any missing category from the pack
+  catKeys().forEach(k=>{
+    if(!Array.isArray(state.data[k])){
+      state.data[k] = JSON.parse(JSON.stringify(PACK.categories[k].seed || []));
+    }
+  });
+  state.activeTab = catKeys()[0];
+}
+function saveState(){ localStorage.setItem(STORE_KEY, JSON.stringify({data:state.data})); }
+
+function statusPill(v){
+  const s = STATUSES[v] || STATUSES.planned;
+  return `<span class="status-pill ${s.cls}">${s.label}</span>`;
+}
+
+function buildTabs(){
+  document.getElementById('tabnav').innerHTML = catKeys().map(k=>{
+    const c = PACK.categories[k];
+    return `<button data-tab="${k}" onclick="showTab('${k}')">${c.icon} ${c.label}</button>`;
+  }).join('');
+}
+
+function showTab(k){
+  state.activeTab = k;
+  document.querySelectorAll('#tabnav button').forEach(b=>b.classList.toggle('active', b.dataset.tab===k));
+  const c = PACK.categories[k];
+  document.getElementById('panel-title').textContent = c.label;
+  document.getElementById('search').value = '';
+  renderActive();
+}
+
+function currentRows(){
+  const k = state.activeTab;
+  let rows = state.data[k] || [];
+  const q = (document.getElementById('search').value||'').toLowerCase();
+  const sf = document.getElementById('filter-status').value;
+  if(q) rows = rows.filter(r=>JSON.stringify(r).toLowerCase().includes(q));
+  if(sf) rows = rows.filter(r=>r.status===sf);
+  return rows;
+}
+
+function renderActive(){
+  const k = state.activeTab;
+  const c = PACK.categories[k];
+  const cols = c.fields.filter(f=>f.col);
+  document.getElementById('grid-head').innerHTML =
+    '<tr>' + cols.map(f=>`<th>${f.label}</th>`).join('') + '<th></th></tr>';
+  const rows = currentRows();
+  document.getElementById('panel-count').textContent = rows.length + ' / ' + (state.data[k]||[]).length;
+  const body = document.getElementById('grid-body');
+  if(rows.length===0){
+    body.innerHTML = `<tr><td colspan="${cols.length+1}"><div class="empty-state"><div class="icon">${c.icon}</div>Nothing here yet</div></td></tr>`;
+  } else {
+    body.innerHTML = rows.map(r=>{
+      const cells = cols.map(f=>{
+        let v = r[f.id]||'';
+        if(f.type==='status') return `<td>${statusPill(r.status)}</td>`;
+        if(f.id===c.fields[0].id) return `<td><span class="sku-tag">${r.id}</span> ${escapeHtml(v)}</td>`;
+        if(f.type==='url' && v) return `<td><a class="ext" href="${escapeAttr(v)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${escapeHtml(shortUrl(v))} ↗</a></td>`;
+        if(f.mono) return `<td><span class="muted-tag">${escapeHtml(v||'—')}</span></td>`;
+        return `<td>${escapeHtml(v||'—')}</td>`;
+      }).join('');
+      return `<tr onclick="openDrawer('${r.id}')">${cells}<td><button class="btn btn-sm" onclick="event.stopPropagation();openDrawer('${r.id}')">VIEW</button></td></tr>`;
+    }).join('');
+  }
+  updateStats();
+}
+
+function updateStats(){
+  const all = catKeys().flatMap(k=>state.data[k]||[]);
+  const live = all.filter(r=>r.status==='live').length;
+  const attention = all.filter(r=>r.status==='wip'||r.status==='broken').length;
+  document.getElementById('stat-live').textContent = live;
+  document.getElementById('stat-attention').textContent = attention;
+  document.getElementById('stat-pages').textContent = (state.data.pages||[]).length;
+  document.getElementById('stat-members').textContent = (state.data.members||[]).filter(m=>!/^\(example\)/.test(m.name||'')).length;
+}
+
+function findItem(id){
+  for(const k of catKeys()){
+    const r = (state.data[k]||[]).find(x=>x.id===id);
+    if(r) return {cat:k, item:r};
+  }
+  return null;
+}
+
+function openDrawer(id){
+  const found = findItem(id); if(!found) return;
+  const {cat, item} = found;
+  const c = PACK.categories[cat];
+  document.getElementById('drawer-title').textContent = item.id + ' · ' + (item[c.fields[0].id]||'');
+  const rowsHtml = c.fields.map(f=>{
+    if(f.type==='status') return detailRow('STATUS', statusPill(item.status));
+    let v = item[f.id]||'';
+    if(f.type==='url' && v) v = `<a class="ext" href="${escapeAttr(v)}" target="_blank" rel="noopener">${escapeHtml(shortUrl(v))} ↗</a>`;
+    else v = escapeHtml(v||'—');
+    return detailRow(f.label, v);
+  }).join('');
+  document.getElementById('drawer-body').innerHTML = `
+    <div style="margin-bottom:12px">${statusPill(item.status)}</div>
+    <div class="section-divider">DETAILS</div>
+    ${rowsHtml}
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn btn-sm" onclick="openAddModal('${item.id}')">✏️ EDIT</button>
+      <button class="btn btn-sm" style="background:var(--red)" onclick="deleteItem('${item.id}')">🗑 DELETE</button>
+    </div>`;
+  document.getElementById('detail-drawer').classList.add('open');
+}
+function detailRow(label,val){ return `<div class="detail-row"><span class="detail-label">${label}</span><span class="detail-val">${val}</span></div>`; }
+function closeDrawer(){ document.getElementById('detail-drawer').classList.remove('open'); }
+
+function openAddModal(editId){
+  const k = state.activeTab;
+  const c = PACK.categories[k];
+  state.editId = editId || null;
+  const existing = editId ? (state.data[k]||[]).find(x=>x.id===editId) : null;
+  document.getElementById('modal-title').textContent = (editId?'EDIT ':'ADD ') + c.singular.toUpperCase();
+  document.getElementById('modal-fields').innerHTML = c.fields.map(f=>{
+    const val = existing ? (existing[f.id]||'') : '';
+    let inp;
+    if(f.type==='status'){
+      inp = `<select id="mf-status">${Object.keys(STATUSES).map(s=>`<option value="${s}" ${val===s?'selected':''}>${STATUSES[s].label}</option>`).join('')}</select>`;
+    } else if(f.type==='textarea'){
+      inp = `<textarea id="mf-${f.id}" placeholder="${f.ph||''}">${escapeAttr(val)}</textarea>`;
+    } else {
+      inp = `<input type="text" id="mf-${f.id}" placeholder="${f.ph||''}" value="${escapeAttr(val)}">`;
+    }
+    return `<div class="form-group ${(f.full||f.type==='status')?'':''} ${f.full?'form-full':''}"><label>${f.label}</label>${inp}</div>`;
+  }).join('');
+  document.getElementById('add-modal').classList.add('open');
+}
+function closeModal(){ document.getElementById('add-modal').classList.remove('open'); }
+
+function saveItem(){
+  const k = state.activeTab;
+  const c = PACK.categories[k];
+  const obj = {};
+  c.fields.forEach(f=>{ const el=document.getElementById('mf-'+f.id); if(el) obj[f.id]=el.value; });
+  const arr = state.data[k];
+  if(state.editId){
+    const i = arr.findIndex(x=>x.id===state.editId);
+    if(i>=0){ obj.id = state.editId; arr[i]=obj; }
+  } else {
+    obj.id = nextId(c.idPrefix, arr);
+    if(!obj.status) obj.status='planned';
+    arr.push(obj);
+  }
+  saveState(); renderActive(); closeModal();
+  notify('✅ Saved');
+}
+
+function nextId(prefix, arr){
+  let n = 0;
+  arr.forEach(x=>{ const m=String(x.id||'').match(/(\d+)$/); if(m) n=Math.max(n, parseInt(m[1],10)); });
+  return prefix + '-' + String(n+1).padStart(2,'0');
+}
+
+function deleteItem(id){
+  if(!confirm('Delete '+id+'?')) return;
+  const found = findItem(id); if(!found) return;
+  state.data[found.cat] = state.data[found.cat].filter(x=>x.id!==id);
+  saveState(); renderActive(); closeDrawer(); notify('Removed');
+}
+
+// ── Data portability ──
+function exportJSON(){
+  download('mission-control-backup-'+today()+'.json', JSON.stringify({data:state.data}, null, 2), 'application/json');
+  notify('⬇ Backup saved');
+}
+function importJSON(e){
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{
+      const p = JSON.parse(reader.result);
+      if(p && p.data){ state.data = p.data; catKeys().forEach(k=>{ if(!Array.isArray(state.data[k])) state.data[k]=[]; }); saveState(); renderActive(); notify('⬆ Restored'); }
+      else notify('⚠️ Not a valid backup file');
+    }catch(err){ notify('⚠️ Could not read file'); }
+    e.target.value='';
+  };
+  reader.readAsText(file);
+}
+function exportCSV(){
+  const k = state.activeTab;
+  const c = PACK.categories[k];
+  const cols = c.fields;
+  const esc = s => `"${String(s==null?'':s).replace(/"/g,'""').replace(/\r?\n/g,' ')}"`;
+  const header = ['id', ...cols.map(f=>f.id)].join(',');
+  const rows = (state.data[k]||[]).map(r=> [r.id, ...cols.map(f=>r[f.id])].map(esc).join(','));
+  download(k+'-'+today()+'.csv', header+'\n'+rows.join('\n'), 'text/csv');
+  notify('⬇ CSV exported');
+}
+function download(name, content, type){
+  const blob = new Blob([content], {type:type+';charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=name;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+function today(){ return new Date().toISOString().slice(0,10); }
+
+// ── utils ──
+function shortUrl(u){ return String(u).replace(/^https?:\/\//,'').replace(/\/$/,''); }
+function escapeHtml(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escapeAttr(s){ return escapeHtml(s).replace(/"/g,'&quot;'); }
+function notify(msg){ const el=document.getElementById('notif'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2400); }
+
+// ── init ──
+loadState();
+buildTabs();
+showTab(state.activeTab);
+</script>
+</body>
+</html>

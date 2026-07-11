@@ -10,7 +10,8 @@
     "secrets_rule": "Never commit sk_live_*/sk_test_*. Worker secrets via `wrangler secret put`. pk_* and Buy-Button IDs are safe to commit.",
     "do_not_touch": ["72-app-dashboard.html", "72-owner-dashboard.html"],
     "reuse_first": "Scan boneyard/index.json before hand-building any UI.",
-    "stack": { "host": "Cloudflare Pages (vrpi72-home)", "backend": "Cloudflare Worker (lively-mud-9c4b)", "pay": "Stripe", "video": "Jitsi (meet.jit.si)" }
+    "stack": { "host": "Cloudflare Pages (vrpi72-home)", "backend": "Cloudflare Worker (lively-mud-9c4b)", "pay": "Stripe", "video": "Jitsi (meet.jit.si)", "telephony": "Twilio (planned)" },
+    "twilio_rule": "Provision phone numbers in the 772 area code ONLY (on-brand with '72'). Any number search/purchase must filter areaCode=772."
   },
   "sources_of_truth": {
     "guide": "CLAUDE.md",

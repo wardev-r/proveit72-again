@@ -2,7 +2,7 @@
 
 **Effective date: July 11, 2026**
 
-These Terms are an agreement between you and **wtvrwnvrwext**, operator of 72 and velvetrope2you.com (“72,” “we,” “us”). Legal notices: 3021 W Clarendon, Phoenix, AZ 85017; support@velvetrope2you.com.
+These Terms are an agreement between you and **wtvrwnvrwext 72**, operator of 72 and velvetrope2you.com (“72,” “we,” “us”). Legal notices: 6881 W Charleston Blvd, Ste A, Unit 5072, Las Vegas, NV 89117; support@velvetrope2you.com.
 
 ## 1. The service
 

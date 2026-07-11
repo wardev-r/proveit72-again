@@ -32,7 +32,7 @@ creator delivers.
 
 ## 2. The parties
 
-- **The Platform** — "72", operated by **[LEGAL ENTITY NAME / SOLE PROPRIETOR NAME]**, located at **[BUSINESS ADDRESS]**, contact **support@velvetrope2you.com**.
+- **The Platform** — "72", operated by **[LEGAL ENTITY NAME / SOLE PROPRIETOR NAME]**, located at **6881 W. Charleston Blvd, Ste A, Unit 5072, Las Vegas, NV 89117**, contact **support@velvetrope2you.com**.
 - **Creators (sellers)** — members who set a price and provide the call/session.
 - **Callers (buyers)** — people who pay to reach a creator.
 - A single user can be both.
@@ -100,7 +100,7 @@ creator delivers.
 11. Limitation of liability — keep the existing cap: **total liability capped at
     the greater of what the user paid in the prior 3 months or US$100.**
 12. Indemnification, termination/suspension, changes to terms.
-13. **Governing law: State of Arizona, USA; disputes in Arizona courts** (matches
+13. **Governing law: State of Nevada, USA; disputes in Clark County, Nevada courts** (matches
     current draft) **[CONFIRM or change]**. Consider an arbitration/class-waiver clause **[DECIDE]**.
 14. Contact: support@velvetrope2you.com.
 
@@ -124,7 +124,7 @@ creator delivers.
 ## 7. Blanks to fill before drafting
 
 - [ ] Legal entity name / owner name and business address
-- [ ] Confirm governing law (currently Arizona) + arbitration decision
+- [ ] Confirm governing law (set to Nevada) + arbitration decision
 - [ ] Membership refund policy specifics
 - [ ] Per-call refund/dispute policy (what happens if a call doesn't connect)
 - [ ] Whether calls are ever recorded (assumed: no)

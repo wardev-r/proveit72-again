@@ -21,6 +21,9 @@
  */
 
 const STRIPE_API = 'https://api.stripe.com/v1';
+// ⚠ INVIOLABLE: creators keep 72%. This is the brand's defining promise — never
+// raise this above 0.28. Any fee/cost comes from the CALLER's total or the
+// platform's 28%, never from the creator's 72%. (Owner: close doors before 71%.)
 const PLATFORM_FEE_PERCENT = 0.28;   // platform keeps 28%, creators keep 72%
 const PRODUCT_NAME = '72 Membership'; // created inline per-mode; no pre-made product id needed
 const SUBSCRIPTION_AMOUNT_CENTS = 720; // $7.20/month

@@ -6,6 +6,7 @@
   "conventions": {
     "brand": { "name": "72", "domain": "velvetrope2you.com", "accent": "#D4A017", "bg": "#080808", "font": "Inter", "split": "72% creator / 28% platform" },
     "membership": "Every user is a member. First month free, then $7.20/month. Product is in beta.",
+    "creator_share_rule": "INVIOLABLE: creators keep 72%. This is the brand's defining promise (the '72'). Never reduce the creator share below 72% / never raise PLATFORM_FEE_PERCENT above 0.28. Any cost or fee comes from the CALLER's total or the platform's 28%, never from the creator's 72%. Owner's stance: close doors before ever going to 71%.",
     "branch": "Develop on a feature branch, never main.",
     "secrets_rule": "Never commit sk_live_*/sk_test_*. Worker secrets via `wrangler secret put`. pk_* and Buy-Button IDs are safe to commit.",
     "do_not_touch": ["72-app-dashboard.html", "72-owner-dashboard.html"],

@@ -19,7 +19,8 @@
     "link_map": "/llms.txt"
   },
   "pages": [
-    { "path": "/index.html", "title": "Home / launchpad", "purpose": "Landing: who-it's-for + hub of buttons to every page", "state": "live", "spec": "#agent-spec", "open_actions": 2 },
+    { "path": "/index.html", "title": "Home / launchpad", "purpose": "Landing: who-it's-for + hub of buttons to every page", "state": "live", "spec": "#agent-spec", "open_actions": 1 },
+    { "path": "/72-landing-merged.html", "title": "Legacy landing (redirect)", "purpose": "Redirect shim to /index.html; kept so old dashboard/invite links resolve", "state": "deprecated", "spec": "#agent-spec", "open_actions": 0 },
     { "path": "/meet.html", "title": "Live video meets", "purpose": "QR-accessed paid live video rooms", "state": "beta", "spec": "#agent-spec", "open_actions": 1 },
     { "path": "/paygate.html", "title": "Paid calls", "purpose": "Creator signup + Stripe checkout", "state": "beta", "spec": "#agent-spec", "open_actions": 2 },
     { "path": "/events.html", "title": "Fan events", "purpose": "Fan-appreciation event collabs", "state": "live", "spec": "#agent-spec", "open_actions": 0 },
@@ -87,10 +88,10 @@
     {
       "id": "consolidate-duplicate-landing",
       "title": "Consolidate the duplicate landing",
-      "status": "pending", "priority": "med", "type": "refactor",
+      "status": "done", "priority": "med", "type": "refactor",
       "file": "72-landing-merged.html",
-      "do": "72-landing-merged.html is a byte-copy of index.html. Point the dashboards at one file and remove the duplicate so they never drift.",
-      "verify": "No page links to a second copy of the landing; index.html is the single source.",
+      "do": "DONE: 72-landing-merged.html was a byte-copy of index.html that drifted. Collapsed into a redirect shim to /index.html (preserves query string + hash), so the dashboard 'Your page' link and owner invite links still resolve without editing the dashboards. index.html is now the single landing source.",
+      "verify": "72-landing-merged.html redirects to /index.html; no second full copy of the landing remains.",
       "refs": ["CLAUDE.md", "72-mission-control.html#TK-08"]
     },
     {

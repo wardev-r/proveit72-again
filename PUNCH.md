@@ -37,7 +37,7 @@ Killed: Netlify, Railway, extra Pages projects, Twilio paid support.
 - [ ] **Railway:** open it, see what it runs. If nothing's needed → delete the project. (Check before deleting.)
 
 ## PHASE 4 — Tidy the rest
-- [ ] **Twilio:** cancel paid support plan (reverts to free) + request refund for the accidental/early charge. Keep the account.
+- [x] **Twilio:** paid support cancelled — reverted to free (status back) and the accidental/early charge was refunded. Account kept. ✅ RESOLVED
 - [ ] **GitHub (later, low priority):** clean up branches / set a real default branch. Not urgent.
 - [ ] **Stripe:** confirm Live mode + Live payment link in use.
 

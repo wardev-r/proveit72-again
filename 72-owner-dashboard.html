@@ -481,8 +481,11 @@
 
 <script>
   // ── Config ────────────────────────────────────────────────────────────────
-  const WORKER_URL = 'https://lively-mud-9c4b.ward602.workers.dev';
-  const OWNER_KEY  = 'YOUR_OWNER_API_KEY'; // set OWNER_API_KEY env var in Worker
+  const WORKER_URL = 'https://api.velvetrope2you.com';
+  // ⚠ SECURITY: this key is visible in page source. Do NOT paste a real production
+  // key here — anyone could read it. Proper fix: gate the owner console behind a
+  // server-side login (see agent action "harden-owner-auth"). Placeholder for now.
+  const OWNER_KEY  = 'YOUR_OWNER_API_KEY';
 
   // ── Mock data (replace with live Worker data) ─────────────────────────────
   let allCreators = [
@@ -593,6 +596,7 @@
 
   // ── Charts ────────────────────────────────────────────────────────────────
   function buildCharts() {
+    if (typeof Chart === 'undefined') return; // chart lib failed to load — skip, don't crash the console
     // Revenue line chart (30 days mock)
     const labels = Array.from({ length: 30 }, (_, i) => {
       const d = new Date(); d.setDate(d.getDate() - (29 - i));
@@ -693,8 +697,9 @@
   }
 
   // ── Init ──────────────────────────────────────────────────────────────────
-  buildCharts();
+  // Load data first so a CDN/chart failure can never take down the console.
   loadData();
+  try { buildCharts(); } catch (e) { console.warn('Charts unavailable:', e); }
 </script>
 </body>
 </html>

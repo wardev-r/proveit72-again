@@ -10,7 +10,7 @@
     "secrets_rule": "Never commit sk_live_*/sk_test_*. Worker secrets via `wrangler secret put`. pk_* and Buy-Button IDs are safe to commit.",
     "do_not_touch": ["72-app-dashboard.html", "72-owner-dashboard.html"],
     "reuse_first": "Scan boneyard/index.json before hand-building any UI.",
-    "stack": { "host": "Cloudflare Pages (vrpi72-home)", "backend": "Cloudflare Worker (lively-mud-9c4b)", "pay": "Stripe", "video": "Jitsi (meet.jit.si)", "telephony": "Twilio (planned)" },
+    "stack": { "host": "Cloudflare Pages (vrpi72-home)", "backend": "Cloudflare Worker (service lively-mud-9c4b) served at api.velvetrope2you.com", "pay": "Stripe", "video": "Jitsi (meet.jit.si)", "telephony": "Twilio (planned)" },
     "twilio_rule": "Provision phone numbers in the 772 area code ONLY (on-brand with '72'). Any number search/purchase must filter areaCode=772."
   },
   "sources_of_truth": {
@@ -111,6 +111,31 @@
       "file": "privacy.html",
       "do": "Once Netlify is fully removed from the stack, trim its mention from the privacy policy service list.",
       "refs": ["PUNCH.md", "72-mission-control.html#PG-05"]
+    },
+    {
+      "id": "deploy-worker-custom-domain",
+      "title": "Deploy the Worker on api.velvetrope2you.com",
+      "status": "pending", "priority": "high", "type": "deploy",
+      "file": "wrangler.toml",
+      "do": "Run `npx wrangler deploy`. The custom_domain route provisions api.velvetrope2you.com (hostname + TLS + proxied DNS record) automatically. Then set the 4 secrets (STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, PLATFORM_URL=https://velvetrope2you.com, OWNER_API_KEY) and point the Stripe webhook at https://api.velvetrope2you.com/webhook.",
+      "blocked_by": "human-runs-wrangler-deploy",
+      "verify": "https://api.velvetrope2you.com responds and the dashboards load live data."
+    },
+    {
+      "id": "wire-call-route",
+      "title": "Build the /call/<handle> pay-then-room route",
+      "status": "pending", "priority": "high", "type": "code-edit",
+      "file": "72-stripe-worker.js",
+      "do": "The member QR now encodes https://velvetrope2you.com/call/<handle>, but no /call/ route exists yet. Build it: resolve <handle> to creator, take payment, then redirect into a freshly-minted Jitsi room. Rooms must be ephemeral (one per paid call), never a reusable public room.",
+      "verify": "Scanning a member QR charges the caller and drops them into a fresh room."
+    },
+    {
+      "id": "harden-owner-auth",
+      "title": "Gate the owner console server-side",
+      "status": "pending", "priority": "med", "type": "security",
+      "file": "72-owner-dashboard.html",
+      "do": "OWNER_KEY currently sits in client-side source (readable by anyone). Move owner auth to a server-side login/session so no admin key is exposed in the page.",
+      "verify": "No admin key in page source; owner data requires an authenticated session."
     }
   ]
 }

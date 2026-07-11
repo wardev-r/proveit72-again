@@ -471,10 +471,10 @@
           <div class="price-sub">per call · callers pay before connecting</div>
         </div>
         <div class="slider-wrap">
-          <input type="range" id="priceSlider" min="3" max="72" step="1" value="20"
+          <input type="range" id="priceSlider" min="5" max="72" step="1" value="20"
             oninput="onSliderInput(this.value)" />
           <div class="slider-labels">
-            <span>$3</span>
+            <span>$5</span>
             <span>$72</span>
           </div>
         </div>
@@ -496,8 +496,8 @@
 
 <script>
   // ── Config ────────────────────────────────────────────────────────────────
-  const WORKER_URL = 'https://lively-mud-9c4b.ward602.workers.dev';
-  const BASE_CALL_URL = 'https://your-domain.com/call/';
+  const WORKER_URL = 'https://api.velvetrope2you.com';
+  const BASE_CALL_URL = 'https://velvetrope2you.com/call/';
 
   // ── State ─────────────────────────────────────────────────────────────────
   let creator = null;

@@ -2,7 +2,7 @@
 
 **Effective date: July 11, 2026**
 
-This Policy explains how **wtvrwnvrwext**, operator of 72 and velvetrope2you.com, handles personal information. Contact: support@velvetrope2you.com; 3021 W Clarendon, **[CITY, ARIZONA ZIP REQUIRED]**.
+This Policy explains how **wtvrwnvrwext**, operator of 72 and velvetrope2you.com, handles personal information. Contact: support@velvetrope2you.com; 3021 W Clarendon, Phoenix, AZ 85017.
 
 ## 1. Information we handle
 

@@ -22,7 +22,7 @@
 
 const STRIPE_API = 'https://api.stripe.com/v1';
 const PLATFORM_FEE_PERCENT = 0.28;   // platform keeps 28%, creators keep 72%
-const PRODUCT_ID = 'prod_Ulrihflh9rgLYB';
+const PRODUCT_NAME = '72 Membership'; // created inline per-mode; no pre-made product id needed
 const SUBSCRIPTION_AMOUNT_CENTS = 720; // $7.20/month
 const TRIAL_DAYS = 30;
 
@@ -131,7 +131,7 @@ async function handleCheckout(request, env) {
     line_items: [{
       price_data: {
         currency: 'usd',
-        product: PRODUCT_ID,
+        product_data: { name: PRODUCT_NAME },
         recurring: { interval: 'month' },
         unit_amount: SUBSCRIPTION_AMOUNT_CENTS,
       },

@@ -6,7 +6,7 @@ This Addendum supplements the 72 Terms of Service. It applies to every person, p
 
 ## 1. Independent provider
 
-You act independently and are not an employee, partner, franchisee, representative, fiduciary, or agent of wtvrwnvrwext or 72. You may not bind 72 or imply that 72 endorses you.
+You act independently and are not an employee, partner, franchisee, representative, fiduciary, or agent of wtvrwnvrwext 72 or 72. You may not bind 72 or imply that 72 endorses you.
 
 ## 2. Your offer
 

@@ -84,5 +84,16 @@
   </nav>
   <p style="font-size:.75rem;color:#555">© 2026 72 · velvetrope2you.com · In beta — more rolling out</p>
 </footer>
+<script type="application/json" id="agent-spec">
+{
+  "schema": "72.agent-spec/v1",
+  "page": { "path": "/terms.html", "title": "Terms", "purpose": "Terms of service (general template)", "state": "live" },
+  "board": "/agents.json",
+  "sitemap": "/llms.txt",
+  "actions": [
+    { "id": "legal-template-review", "status": "pending", "priority": "low", "type": "decision", "do": "Template, not legal advice. Have a qualified attorney review before relying on it.", "blocked_by": "human-legal-review" }
+  ]
+}
+</script>
 </body>
 </html>

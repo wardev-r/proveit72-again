@@ -883,5 +883,17 @@
     }
   }
 </script>
+<script type="application/json" id="agent-spec">
+{
+  "schema": "72.agent-spec/v1",
+  "page": { "path": "/index.html", "title": "Home / launchpad", "purpose": "Landing: who-it's-for + hub of buttons to every page", "state": "live" },
+  "board": "/agents.json",
+  "sitemap": "/llms.txt",
+  "actions": [
+    { "id": "stripe-payment-link-live", "status": "blocked", "priority": "high", "type": "code-edit", "anchor": "const STRIPE_PAYMENT_LINK", "do": "Replace the test STRIPE_PAYMENT_LINK with the live buy.stripe.com link; mirror the same value into 72-landing-merged.html and 72-landing-opal.html.", "inputs_required": ["live Stripe Payment Link URL"], "blocked_by": "human-supplies-live-payment-link" },
+    { "id": "consolidate-duplicate-landing", "status": "pending", "priority": "med", "type": "refactor", "do": "72-landing-merged.html is a byte-copy of this file; consolidate to one source and repoint the dashboards.", "refs": ["72-mission-control.html#TK-08"] }
+  ]
+}
+</script>
 </body>
 </html>

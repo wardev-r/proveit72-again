@@ -123,5 +123,16 @@
     </nav>
     <p style="font-size:.75rem;color:#555">© 2026 72 · velvetrope2you.com · In beta — more rolling out</p>
   </footer>
+<script type="application/json" id="agent-spec">
+{
+  "schema": "72.agent-spec/v1",
+  "page": { "path": "/meet.html", "title": "Live video meets", "purpose": "QR-accessed paid live video rooms (scan -> pay -> private Jitsi room)", "state": "beta" },
+  "board": "/agents.json",
+  "sitemap": "/llms.txt",
+  "actions": [
+    { "id": "wire-real-qr", "status": "pending", "priority": "med", "type": "code-edit", "anchor": "class=\"frame\"", "do": "The QR SVG in .qr-card is illustrative only. Swap for the member's real generated QR (from qr.html / member dashboard) that deep-links to their pay-then-room flow.", "inputs_required": ["per-member room + pay link"], "verify": "Scanning opens checkout and lands in the member's room." }
+  ]
+}
+</script>
 </body>
 </html>

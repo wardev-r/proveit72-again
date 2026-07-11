@@ -1,0 +1,114 @@
+{
+  "schema": "72.agent-board/v1",
+  "site": "velvetrope2you.com",
+  "generated": "2026-07-11",
+  "summary": "Machine-readable execution board for the 72 site. For agents, not people. Each page also embeds its own scoped spec at <script type=\"application/json\" id=\"agent-spec\">. Statuses: pending (do it now) | blocked (needs an input first) | done. Priority: high | med | low.",
+  "conventions": {
+    "brand": { "name": "72", "domain": "velvetrope2you.com", "accent": "#D4A017", "bg": "#080808", "font": "Inter", "split": "72% creator / 28% platform" },
+    "membership": "Every user is a member. First month free, then $7.20/month. Product is in beta.",
+    "branch": "Develop on a feature branch, never main.",
+    "secrets_rule": "Never commit sk_live_*/sk_test_*. Worker secrets via `wrangler secret put`. pk_* and Buy-Button IDs are safe to commit.",
+    "do_not_touch": ["72-app-dashboard.html", "72-owner-dashboard.html"],
+    "reuse_first": "Scan boneyard/index.json before hand-building any UI.",
+    "stack": { "host": "Cloudflare Pages (vrpi72-home)", "backend": "Cloudflare Worker (lively-mud-9c4b)", "pay": "Stripe", "video": "Jitsi (meet.jit.si)" }
+  },
+  "sources_of_truth": {
+    "guide": "CLAUDE.md",
+    "deploy": "PUNCH.md",
+    "human_board": "72-mission-control.html",
+    "link_map": "/llms.txt"
+  },
+  "pages": [
+    { "path": "/index.html", "title": "Home / launchpad", "purpose": "Landing: who-it's-for + hub of buttons to every page", "state": "live", "spec": "#agent-spec", "open_actions": 2 },
+    { "path": "/meet.html", "title": "Live video meets", "purpose": "QR-accessed paid live video rooms", "state": "beta", "spec": "#agent-spec", "open_actions": 1 },
+    { "path": "/paygate.html", "title": "Paid calls", "purpose": "Creator signup + Stripe checkout", "state": "beta", "spec": "#agent-spec", "open_actions": 2 },
+    { "path": "/events.html", "title": "Fan events", "purpose": "Fan-appreciation event collabs", "state": "live", "spec": "#agent-spec", "open_actions": 0 },
+    { "path": "/why72.html", "title": "Why 72", "purpose": "For-everyone explainer", "state": "live", "spec": "#agent-spec", "open_actions": 0 },
+    { "path": "/privacy.html", "title": "Privacy", "purpose": "Privacy policy (template)", "state": "live", "spec": "#agent-spec", "open_actions": 2 },
+    { "path": "/terms.html", "title": "Terms", "purpose": "Terms of service (template)", "state": "live", "spec": "#agent-spec", "open_actions": 1 }
+  ],
+  "actions": [
+    {
+      "id": "stripe-buybutton-live-flip",
+      "title": "Flip paygate Buy Button from test to live",
+      "status": "blocked", "priority": "high", "type": "code-edit",
+      "file": "paygate.html", "anchor": "<stripe-buy-button>",
+      "current": { "buy-button-id": "buy_btn_1Tqn8pLXf4KncHAn13XjOenm", "publishable-key": "pk_test_51Tdr5p..." },
+      "do": "Replace the test buy-button-id and pk_test_* publishable-key with the LIVE Buy-Button ID and pk_live_* key (remade in Stripe Live mode).",
+      "inputs_required": ["live buy-button-id", "pk_live_* publishable key"],
+      "blocked_by": "human-supplies-live-stripe-values",
+      "verify": "Load paygate.html; Buy Button renders in live mode; a real card is charged.",
+      "refs": ["PUNCH.md", "72-mission-control.html#TK-06"]
+    },
+    {
+      "id": "stripe-payment-link-live",
+      "title": "Flip landing Payment Link from test to live",
+      "status": "blocked", "priority": "high", "type": "code-edit",
+      "file": "index.html", "anchor": "const STRIPE_PAYMENT_LINK",
+      "current": { "STRIPE_PAYMENT_LINK": "https://buy.stripe.com/dRm3cx8RTaPE1eD2Mq2kw05" },
+      "do": "Replace STRIPE_PAYMENT_LINK with the live buy.stripe.com link (first month free, then $7.20/mo). Mirror the same value into 72-landing-merged.html and 72-landing-opal.html.",
+      "inputs_required": ["live Stripe Payment Link URL"],
+      "blocked_by": "human-supplies-live-payment-link",
+      "verify": "Signup flow opens the live checkout and charges after the free month.",
+      "refs": ["72-mission-control.html#TK-06"]
+    },
+    {
+      "id": "worker-stripe-secret-live",
+      "title": "Set the Worker's live Stripe secret",
+      "status": "blocked", "priority": "high", "type": "config",
+      "file": "72-stripe-worker.js", "anchor": "STRIPE_SECRET_KEY",
+      "do": "Run `wrangler secret put STRIPE_SECRET_KEY` with the sk_live_* key. Never commit it.",
+      "inputs_required": ["sk_live_* secret key (out-of-band)"],
+      "blocked_by": "human-runs-wrangler-secret",
+      "verify": "Worker completes a live Stripe checkout session.",
+      "refs": ["72-mission-control.html#FN-03"]
+    },
+    {
+      "id": "wire-toll-pack-link",
+      "title": "Wire the 10-call toll pack button",
+      "status": "blocked", "priority": "med", "type": "code-edit",
+      "file": "paygate.html", "anchor": "Coming soon",
+      "do": "Replace the toll-pack 'Coming soon' placeholder anchor with the live $7.20 10-call-pack Stripe link once phone numbers/routing are on.",
+      "inputs_required": ["live toll-pack Stripe link", "phone numbers active"],
+      "blocked_by": "twilio-numbers-and-routing",
+      "verify": "Toll-pack button opens checkout for the 10-call pack.",
+      "refs": ["72-mission-control.html#TK-10"]
+    },
+    {
+      "id": "wire-real-qr",
+      "title": "Replace illustrative QR with the real per-member QR",
+      "status": "pending", "priority": "med", "type": "code-edit",
+      "file": "meet.html", "anchor": "class=\"frame\"",
+      "do": "The QR SVG in the .qr-card frame is illustrative only. Swap for the member's real generated QR (from qr.html / member dashboard) that deep-links to their pay-then-room flow.",
+      "inputs_required": ["per-member room + pay link"],
+      "verify": "Scanning the QR opens checkout and lands in the member's Jitsi room.",
+      "refs": ["qr.html"]
+    },
+    {
+      "id": "consolidate-duplicate-landing",
+      "title": "Consolidate the duplicate landing",
+      "status": "pending", "priority": "med", "type": "refactor",
+      "file": "72-landing-merged.html",
+      "do": "72-landing-merged.html is a byte-copy of index.html. Point the dashboards at one file and remove the duplicate so they never drift.",
+      "verify": "No page links to a second copy of the landing; index.html is the single source.",
+      "refs": ["CLAUDE.md", "72-mission-control.html#TK-08"]
+    },
+    {
+      "id": "legal-template-review",
+      "title": "Have privacy + terms reviewed",
+      "status": "pending", "priority": "low", "type": "decision",
+      "file": ["privacy.html", "terms.html"],
+      "do": "Both documents are general templates, not legal advice. Have a qualified attorney review before relying on them.",
+      "blocked_by": "human-legal-review",
+      "verify": "Attorney sign-off recorded."
+    },
+    {
+      "id": "trim-netlify-mentions",
+      "title": "Trim Netlify references once it's gone",
+      "status": "pending", "priority": "low", "type": "content",
+      "file": "privacy.html",
+      "do": "Once Netlify is fully removed from the stack, trim its mention from the privacy policy service list.",
+      "refs": ["PUNCH.md", "72-mission-control.html#PG-05"]
+    }
+  ]
+}

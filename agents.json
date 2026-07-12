@@ -21,7 +21,7 @@
     "link_map": "/llms.txt"
   },
   "pages": [
-    { "path": "/index.html", "title": "Home / launchpad", "purpose": "Landing: who-it's-for + hub of buttons to every page", "state": "live", "spec": "#agent-spec", "open_actions": 1 },
+    { "path": "/index.html", "title": "Home / launchpad", "purpose": "Landing: who-it's-for + hub of buttons to every page", "state": "live", "spec": "#agent-spec", "open_actions": 0 },
     { "path": "/72-landing-merged.html", "title": "Legacy landing (redirect)", "purpose": "Redirect shim to /index.html; kept so old dashboard/invite links resolve", "state": "deprecated", "spec": "#agent-spec", "open_actions": 0 },
     { "path": "/meet.html", "title": "Live video meets", "purpose": "QR-accessed paid live video rooms", "state": "beta", "spec": "#agent-spec", "open_actions": 1 },
     { "path": "/paygate.html", "title": "Paid calls", "purpose": "Creator signup + Stripe checkout", "state": "beta", "spec": "#agent-spec", "open_actions": 2 },
@@ -46,12 +46,10 @@
     {
       "id": "stripe-payment-link-live",
       "title": "Flip landing Payment Link from test to live",
-      "status": "blocked", "priority": "high", "type": "code-edit",
+      "status": "done", "priority": "high", "type": "code-edit",
       "file": "index.html", "anchor": "const STRIPE_PAYMENT_LINK",
-      "current": { "STRIPE_PAYMENT_LINK": "https://buy.stripe.com/dRm3cx8RTaPE1eD2Mq2kw05" },
-      "do": "Replace STRIPE_PAYMENT_LINK with the live buy.stripe.com link (first month free, then $7.20/mo). Mirror the same value into 72-landing-merged.html and 72-landing-opal.html.",
-      "inputs_required": ["live Stripe Payment Link URL"],
-      "blocked_by": "human-supplies-live-payment-link",
+      "current": { "STRIPE_PAYMENT_LINK": "https://buy.stripe.com/bpc_1TsI5VPvhOmAQXCzUkdJoMuu" },
+      "do": "DONE: live Payment Link wired into index.html + 72-landing-opal.html. (Human to confirm it opens a real $7.20 checkout in an incognito window.)",
       "verify": "Signup flow opens the live checkout and charges after the free month.",
       "refs": ["72-mission-control.html#TK-06"]
     },

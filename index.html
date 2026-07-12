@@ -797,7 +797,7 @@
   // ── Config — paste your Stripe Payment Link here ──────────────────────────
   // Get it from: stripe.com/dashboard → Payment Links → Create
   // Set product: "72 – First month free", $7.20/mo, 30-day trial
-  const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/dRm3cx8RTaPE1eD2Mq2kw05';
+  const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/bpc_1TsI5VPvhOmAQXCzUkdJoMuu';
 
   // ── Rotating headline ─────────────────────────────────────────────────────
   const slides = document.querySelectorAll('.headline-slide');
@@ -889,9 +889,7 @@
   "page": { "path": "/index.html", "title": "Home / launchpad", "purpose": "Landing: who-it's-for + hub of buttons to every page", "state": "live" },
   "board": "/agents.json",
   "sitemap": "/llms.txt",
-  "actions": [
-    { "id": "stripe-payment-link-live", "status": "blocked", "priority": "high", "type": "code-edit", "anchor": "const STRIPE_PAYMENT_LINK", "do": "Replace the test STRIPE_PAYMENT_LINK with the live buy.stripe.com link; mirror the same value into 72-landing-opal.html.", "inputs_required": ["live Stripe Payment Link URL"], "blocked_by": "human-supplies-live-payment-link" }
-  ]
+  "actions": []
 }
 </script>
 </body>

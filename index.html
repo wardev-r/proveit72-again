@@ -797,7 +797,7 @@
   // ── Config — paste your Stripe Payment Link here ──────────────────────────
   // Get it from: stripe.com/dashboard → Payment Links → Create
   // Set product: "72 – First month free", $7.20/mo, 30-day trial
-  const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/bpc_1TsI5VPvhOmAQXCzUkdJoMuu';
+  const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/dRm3cx8RTaPE1eD2Mq2kw05';
 
   // ── Rotating headline ─────────────────────────────────────────────────────
   const slides = document.querySelectorAll('.headline-slide');
@@ -889,7 +889,9 @@
   "page": { "path": "/index.html", "title": "Home / launchpad", "purpose": "Landing: who-it's-for + hub of buttons to every page", "state": "live" },
   "board": "/agents.json",
   "sitemap": "/llms.txt",
-  "actions": []
+  "actions": [
+    { "id": "stripe-payment-link-live", "status": "blocked", "priority": "high", "type": "code-edit", "anchor": "const STRIPE_PAYMENT_LINK", "do": "Wire the live $7.20/mo membership checkout (owner is providing a Buy Button). An earlier bpc_ link was the wrong product (AI sauce) and was pulled — currently back on the TEST link.", "blocked_by": "human-supplies-membership-checkout" }
+  ]
 }
 </script>
 </body>

@@ -131,6 +131,14 @@
       "verify": "Scanning a member QR charges the caller and drops them into a fresh room; the creator can join the same room."
     },
     {
+      "id": "whitelist-expansion-blocks",
+      "title": "Whitelist expansion + paid access blocks",
+      "status": "pending", "priority": "low", "type": "feature",
+      "file": "72-stripe-worker.js",
+      "do": "LATER (owner's note): creators get 5 free whitelisted numbers that always ring through; selling additional access as paid blocks/packs is the attention-toll model. Count + lock enforcement MUST live in the Worker/KV, never client-side (a member can reset localStorage).",
+      "verify": "Creators can grow their whitelist; buyers can purchase expansion blocks; limits enforced server-side."
+    },
+    {
       "id": "harden-owner-auth",
       "title": "Gate the owner console server-side",
       "status": "pending", "priority": "med", "type": "security",

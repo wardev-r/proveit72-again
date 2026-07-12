@@ -111,8 +111,8 @@
       <div class="eyebrow" style="justify-content:center">Secure checkout</div>
       <p>Pay by card in seconds — checkout is handled securely by Stripe.</p>
       <stripe-buy-button
-        buy-button-id="buy_btn_1Tqn8pLXf4KncHAn13XjOenm"
-        publishable-key="pk_test_51Tdr5pLXf4KncHAn7L3ylOg3Ao5f4XvwkAlvPFNsBLeyhEfqH12YXaRCRPVJTHEjxT1kmHoaLrTRCkcjKlk1AboG00iCbDwAxb">
+        buy-button-id="buy_btn_1TsIzuPvhOmAQXCzO3TUG78S"
+        publishable-key="pk_live_51Tdr5WPvhOmAQXCzyKf8mZiaGdp8ze7BuiaYp8hveeACog5wg132Yklcn9I90aXONhtvxX81yJbEAizKajvfYR8A005PtojPTf">
       </stripe-buy-button>
     </div>
 
@@ -196,7 +196,6 @@ async function handlePgSubmit(e){
   "board": "/agents.json",
   "sitemap": "/llms.txt",
   "actions": [
-    { "id": "stripe-buybutton-live-flip", "status": "blocked", "priority": "high", "type": "code-edit", "anchor": "<stripe-buy-button>", "current": { "buy-button-id": "buy_btn_1Tqn8pLXf4KncHAn13XjOenm", "publishable-key": "pk_test_51Tdr5p..." }, "do": "Replace the test buy-button-id and pk_test_* publishable-key with the LIVE Buy-Button ID and pk_live_* key.", "inputs_required": ["live buy-button-id", "pk_live_* key"], "blocked_by": "human-supplies-live-stripe-values", "verify": "Buy Button renders live; a real card is charged." },
     { "id": "wire-toll-pack-link", "status": "blocked", "priority": "med", "type": "code-edit", "anchor": "Coming soon", "do": "Replace the toll-pack 'Coming soon' placeholder anchor with the live $7.20 10-call-pack Stripe link once phone numbers/routing are on.", "inputs_required": ["live toll-pack Stripe link", "phone numbers active"], "blocked_by": "twilio-numbers-and-routing" }
   ]
 }

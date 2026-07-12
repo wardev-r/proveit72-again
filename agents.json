@@ -21,7 +21,7 @@
     "link_map": "/llms.txt"
   },
   "pages": [
-    { "path": "/index.html", "title": "Home / launchpad", "purpose": "Landing: who-it's-for + hub of buttons to every page", "state": "live", "spec": "#agent-spec", "open_actions": 1 },
+    { "path": "/index.html", "title": "Home / launchpad", "purpose": "Landing: who-it's-for + hub of buttons to every page", "state": "live", "spec": "#agent-spec", "open_actions": 0 },
     { "path": "/72-landing-merged.html", "title": "Legacy landing (redirect)", "purpose": "Redirect shim to /index.html; kept so old dashboard/invite links resolve", "state": "deprecated", "spec": "#agent-spec", "open_actions": 0 },
     { "path": "/meet.html", "title": "Live video meets", "purpose": "QR-accessed paid live video rooms", "state": "beta", "spec": "#agent-spec", "open_actions": 1 },
     { "path": "/paygate.html", "title": "Paid calls", "purpose": "Creator signup + Stripe checkout", "state": "beta", "spec": "#agent-spec", "open_actions": 1 },
@@ -44,13 +44,10 @@
     {
       "id": "stripe-payment-link-live",
       "title": "Wire the live membership checkout",
-      "status": "blocked", "priority": "high", "type": "code-edit",
-      "file": "index.html", "anchor": "const STRIPE_PAYMENT_LINK",
-      "current": { "STRIPE_PAYMENT_LINK": "https://buy.stripe.com/dRm3cx8RTaPE1eD2Mq2kw05 (TEST)" },
-      "do": "Owner is providing a Stripe Buy Button for the $7.20/mo membership. NOTE: an earlier bpc_ link was the wrong product (owner's separate 'AI sauce' checkout) and was pulled. Wire the real membership checkout: either the membership Buy Button (embed) or its Payment Link into STRIPE_PAYMENT_LINK (index.html + 72-landing-opal.html).",
-      "inputs_required": ["membership Buy Button snippet (buy_btn_ + pk_live_) OR membership Payment Link URL"],
-      "blocked_by": "human-supplies-membership-checkout",
-      "verify": "Landing signup opens the live $7.20 membership checkout (first month free).",
+      "status": "done", "priority": "high", "type": "code-edit",
+      "file": "index.html",
+      "do": "DONE: landing signup (goToStripe) now routes to /paygate.html, where the live membership Buy Button (buy_btn_1TsIzu…) lives. The old test STRIPE_PAYMENT_LINK const was removed from the landing. (Earlier bpc_ link was the wrong product and was pulled.) 72-landing-opal.html still has its own STRIPE_PAYMENT_LINK on the TEST link — update or repoint it if that variant goes live.",
+      "verify": "Landing signup buttons lead to the live $7.20 membership checkout.",
       "refs": ["72-mission-control.html#TK-06"]
     },
     {

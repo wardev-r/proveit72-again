@@ -794,10 +794,8 @@
 </div><!-- end #mainPage -->
 
 <script>
-  // ── Config — paste your Stripe Payment Link here ──────────────────────────
-  // Get it from: stripe.com/dashboard → Payment Links → Create
-  // Set product: "72 – First month free", $7.20/mo, 30-day trial
-  const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/dRm3cx8RTaPE1eD2Mq2kw05';
+  // Signup routes to /paygate.html, where the live membership Buy Button lives.
+  // (No payment link needed on the landing.)
 
   // ── Rotating headline ─────────────────────────────────────────────────────
   const slides = document.querySelectorAll('.headline-slide');
@@ -854,8 +852,9 @@
   }
 
   function goToStripe(email) {
-    const url = new URL(STRIPE_PAYMENT_LINK);
-    url.searchParams.set('prefilled_email', email);
+    // Route to the membership checkout page — the live Buy Button lives on paygate.html.
+    const url = new URL('/paygate.html', window.location.origin);
+    if (email) url.searchParams.set('email', email);
     window.location.href = url.toString();
   }
 
@@ -889,9 +888,7 @@
   "page": { "path": "/index.html", "title": "Home / launchpad", "purpose": "Landing: who-it's-for + hub of buttons to every page", "state": "live" },
   "board": "/agents.json",
   "sitemap": "/llms.txt",
-  "actions": [
-    { "id": "stripe-payment-link-live", "status": "blocked", "priority": "high", "type": "code-edit", "anchor": "const STRIPE_PAYMENT_LINK", "do": "Wire the live $7.20/mo membership checkout (owner is providing a Buy Button). An earlier bpc_ link was the wrong product (AI sauce) and was pulled — currently back on the TEST link.", "blocked_by": "human-supplies-membership-checkout" }
-  ]
+  "actions": []
 }
 </script>
 </body>

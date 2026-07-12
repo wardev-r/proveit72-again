@@ -126,9 +126,9 @@
       "id": "wire-call-route",
       "title": "Build the /call/<handle> pay-then-room route",
       "status": "pending", "priority": "high", "type": "code-edit",
-      "file": "72-stripe-worker.js",
-      "do": "The member QR now encodes https://velvetrope2you.com/call/<handle>, but no /call/ route exists yet. Build it: resolve <handle> to creator, take payment, then redirect into a freshly-minted Jitsi room. Rooms must be ephemeral (one per paid call), never a reusable public room.",
-      "verify": "Scanning a member QR charges the caller and drops them into a fresh room."
+      "file": "call.html",
+      "do": "V1 BUILT: call.html (pay page) + room.html (Jitsi room) + _redirects (/call/* -> call.html) + Worker routes /call-info/<handle> (public) and /create-call-checkout (hosted Checkout, destination charge keeps creator 72%, ephemeral room per call). REMAINING before done: (1) live end-to-end test once the Worker is deployed + a creator has a Connect account, (2) notify/route the CREATOR into the room — currently onCheckoutComplete stores creator.activeRoom but nothing surfaces it to them; add a dashboard 'join active room' cue or a Twilio/email ping. Handle resolution scans KV by username; add a username->id index if volume grows.",
+      "verify": "Scanning a member QR charges the caller and drops them into a fresh room; the creator can join the same room."
     },
     {
       "id": "harden-owner-auth",

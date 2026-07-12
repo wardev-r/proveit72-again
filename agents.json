@@ -24,7 +24,7 @@
     { "path": "/index.html", "title": "Home / launchpad", "purpose": "Landing: who-it's-for + hub of buttons to every page", "state": "live", "spec": "#agent-spec", "open_actions": 0 },
     { "path": "/72-landing-merged.html", "title": "Legacy landing (redirect)", "purpose": "Redirect shim to /index.html; kept so old dashboard/invite links resolve", "state": "deprecated", "spec": "#agent-spec", "open_actions": 0 },
     { "path": "/meet.html", "title": "Live video meets", "purpose": "QR-accessed paid live video rooms", "state": "beta", "spec": "#agent-spec", "open_actions": 1 },
-    { "path": "/paygate.html", "title": "Paid calls", "purpose": "Creator signup + Stripe checkout", "state": "beta", "spec": "#agent-spec", "open_actions": 1 },
+    { "path": "/paygate.html", "title": "Paid calls", "purpose": "Creator signup + Stripe checkout", "state": "beta", "spec": "#agent-spec", "open_actions": 0 },
     { "path": "/events.html", "title": "Fan events", "purpose": "Fan-appreciation event collabs", "state": "live", "spec": "#agent-spec", "open_actions": 0 },
     { "path": "/why72.html", "title": "Why 72", "purpose": "For-everyone explainer", "state": "live", "spec": "#agent-spec", "open_actions": 0 },
     { "path": "/privacy.html", "title": "Privacy", "purpose": "Privacy policy (template)", "state": "live", "spec": "#agent-spec", "open_actions": 2 },
@@ -64,12 +64,10 @@
     {
       "id": "wire-toll-pack-link",
       "title": "Wire the 10-call toll pack button",
-      "status": "blocked", "priority": "med", "type": "code-edit",
-      "file": "paygate.html", "anchor": "Coming soon",
-      "do": "Replace the toll-pack 'Coming soon' placeholder anchor with the live $7.20 10-call-pack Stripe link once phone numbers/routing are on.",
-      "inputs_required": ["live toll-pack Stripe link", "phone numbers active"],
-      "blocked_by": "twilio-numbers-and-routing",
-      "verify": "Toll-pack button opens checkout for the 10-call pack.",
+      "status": "done", "priority": "med", "type": "code-edit",
+      "file": "paygate.html",
+      "do": "SCRUBBED: the 72¢ / $7.20 10-call-pack 'toll' was removed from paygate (it clashed with the $5 per-call floor and doubled the $7.20 membership number). The free-5 whitelist stays; everyone else now just pays the creator's rate. Future paid whitelist expansion is tracked in whitelist-expansion-blocks.",
+      "verify": "No 72¢ / 10-call-pack / toll copy remains on paygate.",
       "refs": ["72-mission-control.html#TK-10"]
     },
     {

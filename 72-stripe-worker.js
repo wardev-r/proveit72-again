@@ -21,8 +21,11 @@
  */
 
 const STRIPE_API = 'https://api.stripe.com/v1';
+// ⚠ INVIOLABLE: creators keep 72%. This is the brand's defining promise — never
+// raise this above 0.28. Any fee/cost comes from the CALLER's total or the
+// platform's 28%, never from the creator's 72%. (Owner: close doors before 71%.)
 const PLATFORM_FEE_PERCENT = 0.28;   // platform keeps 28%, creators keep 72%
-const PRODUCT_ID = 'prod_Ulrihflh9rgLYB';
+const PRODUCT_NAME = '72 Membership'; // created inline per-mode; no pre-made product id needed
 const SUBSCRIPTION_AMOUNT_CENTS = 720; // $7.20/month
 const TRIAL_DAYS = 30;
 
@@ -48,6 +51,10 @@ export default {
         result = await handleCheckout(request, env);
       } else if (path === '/create-call-payment' && request.method === 'POST') {
         result = await handleCallPayment(request, env);
+      } else if (path === '/create-call-checkout' && request.method === 'POST') {
+        result = await handleCallCheckout(request, env);
+      } else if (path.startsWith('/call-info/') && request.method === 'GET') {
+        result = await handleCallInfo(request, env, path);
       } else if (path === '/connect-onboard' && request.method === 'POST') {
         result = await handleConnectOnboard(request, env);
       } else if (path === '/dashboard-link' && request.method === 'GET') {
@@ -131,7 +138,7 @@ async function handleCheckout(request, env) {
     line_items: [{
       price_data: {
         currency: 'usd',
-        product: PRODUCT_ID,
+        product_data: { name: PRODUCT_NAME },
         recurring: { interval: 'month' },
         unit_amount: SUBSCRIPTION_AMOUNT_CENTS,
       },
@@ -188,6 +195,87 @@ async function handleCallPayment(request, env) {
       creatorPercent: 72,
     },
   };
+}
+
+// Resolve a creator by public handle: try it as a userId first, then match username.
+async function resolveCreatorByHandle(env, handle) {
+  const direct = await getCreator(env, handle);
+  if (direct) return direct;
+  if (!env.KV_72) return null;
+  const list = await env.KV_72.list({ prefix: 'creator:' });
+  for (const k of list.keys) {
+    const raw = await env.KV_72.get(k.name);
+    if (!raw) continue;
+    const c = JSON.parse(raw);
+    if (c.username === handle) return c;
+  }
+  return null;
+}
+
+// Public: the /call/<handle> page reads this to show name + price before paying.
+async function handleCallInfo(request, env, path) {
+  const handle = path.split('/').filter(Boolean)[1];
+  if (!handle) throw new Error('handle required');
+  const c = await resolveCreatorByHandle(env, handle);
+  if (!c) throw new Error('Creator not found');
+  return {
+    handle: c.username || c.userId,
+    name: c.displayName || c.username || 'a 72 creator',
+    pricePerCall: Math.max(5, Number(c.pricePerCall) || 5),
+    isOnline: c.isOnline !== false,
+    ready: !!(c.stripeAccountId && c.chargesEnabled !== false),
+  };
+}
+
+// Caller pays via hosted Checkout, then is redirected into a fresh private room.
+// Destination charge: creator keeps 72% (amount − 28% application fee). Inviolable.
+async function handleCallCheckout(request, env) {
+  const { handle } = await request.json();
+  if (!handle) throw new Error('handle is required');
+  const creator = await resolveCreatorByHandle(env, handle);
+  if (!creator) throw new Error('Creator not found');
+  if (creator.isOnline === false) throw new Error('This creator is not taking calls right now');
+  if (!creator.stripeAccountId || creator.chargesEnabled === false) {
+    throw new Error('This creator has not finished payout setup yet');
+  }
+
+  const amountDollars = Math.max(5, Number(creator.pricePerCall) || 5);
+  const amountCents = Math.round(amountDollars * 100);
+  const feeCents = Math.round(amountCents * PLATFORM_FEE_PERCENT); // 28% platform
+  const handleSlug = (creator.username || creator.userId).toString().replace(/[^a-zA-Z0-9]/g, '');
+  const room = `velvetrope-${handleSlug}-${Math.random().toString(36).slice(2, 8)}`;
+  const platformUrl = env.PLATFORM_URL || 'https://velvetrope2you.com';
+  const name = creator.displayName || creator.username || 'a 72 creator';
+
+  const session = await stripe(env, 'POST', '/checkout/sessions', {
+    mode: 'payment',
+    payment_method_types: ['card'],
+    line_items: [{
+      price_data: {
+        currency: 'usd',
+        product_data: { name: `72 call with ${name}` },
+        unit_amount: amountCents,
+      },
+      quantity: 1,
+    }],
+    payment_intent_data: {
+      application_fee_amount: feeCents,
+      transfer_data: { destination: creator.stripeAccountId },
+      description: `72 call with ${name}`,
+      metadata: {
+        creator_id: creator.userId,
+        creator_account: creator.stripeAccountId,
+        room,
+        platform_fee_cents: feeCents,
+        creator_earnings_cents: amountCents - feeCents,
+      },
+    },
+    success_url: `${platformUrl}/room.html?r=${encodeURIComponent(room)}&role=caller`,
+    cancel_url: `${platformUrl}/call/${encodeURIComponent(handle)}`,
+    metadata: { creator_id: creator.userId, room, kind: 'call' },
+  });
+
+  return { url: session.url, room };
 }
 
 async function handleConnectOnboard(request, env) {
@@ -356,6 +444,19 @@ async function onCheckoutComplete(session, env) {
   const creatorId = session.metadata?.creator_id;
   if (!creatorId) return;
   const creator = await getCreator(env, creatorId) || { userId: creatorId };
+
+  // A caller just paid for a call — surface the room so the creator can join it.
+  if (session.metadata?.kind === 'call') {
+    await putCreator(env, creatorId, {
+      ...creator,
+      activeRoom: session.metadata.room,
+      activeRoomAt: Date.now(),
+      updatedAt: Date.now(),
+    });
+    return;
+  }
+
+  // Otherwise this is a membership signup.
   await putCreator(env, creatorId, {
     ...creator,
     stripeCustomerId: session.customer,

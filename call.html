@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Connect on 72</title>
+<meta name="description" content="Pay to connect on 72 — you'll drop straight into a private call room." />
+<meta name="theme-color" content="#D4A017" />
+<meta name="robots" content="noindex" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23080808'/%3E%3Ctext x='32' y='45' font-family='Inter,Arial,sans-serif' font-size='34' font-weight='800' fill='%23D4A017' text-anchor='middle'%3E72%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root{--bg:#080808;--surface:#111;--surface-2:#161616;--border:#252525;--text:#f0f0e8;--muted:#8a8a80;--accent:#D4A017;--accent-light:#f0c040;--red:#e05555;--green:#4caf7d}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column;
+    background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(212,160,23,.14),transparent 70%),var(--bg)}
+  .wrap{width:100%;max-width:440px;margin:auto;padding:40px 22px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:34px 28px;text-align:center;box-shadow:0 30px 70px rgba(0,0,0,.5)}
+  .badge{width:46px;height:46px;margin:0 auto 20px;border-radius:12px;background:#080808;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--accent);font-size:1.15rem}
+  .avatar{width:76px;height:76px;margin:0 auto 16px;border-radius:50%;background:var(--accent-dim,rgba(212,160,23,.14));border:1px solid rgba(212,160,23,.4);display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:800;color:var(--accent)}
+  .eyebrow{font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+  h1{font-size:1.5rem;font-weight:800;letter-spacing:-.02em;margin-bottom:4px}
+  .status{font-size:.82rem;color:var(--muted);margin-bottom:22px}
+  .status .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle}
+  .status.off .dot{background:var(--muted)}
+  .price{font-size:3rem;font-weight:900;letter-spacing:-.03em;line-height:1;margin-bottom:4px}
+  .price small{font-size:1.1rem;font-weight:700;color:var(--muted);vertical-align:super}
+  .per{font-size:.85rem;color:var(--muted);margin-bottom:26px}
+  .btn{width:100%;padding:16px;background:var(--accent);color:#000;font-weight:800;font-size:1rem;border:none;border-radius:12px;cursor:pointer;transition:transform .15s,opacity .15s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+  .fine{font-size:.76rem;color:var(--muted);margin-top:14px;line-height:1.5}
+  .steps{display:flex;justify-content:center;gap:6px;margin-top:22px;font-size:.72rem;color:var(--muted)}
+  .steps b{color:var(--text);font-weight:600}
+  .err{color:var(--red);font-size:.85rem;margin-top:14px;min-height:1.2em}
+  .skeleton{color:var(--muted);padding:20px 0}
+  a.back{display:block;text-align:center;margin-top:20px;font-size:.8rem;color:var(--muted);text-decoration:none}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card" id="card">
+      <div class="badge">72</div>
+      <div id="body"><div class="skeleton">Loading…</div></div>
+    </div>
+    <a class="back" href="/">← 72 · velvetrope2you.com</a>
+  </div>
+
+<script>
+  const API = 'https://api.velvetrope2you.com';
+
+  function getHandle(){
+    const p = new URLSearchParams(location.search);
+    if (p.get('h')) return p.get('h');
+    const segs = location.pathname.split('/').filter(Boolean); // /call/<handle>
+    const i = segs.indexOf('call');
+    if (i !== -1 && segs[i+1]) return decodeURIComponent(segs[i+1]);
+    return segs[segs.length-1] && segs[segs.length-1] !== 'call.html' ? decodeURIComponent(segs[segs.length-1]) : null;
+  }
+
+  const handle = getHandle();
+  const demo = new URLSearchParams(location.search).get('demo');
+
+  function render(c){
+    const initial = (c.name||'?').charAt(0).toUpperCase();
+    const off = !c.isOnline;
+    const notReady = !c.ready;
+    document.getElementById('body').innerHTML = `
+      <div class="avatar">${initial}</div>
+      <div class="eyebrow">Pay to connect</div>
+      <h1>${c.name}</h1>
+      <div class="status ${off?'off':''}"><span class="dot"></span>${off?'Offline right now':'Online — ready to talk'}</div>
+      <div class="price"><small>$</small>${c.pricePerCall}</div>
+      <div class="per">one call · you drop straight into a private room</div>
+      <button class="btn" id="pay" ${off||notReady?'disabled':''}>Pay $${c.pricePerCall} &amp; connect →</button>
+      <div class="err" id="err">${notReady?'This creator hasn’t finished payout setup yet.':''}</div>
+      <div class="steps"><b>Pay</b> → <b>Private room</b> → <b>Talk</b></div>
+      <p class="fine">Secure checkout by Stripe. Audio or video — your choice.</p>`;
+    const btn = document.getElementById('pay');
+    if (btn && !off && !notReady) btn.onclick = startCheckout;
+  }
+
+  function renderError(msg){
+    document.getElementById('body').innerHTML = `
+      <div class="eyebrow" style="color:var(--muted)">72</div>
+      <h1>Can’t connect</h1>
+      <p class="fine" style="margin-top:10px">${msg}</p>`;
+  }
+
+  async function startCheckout(){
+    const btn = document.getElementById('pay');
+    const err = document.getElementById('err');
+    btn.disabled = true; btn.textContent = 'Opening secure checkout…'; err.textContent='';
+    try{
+      const res = await fetch(`${API}/create-call-checkout`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ handle })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.url) throw new Error(data.error || 'Could not start checkout');
+      location.href = data.url;
+    }catch(e){
+      btn.disabled=false; btn.textContent = 'Try again';
+      err.textContent = e.message || 'Something went wrong.';
+    }
+  }
+
+  (async function boot(){
+    if (demo){ render({name:'Alex Rivera', pricePerCall:25, isOnline:true, ready:true}); return; }
+    if (!handle){ renderError('This call link is missing a creator. Check the link and try again.'); return; }
+    try{
+      const res = await fetch(`${API}/call-info/${encodeURIComponent(handle)}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Creator not found');
+      render(data);
+    }catch(e){
+      renderError(e.message || 'We couldn’t find that creator.');
+    }
+  })();
+</script>
+</body>
+</html>

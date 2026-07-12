@@ -1,0 +1,29 @@
+# 72 — velvetrope2you.com
+
+> Creator/professional phone marketplace: claim a number, set a per-call price ($5 base, no ceiling), keep 72%, the platform takes 28% via Stripe. Every user is a member — first month free, then $7.20/month. Currently in beta. Static HTML pages on Cloudflare Pages + one Cloudflare Worker backend (Stripe + KV). Live video via a QR-accessed browser room (Jitsi).
+
+This file is for machines. Every page also embeds a `<script type="application/json" id="agent-spec">` block describing that page and its pending, executable actions. The full execution board is `/agents.json`.
+
+## Pages
+- [Home / launchpad](https://velvetrope2you.com/): landing; who-it's-for + button hub to everything.
+- [Live video](https://velvetrope2you.com/meet.html): QR-accessed paid live video meets. Scan → pay → private room.
+- [Paid calls](https://velvetrope2you.com/paygate.html): creator signup + Stripe checkout (Buy Button).
+- [Fan events](https://velvetrope2you.com/events.html): fan-appreciation event collabs.
+- [Why 72](https://velvetrope2you.com/why72.html): for-everyone explainer of the model.
+- [Privacy](https://velvetrope2you.com/privacy.html): privacy policy (template).
+- [Terms](https://velvetrope2you.com/terms.html): terms of service (template).
+
+## Agent execution
+- [Execution board](https://velvetrope2you.com/agents.json): machine-readable index of every page + all pending actions.
+
+## Sources of truth (repo)
+- CLAUDE.md: project guide + conventions.
+- PUNCH.md: deploy/consolidation punch list.
+- 72-mission-control.html: human task/ops board (people-facing mirror).
+
+## Conventions for agents
+- Develop on a feature branch, never `main`.
+- Secrets: never commit `sk_live_*`/`sk_test_*`. Worker secrets go in via `wrangler secret put`, not the repo.
+- Publishable keys (`pk_*`) and Buy-Button IDs are safe to commit.
+- Do not edit the dashboards (72-app-dashboard.html, 72-owner-dashboard.html) unless explicitly asked.
+- Before hand-building UI, scan boneyard/index.json for reusable parts.

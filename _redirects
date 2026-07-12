@@ -1,0 +1,3 @@
+# Cloudflare Pages routing
+# Pretty call links: /call/<handle> serves call.html (which reads the handle from the path).
+/call/*   /call.html   200

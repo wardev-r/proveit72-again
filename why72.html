@@ -3,24 +3,115 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Why 72 — coming soon</title>
+<title>Why 72 — your time, priced fairly</title>
+<meta name="description" content="72 is where anyone can charge for their time and anyone can reach the people they want. You keep 72% of every call — that's where the name comes from." />
+<meta name="theme-color" content="#D4A017" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23080808'/%3E%3Ctext x='32' y='45' font-family='Inter,Arial,sans-serif' font-size='34' font-weight='800' fill='%23D4A017' text-anchor='middle'%3E72%3C/text%3E%3C/svg%3E" />
+<link rel="canonical" href="https://velvetrope2you.com/why72.html" />
+<meta property="og:title" content="Why 72 — your time, priced fairly" />
+<meta property="og:description" content="Charge for your time, or reach the people you want. You keep 72% of every call." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://velvetrope2you.com/why72.html" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 <style>
+  :root{--bg:#080808;--surface:#111;--surface-2:#161616;--border:#252525;--text:#f0f0e8;--muted:#8a8a80;--accent:#D4A017;--accent-light:#f0c040}
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Inter',system-ui,sans-serif;color:#f0f0e8;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;
-    background:radial-gradient(ellipse 80% 50% at 50% 100%,rgba(212,160,23,.22) 0%,transparent 70%),linear-gradient(160deg,#060405 0%,#100900 40%,#190e00 70%,#211300 100%)}
-  .badge{font-size:.66rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#D4A017;background:rgba(212,160,23,.12);border:1px solid rgba(212,160,23,.4);padding:5px 14px;border-radius:999px;margin-bottom:22px}
-  h1{font-size:clamp(2.2rem,7vw,3.6rem);font-weight:900;letter-spacing:-.03em;line-height:1.05;margin-bottom:14px}
-  h1 em{font-style:normal;color:#D4A017}
-  p{color:rgba(240,240,232,.7);max-width:460px;font-size:1.02rem;line-height:1.6;margin-bottom:32px}
-  a.btn{display:inline-block;padding:14px 28px;background:#D4A017;color:#000;font-weight:700;border-radius:12px;text-decoration:none;font-size:.95rem;transition:transform .2s}
-  a.btn:hover{transform:translateY(-2px)}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:40px 24px 0}
+  .back{display:inline-block;font-size:.82rem;font-weight:700;color:var(--accent);text-decoration:none;margin-bottom:40px}
+  .hero{text-align:center;padding:24px 0 20px}
+  .badge{display:inline-block;font-size:.66rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);background:rgba(212,160,23,.12);border:1px solid rgba(212,160,23,.4);padding:5px 14px;border-radius:999px;margin-bottom:22px}
+  h1{font-size:clamp(2.2rem,7vw,3.4rem);font-weight:900;letter-spacing:-.03em;line-height:1.06;margin-bottom:16px}
+  h1 em{font-style:normal;color:var(--accent)}
+  .lead{color:rgba(240,240,232,.72);max-width:520px;margin:0 auto;font-size:1.08rem;line-height:1.7}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:52px 0}
+  .col{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px 24px}
+  .col .k{font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+  .col h3{font-size:1.15rem;font-weight:800;margin-bottom:8px}
+  .col p{color:var(--muted);font-size:.92rem;line-height:1.65}
+  .section{margin:52px 0}
+  .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;text-align:center}
+  .section h2{font-size:clamp(1.5rem,4vw,2rem);font-weight:900;letter-spacing:-.02em;text-align:center;margin-bottom:8px}
+  .section .sub{color:var(--muted);text-align:center;max-width:460px;margin:0 auto 28px;font-size:.95rem}
+  .steps{display:grid;gap:14px}
+  .step{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;display:flex;gap:16px;align-items:flex-start}
+  .step .n{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:rgba(212,160,23,.12);border:1px solid rgba(212,160,23,.4);color:var(--accent);font-weight:800;font-size:.9rem;display:flex;align-items:center;justify-content:center}
+  .step h3{font-size:1rem;font-weight:800;margin-bottom:4px}
+  .step p{font-size:.9rem;color:var(--muted);line-height:1.6}
+  .split-num{display:flex;align-items:center;justify-content:center;gap:6px;margin:44px 0}
+  .split-num .big{font-size:clamp(3.4rem,12vw,5.5rem);font-weight:900;letter-spacing:-.04em;line-height:1;color:var(--accent)}
+  .split-num .lbl{max-width:220px;text-align:left;color:var(--muted);font-size:.9rem;line-height:1.5}
+  .cta{text-align:center;margin:56px 0 8px;display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+  .cta a{display:inline-flex;align-items:center;gap:8px;padding:15px 26px;border-radius:999px;text-decoration:none;font-weight:800;font-size:.95rem}
+  .cta .primary{background:var(--accent);color:#0a0a0a}
+  .cta .ghost{background:var(--surface);border:1px solid var(--border);color:var(--text);font-weight:600}
+  @media(max-width:600px){.split{grid-template-columns:1fr}.split-num{flex-direction:column;text-align:center}.split-num .lbl{text-align:center}}
 </style>
 </head>
 <body>
-  <div class="badge">Under construction</div>
-  <h1>Why <em>72</em>?</h1>
-  <p>The full story is on its way. Short version: your time is money — 72 is where you price access to it and keep 72% of every connection.</p>
-  <a class="btn" href="/">← Back home</a>
+  <div class="wrap">
+    <a class="back" href="/">← Back to 72</a>
+
+    <div class="hero">
+      <div class="badge">Why 72</div>
+      <h1>Your time is worth something.<br><em>72 lets you charge for it.</em></h1>
+      <p class="lead">72 is a simple idea: the people who want your time pay for it, and you keep almost all of it. No follower count required, no gatekeepers — just a link, a price, and a private call.</p>
+    </div>
+
+    <div class="split">
+      <div class="col">
+        <div class="k">If you want to reach someone</div>
+        <h3>Skip the line.</h3>
+        <p>Pay their rate, get a private call — audio or video. No cold DMs that go nowhere. Your money buys real, undivided time.</p>
+      </div>
+      <div class="col">
+        <div class="k">If people want your time</div>
+        <h3>Get paid for it.</h3>
+        <p>Coaches, consultants, creators, pros, anyone — set your rate, share one link, and keep the lion's share of every call.</p>
+      </div>
+    </div>
+
+    <div class="split-num">
+      <div class="big">72%</div>
+      <div class="lbl">of every call is yours. That's the name — you keep 72, the platform takes 28 to run payments, the room, and support.</div>
+    </div>
+
+    <div class="section">
+      <div class="eyebrow">How it works</div>
+      <h2>Three steps, then you're earning.</h2>
+      <p class="sub">No app to install, no phone number to hand out, no software to run.</p>
+      <div class="steps">
+        <div class="step"><div class="n">1</div><div><h3>Set your rate</h3><p>Pick a price for your time — from $5 a call with no ceiling. You're in control, and you can change it anytime.</p></div></div>
+        <div class="step"><div class="n">2</div><div><h3>Share one link</h3><p>Drop it in your bio, a DM, or a post. One tap and they check out securely through Stripe.</p></div></div>
+        <div class="step"><div class="n">3</div><div><h3>Talk &amp; get paid</h3><p>They land in your private call room. You keep 72% of every conversation, paid out weekly.</p></div></div>
+      </div>
+    </div>
+
+    <div class="cta">
+      <a class="primary" href="/paygate.html">💸 Start getting paid →</a>
+      <a class="ghost" href="/">Back to home</a>
+    </div>
+  </div>
+
+  <footer style="border-top:1px solid #252525;margin-top:72px;padding:44px 24px;text-align:center;font-family:'Inter',system-ui,sans-serif">
+    <div style="width:44px;height:44px;margin:0 auto 18px;border-radius:12px;background:#080808;border:1px solid #252525;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.15rem;color:#D4A017">72</div>
+    <p style="font-size:.82rem;color:#8a8a80;margin:0 auto 14px;max-width:520px;line-height:1.7">🔒 Secure checkout powered by Stripe · encrypted end-to-end · your 72% paid out weekly</p>
+    <nav style="font-size:.85rem;margin-bottom:14px;line-height:2.2">
+      <a href="/" style="color:#8a8a80;text-decoration:none">Home</a> · <a href="/meet.html" style="color:#8a8a80;text-decoration:none">Live video</a> · <a href="/paygate.html" style="color:#8a8a80;text-decoration:none">Paid calls</a> · <a href="/events.html" style="color:#8a8a80;text-decoration:none">Fan events</a> · <a href="/why72.html" style="color:#8a8a80;text-decoration:none">Why 72</a> · <a href="/privacy.html" style="color:#8a8a80;text-decoration:none">Privacy</a> · <a href="/terms.html" style="color:#8a8a80;text-decoration:none">Terms</a> · <a href="mailto:support@velvetrope2you.com" style="color:#8a8a80;text-decoration:none">Contact</a>
+    </nav>
+    <p style="font-size:.75rem;color:#555">© 2026 72 · velvetrope2you.com · In beta — more rolling out</p>
+  </footer>
+<script type="application/json" id="agent-spec">
+{
+  "schema": "72.agent-spec/v1",
+  "page": { "path": "/why72.html", "title": "Why 72", "purpose": "For-everyone explainer of the model", "state": "live" },
+  "board": "/agents.json",
+  "sitemap": "/llms.txt",
+  "actions": []
+}
+</script>
 </body>
 </html>

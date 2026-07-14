@@ -124,6 +124,15 @@
       "verify": "Scanning a member QR charges the caller and drops them into a fresh room; the creator can join the same room."
     },
     {
+      "id": "fix-membership-billing-interval",
+      "title": "Membership billing: weekly → monthly (Stripe-side)",
+      "status": "blocked", "priority": "high", "type": "config",
+      "file": "Stripe dashboard (membership Buy Button price)",
+      "do": "The live membership Buy Button's Stripe price shows 'billed weekly' in the checkout small print — it's set to a WEEKLY recurring interval, so members would be charged $7.20 every WEEK instead of monthly (4x too often). Our HTML already says 'billed monthly'; the mismatch is the Stripe price config, not the code. FIX IN STRIPE: edit the membership product's price to recurring MONTHLY ($7.20/mo, keep the 30-day free trial). If the interval can't be edited on an existing price, create a new monthly price + new Buy Button and swap buy_btn_ in paygate.html. Fix before promoting signups — anyone who subscribes now bills weekly.",
+      "blocked_by": "human-edits-stripe-price-to-monthly",
+      "verify": "Buy Button checkout small print reads 'billed monthly'; a test subscription renews monthly."
+    },
+    {
       "id": "whitelist-expansion-blocks",
       "title": "Whitelist expansion + paid access blocks",
       "status": "pending", "priority": "low", "type": "feature",

@@ -4,14 +4,30 @@
   "generated": "2026-07-11",
   "summary": "Machine-readable execution board for the 72 site. For agents, not people. Each page also embeds its own scoped spec at <script type=\"application/json\" id=\"agent-spec\">. Statuses: pending (do it now) | blocked (needs an input first) | done. Priority: high | med | low.",
   "conventions": {
-    "brand": { "name": "72", "domain": "velvetrope2you.com", "accent": "#D4A017", "bg": "#080808", "font": "Inter", "split": "72% creator / 28% platform" },
+    "brand": {
+      "name": "72",
+      "domain": "velvetrope2you.com",
+      "accent": "#D4A017",
+      "bg": "#080808",
+      "font": "Inter",
+      "split": "72% creator / 28% platform"
+    },
     "membership": "Every user is a member. First month free, then $7.20/month. Product is in beta.",
     "creator_share_rule": "INVIOLABLE: creators keep 72%. This is the brand's defining promise (the '72'). Never reduce the creator share below 72% / never raise PLATFORM_FEE_PERCENT above 0.28. Any cost or fee comes from the CALLER's total or the platform's 28%, never from the creator's 72%. Owner's stance: close doors before ever going to 71%.",
     "branch": "Develop on a feature branch, never main.",
     "secrets_rule": "Never commit sk_live_*/sk_test_*. Worker secrets via `wrangler secret put`. pk_* and Buy-Button IDs are safe to commit.",
-    "do_not_touch": ["72-app-dashboard.html", "72-owner-dashboard.html"],
+    "do_not_touch": [
+      "72-app-dashboard.html",
+      "72-owner-dashboard.html"
+    ],
     "reuse_first": "Scan boneyard/index.json before hand-building any UI.",
-    "stack": { "host": "Cloudflare Pages (vrpi72-home)", "backend": "Cloudflare Worker (service lively-mud-9c4b) served at api.velvetrope2you.com", "pay": "Stripe", "video": "Jitsi (meet.jit.si)", "telephony": "Twilio (planned)" },
+    "stack": {
+      "host": "Cloudflare Pages (vrpi72-home)",
+      "backend": "Cloudflare Worker (service lively-mud-9c4b) served at api.velvetrope2you.com",
+      "pay": "Stripe",
+      "video": "Jitsi (meet.jit.si)",
+      "telephony": "Twilio (planned)"
+    },
     "twilio_rule": "Provision phone numbers in the 772 area code ONLY (on-brand with '72'). Any number search/purchase must filter areaCode=772."
   },
   "sources_of_truth": {
@@ -21,79 +37,176 @@
     "link_map": "/llms.txt"
   },
   "pages": [
-    { "path": "/index.html", "title": "Home / launchpad", "purpose": "Landing: who-it's-for + hub of buttons to every page", "state": "live", "spec": "#agent-spec", "open_actions": 0 },
-    { "path": "/72-landing-merged.html", "title": "Legacy landing (redirect)", "purpose": "Redirect shim to /index.html; kept so old dashboard/invite links resolve", "state": "deprecated", "spec": "#agent-spec", "open_actions": 0 },
-    { "path": "/meet.html", "title": "Live video meets", "purpose": "QR-accessed paid live video rooms", "state": "beta", "spec": "#agent-spec", "open_actions": 1 },
-    { "path": "/paygate.html", "title": "Paid calls", "purpose": "Creator signup + Stripe checkout", "state": "beta", "spec": "#agent-spec", "open_actions": 0 },
-    { "path": "/events.html", "title": "Fan events", "purpose": "Fan-appreciation event collabs", "state": "live", "spec": "#agent-spec", "open_actions": 0 },
-    { "path": "/why72.html", "title": "Why 72", "purpose": "For-everyone explainer", "state": "live", "spec": "#agent-spec", "open_actions": 0 },
-    { "path": "/privacy.html", "title": "Privacy", "purpose": "Privacy policy (template)", "state": "live", "spec": "#agent-spec", "open_actions": 2 },
-    { "path": "/terms.html", "title": "Terms", "purpose": "Terms of service (template)", "state": "live", "spec": "#agent-spec", "open_actions": 1 }
+    {
+      "path": "/index.html",
+      "title": "Home / launchpad",
+      "purpose": "Landing: who-it's-for + hub of buttons to every page",
+      "state": "live",
+      "spec": "#agent-spec",
+      "open_actions": 0
+    },
+    {
+      "path": "/72-landing-merged.html",
+      "title": "Legacy landing (redirect)",
+      "purpose": "Redirect shim to /index.html; kept so old dashboard/invite links resolve",
+      "state": "deprecated",
+      "spec": "#agent-spec",
+      "open_actions": 0
+    },
+    {
+      "path": "/meet.html",
+      "title": "Live video meets",
+      "purpose": "QR-accessed paid live video rooms",
+      "state": "beta",
+      "spec": "#agent-spec",
+      "open_actions": 1
+    },
+    {
+      "path": "/paygate.html",
+      "title": "Paid calls",
+      "purpose": "Creator signup + Stripe checkout",
+      "state": "beta",
+      "spec": "#agent-spec",
+      "open_actions": 0
+    },
+    {
+      "path": "/events.html",
+      "title": "Fan events",
+      "purpose": "Fan-appreciation event collabs",
+      "state": "live",
+      "spec": "#agent-spec",
+      "open_actions": 0
+    },
+    {
+      "path": "/why72.html",
+      "title": "Why 72",
+      "purpose": "For-everyone explainer",
+      "state": "live",
+      "spec": "#agent-spec",
+      "open_actions": 0
+    },
+    {
+      "path": "/privacy.html",
+      "title": "Privacy",
+      "purpose": "Privacy policy (template)",
+      "state": "live",
+      "spec": "#agent-spec",
+      "open_actions": 2
+    },
+    {
+      "path": "/terms.html",
+      "title": "Terms",
+      "purpose": "Terms of service (template)",
+      "state": "live",
+      "spec": "#agent-spec",
+      "open_actions": 1
+    }
   ],
   "actions": [
     {
       "id": "stripe-buybutton-live-flip",
       "title": "Flip paygate Buy Button from test to live",
-      "status": "done", "priority": "high", "type": "code-edit",
-      "file": "paygate.html", "anchor": "<stripe-buy-button>",
-      "current": { "buy-button-id": "buy_btn_1TsIzuPvhOmAQXCzO3TUG78S", "publishable-key": "pk_live_51Tdr5W..." },
+      "status": "done",
+      "priority": "high",
+      "type": "code-edit",
+      "file": "paygate.html",
+      "anchor": "<stripe-buy-button>",
+      "current": {
+        "buy-button-id": "buy_btn_1TsIzuPvhOmAQXCzO3TUG78S",
+        "publishable-key": "pk_live_51Tdr5W..."
+      },
       "do": "DONE: live Buy Button wired into paygate.html. (Human to confirm the rendered button shows the $7.20/mo membership, not a different product.)",
       "verify": "Load paygate.html; Buy Button renders in live mode; a real card is charged.",
-      "refs": ["PUNCH.md", "72-mission-control.html#TK-06"]
+      "refs": [
+        "PUNCH.md",
+        "72-mission-control.html#TK-06"
+      ]
     },
     {
       "id": "stripe-payment-link-live",
       "title": "Wire the live membership checkout",
-      "status": "done", "priority": "high", "type": "code-edit",
+      "status": "done",
+      "priority": "high",
+      "type": "code-edit",
       "file": "index.html",
-      "do": "DONE: landing signup (goToStripe) now routes to /paygate.html, where the live membership Buy Button (buy_btn_1TsIzu…) lives. The old test STRIPE_PAYMENT_LINK const was removed from the landing. (Earlier bpc_ link was the wrong product and was pulled.) 72-landing-opal.html still has its own STRIPE_PAYMENT_LINK on the TEST link — update or repoint it if that variant goes live.",
+      "do": "DONE: landing signup (goToStripe) now routes to /paygate.html, where the live membership Buy Button (buy_btn_1TsIzu\u2026) lives. The old test STRIPE_PAYMENT_LINK const was removed from the landing. (Earlier bpc_ link was the wrong product and was pulled.) 72-landing-opal.html still has its own STRIPE_PAYMENT_LINK on the TEST link \u2014 update or repoint it if that variant goes live.",
       "verify": "Landing signup buttons lead to the live $7.20 membership checkout.",
-      "refs": ["72-mission-control.html#TK-06"]
+      "refs": [
+        "72-mission-control.html#TK-06"
+      ]
     },
     {
       "id": "worker-stripe-secret-live",
       "title": "Set the Worker's live Stripe secret",
-      "status": "blocked", "priority": "high", "type": "config",
-      "file": "72-stripe-worker.js", "anchor": "STRIPE_SECRET_KEY",
-      "do": "Run `wrangler secret put STRIPE_SECRET_KEY` with the sk_live_* key. Never commit it.",
-      "inputs_required": ["sk_live_* secret key (out-of-band)"],
-      "blocked_by": "human-runs-wrangler-secret",
+      "status": "blocked",
+      "priority": "high",
+      "type": "config",
+      "file": "72-stripe-worker.js",
+      "anchor": "STRIPE_SECRET_KEY",
+      "do": "Set 4 secrets in the Cloudflare DASHBOARD (Worker 'proveit72-again' -> Settings -> Variables and Secrets, add each as type 'Secret'): STRIPE_SECRET_KEY (sk_live_), STRIPE_WEBHOOK_SECRET (whsec_ from a live webhook pointed at api.velvetrope2you.com/webhook), PLATFORM_URL (https://velvetrope2you.com), OWNER_API_KEY (any strong string). Deployed via Workers Builds, so use the dashboard, not local wrangler.",
+      "inputs_required": [
+        "sk_live_* secret key (out-of-band)"
+      ],
+      "blocked_by": "human-sets-secrets-in-dashboard",
       "verify": "Worker completes a live Stripe checkout session.",
-      "refs": ["72-mission-control.html#FN-03"]
+      "refs": [
+        "72-mission-control.html#FN-03"
+      ]
     },
     {
       "id": "wire-toll-pack-link",
       "title": "Wire the 10-call toll pack button",
-      "status": "done", "priority": "med", "type": "code-edit",
+      "status": "done",
+      "priority": "med",
+      "type": "code-edit",
       "file": "paygate.html",
-      "do": "SCRUBBED: the 72¢ / $7.20 10-call-pack 'toll' was removed from paygate (it clashed with the $5 per-call floor and doubled the $7.20 membership number). The free-5 whitelist stays; everyone else now just pays the creator's rate. Future paid whitelist expansion is tracked in whitelist-expansion-blocks.",
-      "verify": "No 72¢ / 10-call-pack / toll copy remains on paygate.",
-      "refs": ["72-mission-control.html#TK-10"]
+      "do": "SCRUBBED: the 72\u00a2 / $7.20 10-call-pack 'toll' was removed from paygate (it clashed with the $5 per-call floor and doubled the $7.20 membership number). The free-5 whitelist stays; everyone else now just pays the creator's rate. Future paid whitelist expansion is tracked in whitelist-expansion-blocks.",
+      "verify": "No 72\u00a2 / 10-call-pack / toll copy remains on paygate.",
+      "refs": [
+        "72-mission-control.html#TK-10"
+      ]
     },
     {
       "id": "wire-real-qr",
       "title": "Replace illustrative QR with the real per-member QR",
-      "status": "pending", "priority": "med", "type": "code-edit",
-      "file": "meet.html", "anchor": "class=\"frame\"",
+      "status": "pending",
+      "priority": "med",
+      "type": "code-edit",
+      "file": "meet.html",
+      "anchor": "class=\"frame\"",
       "do": "The QR SVG in the .qr-card frame is illustrative only. Swap for the member's real generated QR (from qr.html / member dashboard) that deep-links to their pay-then-room flow.",
-      "inputs_required": ["per-member room + pay link"],
+      "inputs_required": [
+        "per-member room + pay link"
+      ],
       "verify": "Scanning the QR opens checkout and lands in the member's Jitsi room.",
-      "refs": ["qr.html"]
+      "refs": [
+        "qr.html"
+      ]
     },
     {
       "id": "consolidate-duplicate-landing",
       "title": "Consolidate the duplicate landing",
-      "status": "done", "priority": "med", "type": "refactor",
+      "status": "done",
+      "priority": "med",
+      "type": "refactor",
       "file": "72-landing-merged.html",
       "do": "DONE: 72-landing-merged.html was a byte-copy of index.html that drifted. Collapsed into a redirect shim to /index.html (preserves query string + hash), so the dashboard 'Your page' link and owner invite links still resolve without editing the dashboards. index.html is now the single landing source.",
       "verify": "72-landing-merged.html redirects to /index.html; no second full copy of the landing remains.",
-      "refs": ["CLAUDE.md", "72-mission-control.html#TK-08"]
+      "refs": [
+        "CLAUDE.md",
+        "72-mission-control.html#TK-08"
+      ]
     },
     {
       "id": "legal-template-review",
       "title": "Have privacy + terms reviewed",
-      "status": "pending", "priority": "low", "type": "decision",
-      "file": ["privacy.html", "terms.html"],
+      "status": "pending",
+      "priority": "low",
+      "type": "decision",
+      "file": [
+        "privacy.html",
+        "terms.html"
+      ],
       "do": "Both documents are general templates, not legal advice. Have a qualified attorney review before relying on them.",
       "blocked_by": "human-legal-review",
       "verify": "Attorney sign-off recorded."
@@ -101,41 +214,54 @@
     {
       "id": "trim-netlify-mentions",
       "title": "Trim Netlify references once it's gone",
-      "status": "pending", "priority": "low", "type": "content",
+      "status": "pending",
+      "priority": "low",
+      "type": "content",
       "file": "privacy.html",
       "do": "Once Netlify is fully removed from the stack, trim its mention from the privacy policy service list.",
-      "refs": ["PUNCH.md", "72-mission-control.html#PG-05"]
+      "refs": [
+        "PUNCH.md",
+        "72-mission-control.html#PG-05"
+      ]
     },
     {
       "id": "deploy-worker-custom-domain",
       "title": "Deploy the Worker on api.velvetrope2you.com",
-      "status": "pending", "priority": "high", "type": "deploy",
+      "status": "done",
+      "priority": "high",
+      "type": "deploy",
       "file": "wrangler.toml",
-      "do": "Run `npx wrangler deploy`. The custom_domain route provisions api.velvetrope2you.com (hostname + TLS + proxied DNS record) automatically. Then set the 4 secrets (STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, PLATFORM_URL=https://velvetrope2you.com, OWNER_API_KEY) and point the Stripe webhook at https://api.velvetrope2you.com/webhook.",
+      "do": "DONE: deployed via Cloudflare Workers Builds (from GitHub) as Worker 'proveit72-again'. api.velvetrope2you.com custom domain live; KV_72 bound. The 'Failed to match Worker name' warning is cosmetic (wrangler.toml name lively-mud-9c4b vs project name proveit72-again). Secrets still needed \u2014 see worker-stripe-secret-live.",
       "blocked_by": "human-runs-wrangler-deploy",
       "verify": "https://api.velvetrope2you.com responds and the dashboards load live data."
     },
     {
       "id": "wire-call-route",
       "title": "Build the /call/<handle> pay-then-room route",
-      "status": "pending", "priority": "high", "type": "code-edit",
+      "status": "pending",
+      "priority": "high",
+      "type": "code-edit",
       "file": "call.html",
-      "do": "V1 BUILT: call.html (pay page) + room.html (Jitsi room) + _redirects (/call/* -> call.html) + Worker routes /call-info/<handle> (public) and /create-call-checkout (hosted Checkout, destination charge keeps creator 72%, ephemeral room per call). REMAINING before done: (1) live end-to-end test once the Worker is deployed + a creator has a Connect account, (2) notify/route the CREATOR into the room — currently onCheckoutComplete stores creator.activeRoom but nothing surfaces it to them; add a dashboard 'join active room' cue or a Twilio/email ping. Handle resolution scans KV by username; add a username->id index if volume grows.",
+      "do": "V1 BUILT: call.html (pay page) + room.html (Jitsi room) + _redirects (/call/* -> call.html) + Worker routes /call-info/<handle> (public) and /create-call-checkout (hosted Checkout, destination charge keeps creator 72%, ephemeral room per call). REMAINING before done: (1) live end-to-end test once the Worker is deployed + a creator has a Connect account, (2) notify/route the CREATOR into the room \u2014 currently onCheckoutComplete stores creator.activeRoom but nothing surfaces it to them; add a dashboard 'join active room' cue or a Twilio/email ping. Handle resolution scans KV by username; add a username->id index if volume grows.",
       "verify": "Scanning a member QR charges the caller and drops them into a fresh room; the creator can join the same room."
     },
     {
       "id": "fix-membership-billing-interval",
-      "title": "Membership billing: weekly → monthly (Stripe-side)",
-      "status": "blocked", "priority": "high", "type": "config",
+      "title": "Membership billing: weekly \u2192 monthly (Stripe-side)",
+      "status": "blocked",
+      "priority": "high",
+      "type": "config",
       "file": "Stripe dashboard (membership Buy Button price)",
-      "do": "The live membership Buy Button's Stripe price shows 'billed weekly' in the checkout small print — it's set to a WEEKLY recurring interval, so members would be charged $7.20 every WEEK instead of monthly (4x too often). Our HTML already says 'billed monthly'; the mismatch is the Stripe price config, not the code. FIX IN STRIPE: edit the membership product's price to recurring MONTHLY ($7.20/mo, keep the 30-day free trial). If the interval can't be edited on an existing price, create a new monthly price + new Buy Button and swap buy_btn_ in paygate.html. Fix before promoting signups — anyone who subscribes now bills weekly.",
+      "do": "The live membership Buy Button's Stripe price shows 'billed weekly' in the checkout small print \u2014 it's set to a WEEKLY recurring interval, so members would be charged $7.20 every WEEK instead of monthly (4x too often). Our HTML already says 'billed monthly'; the mismatch is the Stripe price config, not the code. FIX IN STRIPE: edit the membership product's price to recurring MONTHLY ($7.20/mo, keep the 30-day free trial). If the interval can't be edited on an existing price, create a new monthly price + new Buy Button and swap buy_btn_ in paygate.html. Fix before promoting signups \u2014 anyone who subscribes now bills weekly.",
       "blocked_by": "human-edits-stripe-price-to-monthly",
       "verify": "Buy Button checkout small print reads 'billed monthly'; a test subscription renews monthly."
     },
     {
       "id": "whitelist-expansion-blocks",
       "title": "Whitelist expansion + paid access blocks",
-      "status": "pending", "priority": "low", "type": "feature",
+      "status": "pending",
+      "priority": "low",
+      "type": "feature",
       "file": "72-stripe-worker.js",
       "do": "LATER (owner's note): creators get 5 free whitelisted numbers that always ring through; selling additional access as paid blocks/packs is the attention-toll model. Count + lock enforcement MUST live in the Worker/KV, never client-side (a member can reset localStorage).",
       "verify": "Creators can grow their whitelist; buyers can purchase expansion blocks; limits enforced server-side."
@@ -143,7 +269,9 @@
     {
       "id": "harden-owner-auth",
       "title": "Gate the owner console server-side",
-      "status": "pending", "priority": "med", "type": "security",
+      "status": "pending",
+      "priority": "med",
+      "type": "security",
       "file": "72-owner-dashboard.html",
       "do": "OWNER_KEY currently sits in client-side source (readable by anyone). Move owner auth to a server-side login/session so no admin key is exposed in the page.",
       "verify": "No admin key in page source; owner data requires an authenticated session."

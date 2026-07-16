@@ -28,6 +28,8 @@
 - **Back-of-house (the actual product = the call flow) NOT yet proven.** Needs: **Stripe Connect turned on** + **one creator onboarded** (dashboard → Connect bank) to run a real `/call/` payment. The video/QR flow needs **no Twilio**.
 
 ### Open threads / next up
+- **Post-payment redirect (membership):** after paying the membership Buy Button, the caller is **left on Stripe's default confirmation page** — no route back. The Buy Button's after-payment behavior is set in the **Stripe dashboard** (not our code): Stripe → Buy Button → *After payment → Redirect* → `https://velvetrope2you.com/72-app-dashboard.html`. **Also a code bug:** the worker's `/create-checkout` `success_url` points to `/dashboard.html` (line ~151) but the file is `72-app-dashboard.html` — even the redirect path 404s. Fix the worker string.
+- **"No 772 number after paying":** expected — **no Twilio number provisioning exists.** The paid `/call/<handle>` flow routes to a **video room** (`room.html`), not a phone number. The 772 *phone* side is unbuilt (see Twilio item below). Signup assigns no number today.
 - **Prove the call flow:** enable Stripe **Connect** → onboard creator #1 → pay own `/call/<handle>` link → land in room.
 - **Twilio phone numbers (772):** ~$45.50 credit on hand. Worker's `handleVoice` has **NO payment gate** yet — wiring numbers now would leak free calls. Needs pay-gating (Twilio `<Pay>` / pre-pay).
 - **REVAMP (owner's plan):** port + clean the working pay-gated call flow from the **OLD poker repo (likely `wardev-r/proveit72`)** — audit out the **"disqometer" hijacker script** (flagged in mission-control TK-10), integrate clean into 72's worker. NOT a copy-paste; learn from it, build fresh here.

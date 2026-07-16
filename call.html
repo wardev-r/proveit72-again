@@ -81,6 +81,23 @@
   .btn:active{transform:translateY(1px)}
   .btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent-dim);margin-top:10px}
   .btn.ghost:hover{background:var(--accent-dim)}
+  .btn:disabled{opacity:.6;cursor:default}
+
+  /* signup form */
+  .signup{text-align:left}
+  .signup label{display:block;font-size:.78rem;color:var(--muted);margin:0 0 6px;font-weight:600}
+  .signup input{
+    width:100%;padding:13px 14px;margin-bottom:14px;
+    background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:var(--radius);
+    color:var(--text);font-size:1rem;font-family:inherit;outline:none;
+  }
+  .signup input:focus{border-color:var(--accent)}
+  .su-err{color:var(--red);font-size:.82rem;min-height:18px;margin-top:8px;text-align:center}
+  .su-fine{font-size:.74rem;color:var(--muted);text-align:center;margin-top:12px;line-height:1.5}
+  .freebadge{
+    display:inline-block;background:var(--green-dim);color:var(--green);
+    font-size:.78rem;font-weight:700;padding:5px 12px;border-radius:999px;margin-bottom:12px;
+  }
 
   /* revealed state */
   .revealed{display:none}
@@ -193,24 +210,34 @@
 
       <div class="how">
         <div class="how-title">How it works</div>
-        <div class="step"><div class="step-n">1</div><div class="step-t">Tap to reveal <span>${esc(name)}'s private 72 number.</span></div></div>
-        <div class="step"><div class="step-n">2</div><div class="step-t">Call it — <span>you're charged ${esc(price)} for the call, nothing before.</span></div></div>
-        <div class="step"><div class="step-n">3</div><div class="step-t">You're connected. <span>They keep 72%, always.</span></div></div>
+        <div class="step"><div class="step-n">1</div><div class="step-t">Sign up <span>— quick, just proves you're real.</span></div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-t">Your first call is on us. <span>After that, ${esc(price)} per call — nothing charged before you connect.</span></div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-t">Call ${esc(name)}'s number. <span>You're connected. They keep 72%, always.</span></div></div>
       </div>
 
       <div class="reveal">
         ${ canCall ? `
           <div class="locked-panel" id="lockedPanel">
             <div class="locked-num">+1 (•••) •••-••••</div>
-            <div class="reveal-note">You only pay ${esc(price)} when you connect.</div>
-            <button class="btn" id="revealBtn">Reveal the number</button>
+            <div class="reveal-note">Sign up to prove you're real — your <strong>first call is free</strong>.</div>
+            <button class="btn" id="startBtn">Claim your first call free</button>
           </div>
+          <form class="signup" id="signupForm" style="display:none">
+            <label for="suName">Your name</label>
+            <input id="suName" placeholder="Alex" autocomplete="name" maxlength="80" />
+            <label for="suPhone">Your mobile (the phone you'll call from)</label>
+            <input id="suPhone" placeholder="+1 555 123 4567" autocomplete="tel" inputmode="tel" />
+            <button class="btn" type="submit" id="suSubmit">Get the number →</button>
+            <div class="su-err" id="suErr"></div>
+            <div class="su-fine">First call's on us. After that, ${esc(price)} per call. Your number is used to connect the call — nothing else.</div>
+          </form>
           <div class="revealed" id="revealedPanel">
+            <div class="freebadge">🎁 First call's on us</div>
             <div class="live-num" id="liveNum"></div>
-            <div class="live-sub">Tap to call, or scan to call from your phone.</div>
+            <div class="live-sub">Call from the mobile you just entered. Tap, or scan to dial.</div>
             <div class="qr-scan"><img id="callQr" alt="Scan to call" /></div>
             <div class="qr-cap">Point your phone camera here to dial</div>
-            <a class="btn" id="callLink" href="#">📞 Call now — ${esc(price)}</a>
+            <a class="btn" id="callLink" href="#">📞 Call now — free</a>
             <button class="btn ghost" id="copyBtn">Copy number</button>
           </div>
         ` : online ? `
@@ -232,14 +259,48 @@
   function wireReveal(c){
     const num = c.twilioNumber;
     const dial = String(num).replace(/[^\d+]/g,'');
-    $('revealBtn').addEventListener('click', () => {
-      $('lockedPanel').classList.add('hide');
+
+    function revealNumber(){
+      $('lockedPanel').style.display = 'none';
+      $('signupForm').style.display = 'none';
       const panel = $('revealedPanel'); panel.classList.add('show');
       $('liveNum').textContent = prettyNumber(num);
       $('callLink').href = `tel:${dial}`;
       $('callQr').src = `https://api.qrserver.com/v1/create-qr-code/?size=296x296&margin=0&data=${encodeURIComponent('tel:'+dial)}`;
       panel.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+
+    $('startBtn').addEventListener('click', () => {
+      $('lockedPanel').style.display = 'none';
+      $('signupForm').style.display = 'block';
+      $('suName').focus();
     });
+
+    $('signupForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const err = $('suErr'); err.textContent = '';
+      const name = $('suName').value.trim();
+      const phone = $('suPhone').value.trim();
+      if (name.length < 2) { err.textContent = 'Enter your name.'; return; }
+      if (phone.replace(/\D/g,'').length < 10) { err.textContent = 'Enter a valid mobile number.'; return; }
+
+      const btn = $('suSubmit'); const label = btn.textContent;
+      btn.disabled = true; btn.textContent = 'One sec…';
+      try {
+        const res = await fetch(`${WORKER_URL}/signup`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, phone, creator: c.username || handle }),
+        });
+        if (!res.ok) throw new Error('signup failed');
+      } catch(_) {
+        btn.disabled = false; btn.textContent = label;
+        err.textContent = 'Could not sign you up — try again.';
+        return;
+      }
+      revealNumber();
+    });
+
     $('copyBtn').addEventListener('click', () => {
       navigator.clipboard?.writeText(prettyNumber(num)).then(() => {
         const b = $('copyBtn'); const t = b.textContent; b.textContent = '✓ Copied';

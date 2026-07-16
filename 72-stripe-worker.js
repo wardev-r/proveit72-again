@@ -18,6 +18,7 @@
  *   PUT  /creator/:id               Update creator price/status
  *   GET  /creators                  List all creators (owner only)
  *   GET  /call/:username            Public creator card (fan onramp, safe fields only)
+ *   POST /signup                    Fan "prove the process" signup → grants a free first call
  *   POST /voice                     Twilio voice webhook — connect caller to creator
  *   POST /webhook                   Stripe webhook handler
  */
@@ -56,6 +57,8 @@ export default {
         result = await handleDashboardLink(request, env, url);
       } else if (path === '/creators' && request.method === 'GET') {
         result = await handleListCreators(request, env);
+      } else if (path === '/signup' && request.method === 'POST') {
+        result = await handleSignup(request, env);
       } else if (path.startsWith('/call/') && request.method === 'GET') {
         result = await handlePublicCreator(request, env, path);
       } else if (path === '/voice' && request.method === 'POST') {
@@ -439,6 +442,7 @@ async function handleVoice(request, env) {
   const url = new URL(request.url);
   const form = await request.formData();
   const called = form.get('To') || '';
+  const from = form.get('From') || '';
   const xml = (body) => new Response(
     `<?xml version="1.0" encoding="UTF-8"?><Response>${body}</Response>`,
     { headers: { 'Content-Type': 'text/xml' } }
@@ -450,7 +454,59 @@ async function handleVoice(request, env) {
     if (creator && creator.isOnline !== false) forward = creator.forwardNumber;
   }
   if (!forward) return xml(`<Say>This 72 number isn't taking calls right now. Goodbye.</Say>`);
-  return xml(`<Say>Connecting you on 72.</Say><Dial callerId="${called}">${forward}</Dial>`);
+
+  // First-call-free: if this caller signed up and hasn't used their free call,
+  // honor it and mark it used. (Payment for calls 2+ is Phase 2 — not gated yet.)
+  let intro = 'Connecting you on 72.';
+  if (from && env.KV_72) {
+    const raw = await env.KV_72.get(`lead:${normalizePhone(from)}`);
+    if (raw) {
+      const lead = JSON.parse(raw);
+      if (lead.firstCallFree && !lead.firstCallUsed) {
+        lead.firstCallUsed = true;
+        lead.firstCallAt = Date.now();
+        await env.KV_72.put(`lead:${normalizePhone(from)}`, JSON.stringify(lead));
+        intro = 'Your first 72 call is on us. Connecting now.';
+      }
+    }
+  }
+  return xml(`<Say>${intro}</Say><Dial callerId="${called}">${forward}</Dial>`);
+}
+
+// ─── Fan signup — "prove the process" → grant a free first call ───────────────
+// A tester fills out name + mobile on the /call page. We store the lead keyed by
+// their normalized phone and grant one free call. handleVoice honors the grant
+// and marks it used. (Charging for calls 2+ is Phase 2 — the payment gate.)
+async function handleSignup(request, env) {
+  let body;
+  try { body = await request.json(); } catch { throw new Error('Invalid JSON'); }
+  const name = String(body.name || '').trim().slice(0, 80);
+  const phone = normalizePhone(body.phone || '');
+  const creator = String(body.creator || '').trim().slice(0, 40);
+  if (!name) throw new Error('name required');
+  if (!phone || phone.replace(/\D/g, '').length < 10) throw new Error('valid mobile required');
+
+  if (env.KV_72) {
+    const key = `lead:${phone}`;
+    const raw = await env.KV_72.get(key);
+    const lead = raw ? JSON.parse(raw) : { phone, createdAt: Date.now(), firstCallUsed: false };
+    lead.name = name;
+    if (creator) lead.creator = creator;
+    lead.firstCallFree = true;
+    lead.updatedAt = Date.now();
+    await env.KV_72.put(key, JSON.stringify(lead));
+  }
+  return { ok: true, firstCallFree: true };
+}
+
+// Best-effort E.164 for US mobiles; leaves already-+ numbers as typed digits.
+function normalizePhone(input) {
+  let d = String(input).replace(/[^\d+]/g, '');
+  if (!d) return '';
+  if (d.startsWith('+')) return '+' + d.slice(1).replace(/\D/g, '');
+  if (d.length === 10) return '+1' + d;
+  if (d.length === 11 && d.startsWith('1')) return '+' + d;
+  return '+' + d;
 }
 
 // ─── Public creator lookup — fan-facing, safe fields only ─────────────────────

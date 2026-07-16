@@ -396,7 +396,7 @@
     <a href="#" class="nav-item active"><span class="nav-icon">⚡</span> Dashboard</a>
     <a href="#calls" class="nav-item"><span class="nav-icon">📞</span> Call history</a>
     <a href="#" class="nav-item" onclick="openPayoutDashboard()"><span class="nav-icon">💳</span> Payouts</a>
-    <a href="72-landing-merged.html" class="nav-item"><span class="nav-icon">↗</span> Your page</a>
+    <a href="#" id="navYourPage" class="nav-item" target="_blank" rel="noopener"><span class="nav-icon">↗</span> Your page</a>
     <div class="sidebar-spacer"></div>
     <div class="sidebar-user">
       <div class="avatar" id="sidebarAvatar">?</div>
@@ -612,6 +612,7 @@
     const url = `${BASE_CALL_URL}${username}`;
     document.getElementById('qrUrl').textContent = url;
     document.getElementById('previewLink').href = url;
+    document.getElementById('navYourPage').href = url;
 
     const container = document.getElementById('qrContainer');
     container.innerHTML = '';

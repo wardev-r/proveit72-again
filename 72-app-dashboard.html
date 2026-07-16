@@ -42,8 +42,8 @@
       min-height: 100vh;
     }
     @media (max-width: 768px) {
-      .layout { grid-template-columns: 1fr; }
-      .sidebar { display: none; }
+      .layout { grid-template-columns: 1fr !important; }
+      .sidebar { display: none !important; }
       .mobile-bar { display: flex !important; }
     }
 
@@ -246,6 +246,16 @@
       transition: border-color 0.2s;
     }
     .btn-copy:hover { border-color: var(--accent); color: var(--accent); }
+    .qr-actions { display: flex; gap: 10px; }
+    .qr-actions .btn-copy { text-decoration: none; display: inline-flex; align-items: center; }
+    .qr-help {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.6;
+      text-align: center;
+      margin-top: 4px;
+    }
+    .qr-help strong { color: var(--accent); }
 
     /* ── Price slider ── */
     .price-display {
@@ -460,7 +470,11 @@
         <div class="qr-area">
           <div class="qr-box" id="qrContainer"></div>
           <div class="qr-url" id="qrUrl">Loading…</div>
-          <button class="btn-copy" onclick="copyLink()">Copy link</button>
+          <div class="qr-actions">
+            <button class="btn-copy" onclick="copyLink()">Copy link</button>
+            <a class="btn-copy" id="previewLink" href="#" target="_blank" rel="noopener">Preview →</a>
+          </div>
+          <p class="qr-help">This is <strong>your call page</strong>. Share the link or QR anywhere — callers pay your rate, then you both land in a private video room. No app, no phone number to hand out. Flip <strong>Online</strong> above when you're ready to take calls.</p>
         </div>
       </div>
 
@@ -597,6 +611,7 @@
     const username = creator?.username || userId;
     const url = `${BASE_CALL_URL}${username}`;
     document.getElementById('qrUrl').textContent = url;
+    document.getElementById('previewLink').href = url;
 
     const container = document.getElementById('qrContainer');
     container.innerHTML = '';

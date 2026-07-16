@@ -10,6 +10,15 @@
       "summary": "Built 72-landing-opal.html (animated warm-opal 'colour film' background, shimmer headlines, red-carpet velvet-rope accent, responsive, wired signup). Stood up the boneyard salvage system (relics + reusable parts + index.json rolo). Added CLAUDE.md pointer and a docs/ claude.ai Project bundle. Opened PR #1 and backlog issues #2-#6. Established working principles: secrets out of repo, killed builds to boneyard with code, scan the rolo before building UI, data != tool, capture essence not transcripts.",
       "tags": ["72", "landing", "boneyard", "memory-system", "CLAUDE.md", "workflow", "essence"],
       "detail": "2026-06-28-opal-landing-and-memory-system.md"
+    },
+    {
+      "id": 2,
+      "number": 2,
+      "title": "Go-live marathon — site + worker live, real signup taken",
+      "date": "2026-07-16",
+      "summary": "velvetrope2you.com went LIVE (Cloudflare Pages, custom domain + www CNAME). Live Stripe membership Buy Button wired; a real signup verified it bills monthly with a free first month ($0 charged). Worker deployed via Workers Builds to api.velvetrope2you.com (KV bound, 4 secrets set, live webhook). Built: /call/<handle> pay-then-room flow (destination charge keeps creator 72%), meet.html QR live-video, whole-site trust dressing + launchpad hub, SEO (og-card/robots/sitemap/JSON-LD), agent execution layer (agents.json + validator + CI), Nevada legal + Vegas address. Locked: 72% creator share INVIOLABLE (code + board), 772-only Twilio rule, membership = first-month-free then $7.20/mo. NEXT: prove the call flow (enable Stripe Connect + onboard creator #1); Twilio phone numbers need a payment gate; REVAMP the pay-gated call flow from the old poker repo (likely wardev-r/proveit72) — audit out the 'disqometer' hijacker, integrate clean.",
+      "tags": ["72", "go-live", "cloudflare", "stripe", "worker", "call-flow", "seo", "agent-layer", "nevada-legal", "twilio-772", "revamp"],
+      "detail": "2026-07-16-golive-marathon.md"
     }
   ]
 }

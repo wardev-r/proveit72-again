@@ -1,0 +1,3 @@
+# Cloudflare Pages redirects
+# Pretty fan-call links: /call/jane  →  call.html?u=jane  (keeps the URL in the bar)
+/call/*   /call.html?u=:splat   200

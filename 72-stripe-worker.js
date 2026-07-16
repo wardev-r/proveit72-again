@@ -17,6 +17,8 @@
  *   GET  /creator/:id               Get creator profile
  *   PUT  /creator/:id               Update creator price/status
  *   GET  /creators                  List all creators (owner only)
+ *   GET  /call/:username            Public creator card (fan onramp, safe fields only)
+ *   POST /voice                     Twilio voice webhook — connect caller to creator
  *   POST /webhook                   Stripe webhook handler
  */
 
@@ -54,6 +56,8 @@ export default {
         result = await handleDashboardLink(request, env, url);
       } else if (path === '/creators' && request.method === 'GET') {
         result = await handleListCreators(request, env);
+      } else if (path.startsWith('/call/') && request.method === 'GET') {
+        result = await handlePublicCreator(request, env, path);
       } else if (path === '/voice' && request.method === 'POST') {
         return await handleVoice(request, env);
       } else if (path === '/webhook' && request.method === 'POST') {
@@ -447,6 +451,39 @@ async function handleVoice(request, env) {
   }
   if (!forward) return xml(`<Say>This 72 number isn't taking calls right now. Goodbye.</Say>`);
   return xml(`<Say>Connecting you on 72.</Say><Dial callerId="${called}">${forward}</Dial>`);
+}
+
+// ─── Public creator lookup — fan-facing, safe fields only ─────────────────────
+// Feeds the /call/:username onramp page. NEVER return email, stripeAccountId,
+// forwardNumber, or any other private field here — this response is public.
+async function handlePublicCreator(request, env, path) {
+  const segments = path.split('/').filter(Boolean); // ['call', <key>]
+  const key = decodeURIComponent(segments[1] || '');
+  if (!key) throw new Error('username required');
+  // Try a direct userId match first, then fall back to a username scan.
+  let creator = await getCreator(env, key);
+  if (!creator) creator = await findCreatorByUsername(env, key);
+  if (!creator) throw new Error('Creator not found');
+  return {
+    displayName: creator.displayName || creator.username || 'A 72 creator',
+    username: creator.username || key,
+    pricePerCall: creator.pricePerCall ?? null,
+    isOnline: creator.isOnline !== false,
+    hasNumber: Boolean(creator.twilioNumber),
+    twilioNumber: creator.twilioNumber || null,
+    bio: creator.bio || '',
+  };
+}
+
+async function findCreatorByUsername(env, username) {
+  if (!env.KV_72 || !username) return null;
+  const target = username.toLowerCase();
+  const list = await env.KV_72.list({ prefix: 'creator:' });
+  for (const k of list.keys) {
+    const raw = await env.KV_72.get(k.name);
+    if (raw) { const c = JSON.parse(raw); if ((c.username || '').toLowerCase() === target) return c; }
+  }
+  return null;
 }
 
 async function findCreatorByTwilioNumber(env, number) {

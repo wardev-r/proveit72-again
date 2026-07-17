@@ -260,6 +260,9 @@ async function handleCallCheckout(request, env) {
     const member = memberId ? await getCreator(env, memberId) : null;
     const active = member && ['active_trial', 'active', 'trialing'].includes(member.subscriptionStatus);
     if (!active) throw new Error('The member rate requires a 72 membership — join first.');
+    // Acquisition deal only: the 17.2%-covered call is a one-time new-member welcome,
+    // not a standing discount. Once used, they pay standard rates like everyone else.
+    if (member.acquisitionCallUsed) throw new Error('The new-member rate is a one-time welcome — already used.');
   }
 
   const handleSlug = (creator.username || creator.userId).toString().replace(/[^a-zA-Z0-9]/g, '');
@@ -329,6 +332,7 @@ async function handleCallCheckout(request, env) {
     creatorAccount: creator.stripeAccountId,
     name, amountCents, feeCents,
     mode: mode || 'standard',
+    memberId: memberId || null,
     status: 'pending',       // pending → authorized → connected → completed | voided
     paymentIntentId: null,
     createdAt: Date.now(),
@@ -650,6 +654,14 @@ async function handleRoomConnected(request, env, room) {
   s.completedAt = Date.now();
   await putSession(env, room, s);
   await clearCreatorActiveRoom(env, s.creatorId, room); // stop the dashboard ringing
+
+  // Burn the one-time new-member acquisition deal only on a completed join call.
+  if (s.mode === 'join' && s.memberId) {
+    const m = await getCreator(env, s.memberId);
+    if (m && !m.acquisitionCallUsed) {
+      await putCreator(env, s.memberId, { ...m, acquisitionCallUsed: true, acquisitionCallAt: Date.now(), updatedAt: Date.now() });
+    }
+  }
   return { ok: true, status: 'completed', paymentStatus: pi.status };
 }
 

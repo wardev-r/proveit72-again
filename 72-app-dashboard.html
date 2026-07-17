@@ -169,6 +169,42 @@
     }
     .toggle input:checked ~ .toggle-thumb { transform: translateX(24px); }
 
+    /* ── Ringing incoming-call card ── */
+    .ring-card {
+      display: flex; align-items: center; gap: 16px;
+      background: var(--accent-dim); border: 1px solid var(--accent);
+      border-radius: var(--radius); padding: 18px 20px; margin-bottom: 24px;
+      animation: ringGlow 1.4s ease-in-out infinite;
+    }
+    @keyframes ringGlow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(212,160,23,.45); }
+      50%      { box-shadow: 0 0 0 7px rgba(212,160,23,0); }
+    }
+    .ring-pulse { font-size: 1.9rem; animation: ringShake .8s ease-in-out infinite; }
+    @keyframes ringShake {
+      0%,100% { transform: rotate(0); } 20% { transform: rotate(14deg); }
+      40% { transform: rotate(-14deg); } 60% { transform: rotate(10deg); } 80% { transform: rotate(-10deg); }
+    }
+    .ring-info { flex: 1; min-width: 0; }
+    .ring-title { font-weight: 800; font-size: 1rem; color: var(--accent); }
+    .ring-sub { font-size: .8rem; color: var(--muted); margin-top: 2px; }
+    .ring-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .ring-accept {
+      padding: 11px 20px; background: var(--accent); color: #000; border: none;
+      border-radius: 8px; font-weight: 800; font-family: inherit; cursor: pointer; font-size: .9rem;
+    }
+    .ring-accept:hover { background: var(--accent-light); }
+    .ring-decline {
+      padding: 11px 14px; background: transparent; color: var(--muted);
+      border: 1px solid var(--border); border-radius: 8px; font-weight: 600;
+      font-family: inherit; cursor: pointer; font-size: .85rem;
+    }
+    .ring-decline:hover { color: var(--text); }
+    @media (max-width: 560px) {
+      .ring-card { flex-wrap: wrap; }
+      .ring-actions { width: 100%; } .ring-accept { flex: 1; }
+    }
+
     /* ── Stats row ── */
     .stats-grid {
       display: grid;
@@ -419,6 +455,9 @@
       </div>
     </div>
 
+    <!-- Incoming call (ringing) -->
+    <div id="ringDock"></div>
+
     <!-- Stats -->
     <div class="stats-grid">
       <div class="stat-card">
@@ -496,7 +535,7 @@
 
 <script>
   // ── Config ────────────────────────────────────────────────────────────────
-  const WORKER_URL = 'https://lively-mud-9c4b.ward602.workers.dev';
+  const WORKER_URL = 'https://api.velvetrope2you.com';
   const BASE_CALL_URL = 'https://velvetrope2you.com/call/';
 
   // ── State ─────────────────────────────────────────────────────────────────
@@ -518,6 +557,7 @@
     buildQR();
     renderCallHistory(MOCK_CALLS);
     checkPayoutStatus();
+    startRingWatch();
   }
 
   async function loadCreator() {
@@ -559,11 +599,85 @@
 
   async function toggleStatus(online) {
     setStatus(online);
+    if (online) startRingWatch(); else { stopRingWatch(); clearRing(); }
     try {
       await fetch(`${WORKER_URL}/creator/${userId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isOnline: online }),
+      });
+    } catch (_) {}
+  }
+
+  // ── Ringing: watch for an incoming paid call while online ───────────────────
+  // A caller who authorizes a call sets creator.activeRoom on the worker. We poll
+  // for it, ring, and only open the room when the member hits Accept. Lights off →
+  // we don't watch, so nothing rings (and checkout is blocked server-side anyway).
+  let ringTimer = null, ringingRoom = null;
+
+  function startRingWatch() {
+    stopRingWatch();
+    if (!document.getElementById('onlineToggle').checked) return;
+    ringTimer = setInterval(checkForCall, 4000);
+    checkForCall();
+  }
+  function stopRingWatch() { if (ringTimer) { clearInterval(ringTimer); ringTimer = null; } }
+
+  async function checkForCall() {
+    try {
+      const res = await fetch(`${WORKER_URL}/creator/${userId}`);
+      if (!res.ok) return;
+      const c = await res.json();
+      const room = c.activeRoom, token = c.activeRoomToken;
+      if (!room) { clearRing(); return; }
+      let status = 'authorized', amount = null;
+      try {
+        const r2 = await fetch(`${WORKER_URL}/room/${encodeURIComponent(room)}`);
+        if (r2.ok) { const s = await r2.json(); status = s.status; amount = s.amount; }
+      } catch (_) {}
+      if (status === 'authorized' || status === 'accepted') showRing(room, token, amount);
+      else clearRing();
+    } catch (_) {}
+  }
+
+  function showRing(room, token, amount) {
+    if (ringingRoom === room) return; // already ringing for this call
+    ringingRoom = room;
+    document.getElementById('ringDock').innerHTML = `
+      <div class="ring-card">
+        <div class="ring-pulse">📞</div>
+        <div class="ring-info">
+          <div class="ring-title">Incoming call${amount ? ` · $${amount}` : ''}</div>
+          <div class="ring-sub">Someone paid to reach you. You're paid the moment you accept and connect.</div>
+        </div>
+        <div class="ring-actions">
+          <button class="ring-accept" id="ringAccept">Accept →</button>
+          <button class="ring-decline" id="ringDecline">Decline</button>
+        </div>
+      </div>`;
+    document.getElementById('ringAccept').onclick = () => acceptCall(room, token);
+    document.getElementById('ringDecline').onclick = () => declineCall(room, token);
+    try { navigator.vibrate && navigator.vibrate([180, 90, 180]); } catch (_) {}
+  }
+
+  function clearRing() {
+    ringingRoom = null;
+    const d = document.getElementById('ringDock');
+    if (d) d.innerHTML = '';
+  }
+
+  function acceptCall(room, token) {
+    const url = `room.html?r=${encodeURIComponent(room)}&role=member&t=${encodeURIComponent(token || '')}`;
+    window.open(url, '_blank');
+    clearRing();
+  }
+
+  async function declineCall(room, token) {
+    clearRing();
+    try {
+      await fetch(`${WORKER_URL}/room/${encodeURIComponent(room)}/void`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
       });
     } catch (_) {}
   }

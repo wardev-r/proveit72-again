@@ -244,13 +244,22 @@ async function handleCallInfo(request, env, path) {
 // Caller pays via hosted Checkout, then is redirected into a fresh private room.
 // Destination charge: creator keeps 72% (amount − 28% application fee). Inviolable.
 async function handleCallCheckout(request, env) {
-  const { handle, mode } = await request.json();
+  const { handle, mode, memberId } = await request.json();
   if (!handle) throw new Error('handle is required');
   const creator = await resolveCreatorByHandle(env, handle);
   if (!creator) throw new Error('Creator not found');
   if (creator.isOnline === false) throw new Error('This creator is not taking calls right now');
   if (!creator.stripeAccountId || creator.chargesEnabled === false) {
     throw new Error('This creator has not finished payout setup yet');
+  }
+
+  // The 17.2%-covered "join" rate is only for actual members. No membership → no
+  // discount. We verify the caller's own member record has a live subscription;
+  // spoofing mode:'join' without one is rejected here, not just hidden in the UI.
+  if (mode === 'join') {
+    const member = memberId ? await getCreator(env, memberId) : null;
+    const active = member && ['active_trial', 'active', 'trialing'].includes(member.subscriptionStatus);
+    if (!active) throw new Error('The member rate requires a 72 membership — join first.');
   }
 
   const handleSlug = (creator.username || creator.userId).toString().replace(/[^a-zA-Z0-9]/g, '');
@@ -640,6 +649,7 @@ async function handleRoomConnected(request, env, room) {
   s.connectedAt = s.connectedAt || Date.now();
   s.completedAt = Date.now();
   await putSession(env, room, s);
+  await clearCreatorActiveRoom(env, s.creatorId, room); // stop the dashboard ringing
   return { ok: true, status: 'completed', paymentStatus: pi.status };
 }
 
@@ -658,7 +668,17 @@ async function handleRoomVoid(request, env, room) {
   s.status = 'voided';
   s.voidedAt = Date.now();
   await putSession(env, room, s);
+  await clearCreatorActiveRoom(env, s.creatorId, room); // stop the dashboard ringing
   return { ok: true, status: 'voided' };
+}
+
+// Clear a creator's active-room pointer once its call resolves (captured/voided).
+async function clearCreatorActiveRoom(env, creatorId, room) {
+  if (!env.KV_72 || !creatorId) return;
+  const c = await getCreator(env, creatorId);
+  if (c && c.activeRoom === room) {
+    await putCreator(env, creatorId, { ...c, activeRoom: null, activeRoomToken: null, updatedAt: Date.now() });
+  }
 }
 
 // ─── Twilio voice — MVP: connect a caller to the creator's real phone ─────────

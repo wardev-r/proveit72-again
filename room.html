@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Your 72 room</title>
+<meta name="theme-color" content="#080808" />
+<meta name="robots" content="noindex" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23080808'/%3E%3Ctext x='32' y='45' font-family='Inter,Arial,sans-serif' font-size='34' font-weight='800' fill='%23D4A017' text-anchor='middle'%3E72%3C/text%3E%3C/svg%3E" />
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:#080808;color:#f0f0e8;font-family:'Inter',system-ui,sans-serif;display:flex;flex-direction:column}
+  header{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid #1c1c1c;flex-shrink:0}
+  .badge{width:32px;height:32px;border-radius:8px;background:#080808;border:1px solid #252525;display:flex;align-items:center;justify-content:center;font-weight:900;color:#D4A017;font-size:.85rem}
+  header .t{font-size:.85rem;font-weight:600}
+  header .s{font-size:.72rem;color:#8a8a80}
+  header a{margin-left:auto;font-size:.78rem;color:#D4A017;text-decoration:none;font-weight:600}
+  /* charge banner — the honest running state of the money */
+  #banner{flex-shrink:0;font-size:.82rem;font-weight:600;text-align:center;padding:9px 14px;border-bottom:1px solid #1c1c1c;transition:background .3s,color .3s}
+  #banner.hold{background:rgba(212,160,23,.1);color:#e6b432}
+  #banner.live{background:rgba(76,175,125,.14);color:#5cc98d}
+  #banner.nil{background:rgba(224,85,85,.1);color:#e06a6a}
+  #stage{flex:1;position:relative;background:#0a0a0a}
+  iframe{width:100%;height:100%;border:0;display:block}
+  .msg{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;gap:10px}
+  .msg h1{font-size:1.3rem;font-weight:800}
+  .msg p{color:#8a8a80;font-size:.9rem;max-width:360px;line-height:1.6}
+  .msg a,.msg button.cta{color:#0a0a0a;background:#D4A017;padding:12px 22px;border:0;border-radius:10px;font-weight:800;text-decoration:none;margin-top:8px;font-family:inherit;font-size:.9rem;cursor:pointer}
+  .spin{width:26px;height:26px;border:3px solid #252525;border-top-color:#D4A017;border-radius:50%;animation:sp 1s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .demo{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:9;display:flex;gap:8px;background:#111;border:1px solid #252525;border-radius:10px;padding:8px}
+  .demo button{font-size:.72rem;font-weight:700;background:#181818;color:#D4A017;border:1px solid #252525;border-radius:7px;padding:7px 10px;cursor:pointer;font-family:inherit}
+</style>
+</head>
+<body>
+  <header>
+    <div class="badge">72</div>
+    <div><div class="t">Private call room</div><div class="s" id="roomName">connecting…</div></div>
+    <a href="#" id="leaveBtn">Leave</a>
+  </header>
+  <div id="banner" class="hold">Card held — you're only charged once you connect.</div>
+  <div id="stage"><div class="msg"><div class="spin"></div><p>Setting up your room…</p></div></div>
+
+<script>
+  const p = new URLSearchParams(location.search);
+  const room = p.get('r');
+  const role = p.get('role') || 'caller';
+  const token = p.get('t') || '';
+  const demo = p.get('demo');
+  const API = 'https://api.velvetrope2you.com';
+
+  const stage = document.getElementById('stage');
+  const banner = document.getElementById('banner');
+  const $room = document.getElementById('roomName');
+
+  let connectedFired = false, voidedFired = false, iAmIn = false, amount = null, memberName = null;
+
+  const setBanner = (kind, text) => { banner.className = kind; banner.textContent = text; };
+
+  // ── Capture on real connection · void on no-show. Server side is idempotent. ──
+  async function markConnected(){
+    if (connectedFired || voidedFired) return; connectedFired = true;
+    setBanner('live', amount ? `Connected — $${amount} charged. Enjoy your call.` : 'Connected — you\'re now charged.');
+    if (demo) return;
+    try { await fetch(`${API}/room/${encodeURIComponent(room)}/connected`, {
+      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ token }) }); } catch(_){}
+  }
+  async function markVoidIfUnconnected(){
+    if (connectedFired || voidedFired) return; voidedFired = true;
+    setBanner('nil', 'Call ended — you never connected, so your card was not charged.');
+    if (demo) return;
+    try { await fetch(`${API}/room/${encodeURIComponent(room)}/void`, {
+      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ token }), keepalive:true }); } catch(_){}
+  }
+
+  function showEnded(){
+    stage.innerHTML = connectedFired
+      ? '<div class="msg"><h1>Call ended</h1><p>Thanks for connecting on 72.'+(amount?' You were charged $'+amount+'.':'')+'</p><a href="/">Back to 72</a></div>'
+      : '<div class="msg"><h1>Call ended</h1><p>You weren\'t connected, so your card was <b>not</b> charged.</p><a href="/">Back to 72</a></div>';
+  }
+
+  document.getElementById('leaveBtn').addEventListener('click', (e) => { e.preventDefault(); markVoidIfUnconnected(); showEnded(); });
+  window.addEventListener('pagehide', () => { if (!connectedFired) markVoidIfUnconnected(); });
+
+  async function loadStatus(){
+    if (demo){ amount = '10.00'; memberName = 'Alex Rivera'; return; }
+    try {
+      const res = await fetch(`${API}/room/${encodeURIComponent(room)}`);
+      if (res.ok){ const s = await res.json(); amount = s.amount; memberName = s.name;
+        if (s.status === 'completed') connectedFired = true; }
+    } catch(_){}
+  }
+
+  function jitsiStart(){
+    // Jitsi IFrame API gives real join/leave events → we know when a call truly connects.
+    const api = new JitsiMeetExternalAPI('meet.jit.si', {
+      roomName: room, parentNode: stage,
+      userInfo: { displayName: role === 'member' ? '72 Member' : 'Caller' },
+      configOverwrite: { prejoinPageEnabled: false, disableDeepLinking: true },
+      interfaceConfigOverwrite: { MOBILE_APP_PROMO: false },
+    });
+    const checkBoth = () => {
+      const n = api.getNumberOfParticipants ? api.getNumberOfParticipants() : 0;
+      if (iAmIn && n >= 2) markConnected();
+    };
+    api.addListener('videoConferenceJoined', () => { iAmIn = true; setTimeout(checkBoth, 300); });
+    api.addListener('participantJoined', checkBoth);
+    api.addListener('videoConferenceLeft', () => { markVoidIfUnconnected(); showEnded(); });
+    api.addListener('readyToClose', () => { markVoidIfUnconnected(); showEnded(); });
+    window._api = api;
+  }
+
+  function jitsiFallback(){
+    const url = 'https://meet.jit.si/' + encodeURIComponent(room);
+    stage.innerHTML = '<div class="msg"><h1>Open your room</h1><p>Tap below to join the private call. You\'re only charged once you both connect.</p><a href="'+url+'" target="_blank" rel="noopener">Join room →</a></div>';
+  }
+
+  async function boot(){
+    if (!room){
+      setBanner('nil','No room on this link.');
+      stage.innerHTML = '<div class="msg"><h1>No room found</h1><p>This link is missing its room. If you just paid, check your email, or contact support@velvetrope2you.com.</p><a href="/">Back to 72</a></div>';
+      return;
+    }
+    await loadStatus();
+    setBanner('hold', amount ? `$${amount} held — you're only charged once you connect.` : 'Card held — you\'re only charged once you connect.');
+    $room.textContent = memberName ? ('with ' + memberName) : room;
+
+    if (demo){ demoPanel(); stage.innerHTML = '<div class="msg"><div class="spin"></div><p>Ringing '+(memberName||'them')+'… waiting for the other side to join.</p></div>'; return; }
+
+    const s = document.createElement('script');
+    s.src = 'https://meet.jit.si/external_api.js';
+    s.onload = () => { try { stage.innerHTML=''; jitsiStart(); } catch(_){ jitsiFallback(); } };
+    s.onerror = jitsiFallback;
+    document.head.appendChild(s);
+  }
+
+  // ── Demo controls (preview only) ──────────────────────────────────────────────
+  function demoPanel(){
+    const d = document.createElement('div'); d.className = 'demo';
+    d.innerHTML = '<button id="dJoin">▶ other side joins</button><button id="dLeave">■ leave first</button>';
+    document.body.appendChild(d);
+    d.querySelector('#dJoin').addEventListener('click', () => { iAmIn = true; markConnected();
+      stage.innerHTML = '<div class="msg" style="color:#5cc98d"><h1>● Connected</h1><p>Both parties are in the room — this is where the live video call happens.</p></div>'; });
+    d.querySelector('#dLeave').addEventListener('click', () => { markVoidIfUnconnected(); showEnded(); });
+  }
+
+  boot();
+</script>
+</body>
+</html>

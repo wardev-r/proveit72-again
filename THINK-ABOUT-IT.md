@@ -38,13 +38,3 @@ Honest triage below so we don't fake capabilities we don't have.
 - **WebMCP** (`navigator.modelContext.provideContext()`) — bleeding-edge browser API.
   Real future fit for the caller flow (expose "pay to call" as an agent tool), but
   premature today.
-
----
-
-## Real bug caught while reading the above (not a nice-to-have)
-- **772 area-code rule not enforced.** `agents.json` states: *"Provision phone
-  numbers in the 772 area code ONLY."* The worker's `buyTwilioNumber` searches
-  `AvailablePhoneNumbers/US/Local` with **no `AreaCode=772` filter**, so a claimed
-  number could be any area code — off-brand and against a stated rule. One-line fix
-  (add `AreaCode=772` to the availability query; error clearly if none free).
-  *This one probably shouldn't sit in the pile long.*

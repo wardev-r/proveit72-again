@@ -449,10 +449,12 @@ async function twilio(env, method, path, body) {
 
 async function buyTwilioNumber(env) {
   // Grab one available US local number, buy it, and point its Voice webhook at us.
+  // Brand rule (agents.json): numbers must be in the 772 area code ONLY.
   const voiceBase = env.PLATFORM_API || 'https://api.velvetrope2you.com';
-  const avail = await twilio(env, 'GET', '/AvailablePhoneNumbers/US/Local.json?VoiceEnabled=true&SmsEnabled=true&PageSize=1');
+  const areaCode = env.TWILIO_AREA_CODE || '772';
+  const avail = await twilio(env, 'GET', `/AvailablePhoneNumbers/US/Local.json?AreaCode=${encodeURIComponent(areaCode)}&VoiceEnabled=true&SmsEnabled=true&PageSize=1`);
   const candidate = avail.available_phone_numbers && avail.available_phone_numbers[0] && avail.available_phone_numbers[0].phone_number;
-  if (!candidate) throw new Error('No numbers available right now — try again shortly.');
+  if (!candidate) throw new Error(`No ${areaCode} numbers available right now — try again shortly.`);
   const bought = await twilio(env, 'POST', '/IncomingPhoneNumbers.json', {
     PhoneNumber: candidate,
     VoiceUrl: `${voiceBase}/voice`,

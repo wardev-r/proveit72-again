@@ -12,6 +12,18 @@ until a real connection.
 
 ---
 
+## ⚠ Confirmed from the Cloudflare dashboard (2026-07-17)
+- **Worker name:** `api.velvetrope2you.com` is served by the Worker **`proveit72-again`**,
+  NOT `lively-mud-9c4b`. `wrangler.toml` `name` is now set to `proveit72-again` so
+  `wrangler deploy` lands on the live worker. **Confirm this is the right worker before
+  first deploy** (Workers & Pages list) — if `lively-mud-9c4b` is actually the live one,
+  revert the name.
+- **"Others can't see the site" fix:** DNS is correct (apex + www CNAME → `vrpi72-home.pages.dev`,
+  proxied). The missing piece is attaching the hostname to the Pages project:
+  **Workers & Pages → `vrpi72-home` → Custom domains → add `velvetrope2you.com` + `www` →
+  wait for green/SSL.** Verify anytime via `https://vrpi72-home.pages.dev` (bypasses DNS).
+- **MX/email warning** in the dashboard is unrelated to the site loading — ignore for now.
+
 ## 0 · Pre-flight (no deploy yet)
 - [ ] Confirm you're promoting **`claude/twilio-emergence-4qbonn`**, not the abandoned
       `claude/twilio-account-restored-4qbonn`.

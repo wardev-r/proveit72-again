@@ -205,6 +205,23 @@
       .ring-actions { width: 100%; } .ring-accept { flex: 1; }
     }
 
+    /* ── Claim-your-number card ── */
+    .num-card {
+      display: flex; align-items: center; gap: 16px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 18px 20px; margin-bottom: 24px; flex-wrap: wrap;
+    }
+    .num-info { flex: 1; min-width: 0; }
+    .num-label { font-size: 0.75rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
+    .num-value { font-size: 1.4rem; font-weight: 800; color: var(--accent); letter-spacing: -0.01em; margin-top: 2px; }
+    .num-sub { font-size: 0.82rem; color: var(--muted); margin-top: 3px; }
+    .num-claim {
+      padding: 11px 20px; background: var(--accent); color: #000; border: none;
+      border-radius: 8px; font-weight: 800; font-family: inherit; cursor: pointer; font-size: .9rem; flex-shrink: 0;
+    }
+    .num-claim:hover { background: var(--accent-light); }
+    .num-claim:disabled { opacity: .6; cursor: default; }
+
     /* ── Stats row ── */
     .stats-grid {
       display: grid;
@@ -468,6 +485,9 @@
     <!-- Incoming call (ringing) -->
     <div id="ringDock"></div>
 
+    <!-- Your 72 number (claim on request) -->
+    <div id="numberDock"></div>
+
     <!-- Stats -->
     <div class="stats-grid">
       <div class="stat-card">
@@ -571,7 +591,59 @@
     buildQR();
     renderCallHistory(MOCK_CALLS);
     checkPayoutStatus();
+    renderNumberDock();
     startRingWatch();
+  }
+
+  // ── Your 72 number — claimed on request (not auto-provisioned) ──────────────
+  function renderNumberDock() {
+    const dock = document.getElementById('numberDock');
+    if (!dock || !creator) return;
+    const active = ['active_trial', 'active', 'trialing'].includes(creator.subscriptionStatus);
+    if (creator.twilioNumber) {
+      dock.innerHTML = `
+        <div class="num-card">
+          <div class="num-info">
+            <div class="num-label">Your 72 number</div>
+            <div class="num-value">${creator.twilioNumber}</div>
+          </div>
+        </div>`;
+      return;
+    }
+    if (!active) { dock.innerHTML = ''; return; }
+    dock.innerHTML = `
+      <div class="num-card">
+        <div class="num-info">
+          <div class="num-label">Your free 72 number</div>
+          <div class="num-sub">Claim the number people will call — included with your membership.</div>
+        </div>
+        <button class="num-claim" id="claimNumber">Claim number →</button>
+      </div>`;
+    document.getElementById('claimNumber').onclick = claimNumber;
+  }
+
+  async function claimNumber() {
+    const btn = document.getElementById('claimNumber');
+    btn.disabled = true; btn.textContent = 'Claiming…';
+    try {
+      const res = await fetch(`${WORKER_URL}/provision-number`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ memberId: userId }),
+      });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error || 'failed');
+      if (d.number) {
+        creator.twilioNumber = d.number;
+        renderNumberDock();
+        showToast(`Your 72 number is live: ${d.number}`);
+      } else {
+        btn.disabled = false; btn.textContent = 'Claim number →';
+        showToast(d.reason || 'Not available yet — try again shortly.', true);
+      }
+    } catch (_) {
+      btn.disabled = false; btn.textContent = 'Claim number →';
+      showToast('Could not claim a number — please try again.', true);
+    }
   }
 
   async function loadCreator() {

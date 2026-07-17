@@ -57,6 +57,8 @@ export default {
         result = await handleMembershipStart(request, env);
       } else if (path === '/membership-confirm' && request.method === 'POST') {
         result = await handleMembershipConfirm(request, env);
+      } else if (path === '/provision-number' && request.method === 'POST') {
+        result = await handleProvisionNumber(request, env);
       } else if (path.startsWith('/call-info/') && request.method === 'GET') {
         result = await handleCallInfo(request, env, path);
       } else if (path.startsWith('/room/') && path.endsWith('/connected') && request.method === 'POST') {
@@ -411,6 +413,53 @@ async function handleMembershipConfirm(request, env) {
     updatedAt: Date.now(),
   });
   return { ok: true, memberId: userId };
+}
+
+// ─── Twilio number — a member's free number, provisioned ON REQUEST ───────────
+// Not automatic: the member claims it from their dashboard when they log back in.
+// Idempotent and gated on an active membership. No-ops safely until Twilio creds
+// (TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN) are configured, so preview won't buy.
+async function handleProvisionNumber(request, env) {
+  const { memberId } = await request.json();
+  if (!memberId) throw new Error('memberId is required');
+  const member = await getCreator(env, memberId);
+  if (!member) throw new Error('member not found');
+  const active = ['active_trial', 'active', 'trialing'].includes(member.subscriptionStatus);
+  if (!active) throw new Error('An active membership is required to claim a number.');
+  if (member.twilioNumber) return { number: member.twilioNumber, alreadyHad: true };
+  if (!env.TWILIO_ACCOUNT_SID || !env.TWILIO_AUTH_TOKEN) {
+    return { number: null, pending: true, reason: 'Number provisioning is not switched on yet.' };
+  }
+  const number = await buyTwilioNumber(env);
+  await putCreator(env, memberId, {
+    ...member, twilioNumber: number, numberProvisionedAt: Date.now(), updatedAt: Date.now(),
+  });
+  return { number };
+}
+
+async function twilio(env, method, path, body) {
+  const auth = btoa(`${env.TWILIO_ACCOUNT_SID}:${env.TWILIO_AUTH_TOKEN}`);
+  const opts = { method, headers: { Authorization: `Basic ${auth}`, 'Content-Type': 'application/x-www-form-urlencoded' } };
+  if (body) opts.body = new URLSearchParams(body).toString();
+  const res = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}${path}`, opts);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || `Twilio error ${res.status}`);
+  return data;
+}
+
+async function buyTwilioNumber(env) {
+  // Grab one available US local number, buy it, and point its Voice webhook at us.
+  const voiceBase = env.PLATFORM_API || 'https://api.velvetrope2you.com';
+  const avail = await twilio(env, 'GET', '/AvailablePhoneNumbers/US/Local.json?VoiceEnabled=true&SmsEnabled=true&PageSize=1');
+  const candidate = avail.available_phone_numbers && avail.available_phone_numbers[0] && avail.available_phone_numbers[0].phone_number;
+  if (!candidate) throw new Error('No numbers available right now — try again shortly.');
+  const bought = await twilio(env, 'POST', '/IncomingPhoneNumbers.json', {
+    PhoneNumber: candidate,
+    VoiceUrl: `${voiceBase}/voice`,
+    VoiceMethod: 'POST',
+    FriendlyName: '72 member number',
+  });
+  return bought.phone_number;
 }
 
 async function handleConnectOnboard(request, env) {

@@ -53,6 +53,10 @@ export default {
         result = await handleCallPayment(request, env);
       } else if (path === '/create-call-checkout' && request.method === 'POST') {
         result = await handleCallCheckout(request, env);
+      } else if (path === '/membership-start' && request.method === 'POST') {
+        result = await handleMembershipStart(request, env);
+      } else if (path === '/membership-confirm' && request.method === 'POST') {
+        result = await handleMembershipConfirm(request, env);
       } else if (path.startsWith('/call-info/') && request.method === 'GET') {
         result = await handleCallInfo(request, env, path);
       } else if (path.startsWith('/room/') && path.endsWith('/connected') && request.method === 'POST') {
@@ -339,6 +343,74 @@ async function handleCallCheckout(request, env) {
   });
 
   return { url: session.url, room };
+}
+
+// ─── Join-and-call: new-member acquisition signup (free month) ────────────────
+// A caller becoming a member to unlock the one-time 17.2%-covered call. Creates a
+// free-trial subscription (card on file, $0 now) and sends them back to the call
+// page as a member. Twilio free-number provisioning is a separate, later step.
+async function handleMembershipStart(request, env) {
+  const { email, handle } = await request.json();
+  if (!email) throw new Error('email is required');
+  const userId = 'member-' + randToken(12);
+  const platformUrl = env.PLATFORM_URL || 'https://velvetrope2you.com';
+  const backTo = handle ? `/call/${encodeURIComponent(handle)}` : '/';
+
+  // Pre-create the member record (pending until the subscription is confirmed).
+  await putCreator(env, userId, {
+    userId, email, role: 'member',
+    subscriptionStatus: 'pending',
+    acquisitionCallUsed: false,
+    createdAt: Date.now(), updatedAt: Date.now(),
+  });
+
+  const session = await stripe(env, 'POST', '/checkout/sessions', {
+    mode: 'subscription',
+    payment_method_types: ['card'],
+    customer_email: email,
+    line_items: [{
+      price_data: {
+        currency: 'usd',
+        product_data: { name: PRODUCT_NAME },
+        recurring: { interval: 'month' },
+        unit_amount: SUBSCRIPTION_AMOUNT_CENTS,
+      },
+      quantity: 1,
+    }],
+    subscription_data: { trial_period_days: TRIAL_DAYS, metadata: { creator_id: userId } },
+    success_url: `${platformUrl}${backTo}?joined=${userId}&s={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${platformUrl}${backTo}`,
+    metadata: { creator_id: userId, source: 'join-and-call' },
+  });
+
+  return { url: session.url, userId };
+}
+
+// Confirm the membership synchronously on return (no webhook race), so the caller
+// can immediately take their discounted call.
+async function handleMembershipConfirm(request, env) {
+  const { userId, sessionId } = await request.json();
+  if (!userId || !sessionId) throw new Error('userId and sessionId are required');
+  const member = await getCreator(env, userId);
+  if (!member) throw new Error('member not found');
+
+  const cs = await stripe(env, 'GET', `/checkout/sessions/${sessionId}`);
+  let active = false;
+  if (cs.subscription) {
+    const sub = await stripe(env, 'GET', `/subscriptions/${cs.subscription}`);
+    active = ['trialing', 'active'].includes(sub.status);
+  }
+  if (!active) throw new Error('membership not active yet');
+
+  await putCreator(env, userId, {
+    ...member,
+    stripeCustomerId: cs.customer || member.stripeCustomerId,
+    subscriptionId: cs.subscription,
+    subscriptionStatus: 'active_trial',
+    subscriptionStarted: Date.now(),
+    updatedAt: Date.now(),
+  });
+  return { ok: true, memberId: userId };
 }
 
 async function handleConnectOnboard(request, env) {

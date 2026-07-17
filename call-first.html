@@ -106,6 +106,7 @@
 
   async function boot(){
     if (demo){ return render({displayName:'Alex Rivera', username:'alex', isOnline:true, ready:true}); }
+    if (await handleReturn()) return; // came back from membership signup
     if (!handle){ return missing("No creator specified.", "This link is missing a handle."); }
     try {
       const res = await fetch(`${API}/call-info/${encodeURIComponent(handle)}`);
@@ -179,38 +180,94 @@
 
       <a class="easy-link" href="/pay/${encodeURIComponent(c.username||handle)}">Prefer their standard rate? Pay &amp; connect →</a>
 
-      ${demo ? `<div class="note">Preview. Buttons show the intended flow — the fixed ${money(FIRST_CALL)} first-call price and the ${money(DISCOUNTED)} join-discount checkout are worker changes pending the ledger sign-off.</div>` : ''}`;
+      ${demo ? `<div class="note">Preview. "Call now" → ${money(FIRST_CALL)} checkout. "Join &amp; call" → free-month signup, then the ${money(DISCOUNTED)} member call. "No thanks" always drops back to ${money(FIRST_CALL)}.</div>` : ''}`;
 
     wire(c, name);
   }
 
   function wire(c, name){
-    // Call-only: pay the fixed first-call price → acceptance/connection sequence.
-    $('callBtn').addEventListener('click', () => startCheckout('first-call', FIRST_CALL, name));
-    // Join-first: sign up (free month + free number), then pay the covered price.
-    $('joinBtn').addEventListener('click', () => startCheckout('join', DISCOUNTED, name));
+    $('callBtn').addEventListener('click', () => goCheckout('first-call'));
+    $('joinBtn').addEventListener('click', () => startJoin(c));
   }
 
-  async function startCheckout(mode, amount, name){
+  // Start a call checkout. 'first-call' = $10; 'join' = $8.28 (needs a memberId).
+  // A failed join silently falls back to the $10 call — declining is never a dead end.
+  async function goCheckout(mode, memberId){
     if (demo){
-      alert(`[preview] ${mode === 'join' ? 'Join 72 (free month + number) then pay' : 'Pay'} ${money(amount)} → ${name} gets the request → they Accept → private room.\n\nNo accepted connection = no charge.`);
+      alert(`[preview] Pay ${mode === 'join' ? money(DISCOUNTED) : money(FIRST_CALL)} → they accept → private room.\n\nNo accepted connection = no charge.`);
       return;
     }
-    // TODO (pending ledger sign-off): worker needs a first-call-fixed-$10 + join-discount
-    // checkout that authorizes and only captures after the member accepts. Until then this
-    // routes through the existing per-call checkout.
     try {
       const res = await fetch(`${API}/create-call-checkout`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ handle, mode, amountDollars: amount }),
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ handle, mode, memberId }),
       });
-      if (!res.ok) throw new Error('checkout');
       const data = await res.json();
+      if (!res.ok || !data.url) throw new Error(data.error || 'checkout');
       location.href = data.url;
     } catch(_) {
-      alert('Could not start checkout. Please try again or contact support@velvetrope2you.com.');
+      if (mode === 'join') { alert(`Couldn't apply the member rate — continuing at ${money(FIRST_CALL)}.`); goCheckout('first-call'); }
+      else alert('Could not start checkout. Please try again or contact support@velvetrope2you.com.');
     }
+  }
+
+  // Join path: already a member → discounted call; otherwise collect email to sign up.
+  function startJoin(c){
+    const memberId = localStorage.getItem('72_userId');
+    if (memberId) return goCheckout('join', memberId);
+    showJoinForm();
+  }
+
+  function showJoinForm(){
+    const join = document.querySelector('.join');
+    join.innerHTML = `
+      <div class="join-tag">17.2% covered · new members</div>
+      <h3>Start your free month, then call</h3>
+      <p style="font-size:.84rem;color:var(--muted);margin-bottom:12px">First month free · your own 72 number · we cover 17.2% of this call. $7.20/mo after — cancel anytime.</p>
+      <input id="joinEmail" type="email" placeholder="you@email.com" autocomplete="email"
+        style="width:100%;padding:13px 14px;margin-bottom:10px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:1rem;font-family:inherit;outline:none" />
+      <button class="btn join-btn" id="joinGo">Start free month &amp; call — ${money(DISCOUNTED)} →</button>
+      <div id="joinErr" style="color:var(--red);font-size:.8rem;min-height:16px;margin-top:8px;text-align:center"></div>
+      <a class="easy-link" id="joinBail" href="#" style="margin-top:6px">No thanks — just pay ${money(FIRST_CALL)}</a>`;
+    document.getElementById('joinEmail').focus();
+    document.getElementById('joinGo').addEventListener('click', submitJoin);
+    document.getElementById('joinBail').addEventListener('click', (e) => { e.preventDefault(); goCheckout('first-call'); });
+  }
+
+  async function submitJoin(){
+    const email = document.getElementById('joinEmail').value.trim();
+    const err = document.getElementById('joinErr');
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { err.textContent = 'Enter a valid email.'; return; }
+    const btn = document.getElementById('joinGo'); btn.disabled = true; const t = btn.textContent; btn.textContent = 'Starting…';
+    try {
+      const res = await fetch(`${API}/membership-start`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, handle }) });
+      const data = await res.json();
+      if (!res.ok || !data.url) throw new Error(data.error || 'join');
+      if (data.userId) localStorage.setItem('72_userId', data.userId);
+      location.href = data.url;
+    } catch(_) {
+      btn.disabled = false; btn.textContent = t;
+      err.textContent = `Could not start membership — try again, or just pay ${money(FIRST_CALL)}.`;
+    }
+  }
+
+  // Returning from the free-month signup → confirm membership, then the $8.28 call.
+  async function handleReturn(){
+    const joined = params.get('joined'), s = params.get('s');
+    if (!joined || !s) return false;
+    localStorage.setItem('72_userId', joined);
+    $('loading').style.display = 'block'; $('loading').textContent = 'Finishing your membership…';
+    $('content').style.display = 'none';
+    try {
+      const res = await fetch(`${API}/membership-confirm`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: joined, sessionId: s }) });
+      if (!res.ok) throw new Error();
+      await goCheckout('join', joined);
+      return true;
+    } catch(_) { return false; } // couldn't confirm → fall through; $10 still available
   }
 
   boot();

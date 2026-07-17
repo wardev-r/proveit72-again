@@ -53,8 +53,18 @@ export default {
         result = await handleCallPayment(request, env);
       } else if (path === '/create-call-checkout' && request.method === 'POST') {
         result = await handleCallCheckout(request, env);
+      } else if (path === '/membership-start' && request.method === 'POST') {
+        result = await handleMembershipStart(request, env);
+      } else if (path === '/membership-confirm' && request.method === 'POST') {
+        result = await handleMembershipConfirm(request, env);
       } else if (path.startsWith('/call-info/') && request.method === 'GET') {
         result = await handleCallInfo(request, env, path);
+      } else if (path.startsWith('/room/') && path.endsWith('/connected') && request.method === 'POST') {
+        result = await handleRoomConnected(request, env, roomFromPath(path));
+      } else if (path.startsWith('/room/') && path.endsWith('/void') && request.method === 'POST') {
+        result = await handleRoomVoid(request, env, roomFromPath(path));
+      } else if (path.startsWith('/room/') && request.method === 'GET') {
+        result = await handleRoomStatus(env, roomFromPath(path));
       } else if (path === '/connect-onboard' && request.method === 'POST') {
         result = await handleConnectOnboard(request, env);
       } else if (path === '/dashboard-link' && request.method === 'GET') {
@@ -121,6 +131,14 @@ function flatten(obj, prefix = '') {
     }
   }
   return out;
+}
+
+// Cryptographically-random lowercase-alnum token (room ids, capture tokens).
+function randToken(len = 12) {
+  const bytes = new Uint8Array(len);
+  crypto.getRandomValues(bytes);
+  const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  return Array.from(bytes, b => alphabet[b % 36]).join('');
 }
 
 // ─── Route handlers ───────────────────────────────────────────────────────────
@@ -230,7 +248,7 @@ async function handleCallInfo(request, env, path) {
 // Caller pays via hosted Checkout, then is redirected into a fresh private room.
 // Destination charge: creator keeps 72% (amount − 28% application fee). Inviolable.
 async function handleCallCheckout(request, env) {
-  const { handle } = await request.json();
+  const { handle, mode, memberId } = await request.json();
   if (!handle) throw new Error('handle is required');
   const creator = await resolveCreatorByHandle(env, handle);
   if (!creator) throw new Error('Creator not found');
@@ -239,13 +257,46 @@ async function handleCallCheckout(request, env) {
     throw new Error('This creator has not finished payout setup yet');
   }
 
-  const amountDollars = Math.max(5, Number(creator.pricePerCall) || 5);
-  const amountCents = Math.round(amountDollars * 100);
-  const feeCents = Math.round(amountCents * PLATFORM_FEE_PERCENT); // 28% platform
+  // The 17.2%-covered "join" rate is only for actual members. No membership → no
+  // discount. We verify the caller's own member record has a live subscription;
+  // spoofing mode:'join' without one is rejected here, not just hidden in the UI.
+  if (mode === 'join') {
+    const member = memberId ? await getCreator(env, memberId) : null;
+    const active = member && ['active_trial', 'active', 'trialing'].includes(member.subscriptionStatus);
+    if (!active) throw new Error('The member rate requires a 72 membership — join first.');
+    // Acquisition deal only: the 17.2%-covered call is a one-time new-member welcome,
+    // not a standing discount. Once used, they pay standard rates like everyone else.
+    if (member.acquisitionCallUsed) throw new Error('The new-member rate is a one-time welcome — already used.');
+  }
+
   const handleSlug = (creator.username || creator.userId).toString().replace(/[^a-zA-Z0-9]/g, '');
-  const room = `velvetrope-${handleSlug}-${Math.random().toString(36).slice(2, 8)}`;
+  const room = `velvetrope-${handleSlug}-${randToken(10)}`; // one-time, hard to guess
+  const token = randToken(24);                              // gates connect/void on this room
   const platformUrl = env.PLATFORM_URL || 'https://velvetrope2you.com';
   const name = creator.displayName || creator.username || 'a 72 creator';
+
+  // Amount by mode. 'first-call' = the fixed $10 Emergence first call. 'join' covers
+  // 17.2% for a caller who becomes a member (→ $8.28). Any other/absent mode falls back
+  // to the creator's standard per-call rate (the simple pay-and-connect flow). The
+  // member's 72% of the STATED $10 ($7.20) is inviolable in both first-call modes — the
+  // join discount comes out of the platform's cut, never the creator's.
+  const STATED_FIRST_CALL_CENTS = 1000;
+  const MEMBER_FIRST_CALL_CENTS = Math.round(STATED_FIRST_CALL_CENTS * (1 - PLATFORM_FEE_PERCENT)); // 720
+  let amountCents, feeCents, label;
+  if (mode === 'first-call') {
+    amountCents = STATED_FIRST_CALL_CENTS;                     // $10.00
+    feeCents = amountCents - MEMBER_FIRST_CALL_CENTS;          // $2.80 platform · $7.20 member
+    label = `72 first call with ${name}`;
+  } else if (mode === 'join') {
+    amountCents = Math.round(STATED_FIRST_CALL_CENTS * (1 - 0.172)); // $8.28 (17.2% covered)
+    feeCents = amountCents - MEMBER_FIRST_CALL_CENTS;          // $1.08 platform · $7.20 member
+    label = `72 first call with ${name} · member rate`;
+  } else {
+    const amt = Math.max(5, Number(creator.pricePerCall) || 5);
+    amountCents = Math.round(amt * 100);
+    feeCents = Math.round(amountCents * PLATFORM_FEE_PERCENT); // standard 28%
+    label = `72 call with ${name}`;
+  }
 
   const session = await stripe(env, 'POST', '/checkout/sessions', {
     mode: 'payment',
@@ -253,15 +304,18 @@ async function handleCallCheckout(request, env) {
     line_items: [{
       price_data: {
         currency: 'usd',
-        product_data: { name: `72 call with ${name}` },
+        product_data: { name: label },
         unit_amount: amountCents,
       },
       quantity: 1,
     }],
     payment_intent_data: {
+      // AUTHORIZE only — the card is held, not charged. Capture happens the moment
+      // the call actually connects (both parties in the room). No connect = voided.
+      capture_method: 'manual',
       application_fee_amount: feeCents,
       transfer_data: { destination: creator.stripeAccountId },
-      description: `72 call with ${name}`,
+      description: label,
       metadata: {
         creator_id: creator.userId,
         creator_account: creator.stripeAccountId,
@@ -270,12 +324,93 @@ async function handleCallCheckout(request, env) {
         creator_earnings_cents: amountCents - feeCents,
       },
     },
-    success_url: `${platformUrl}/room.html?r=${encodeURIComponent(room)}&role=caller`,
+    success_url: `${platformUrl}/room.html?r=${encodeURIComponent(room)}&role=caller&t=${token}`,
     cancel_url: `${platformUrl}/call/${encodeURIComponent(handle)}`,
-    metadata: { creator_id: creator.userId, room, kind: 'call' },
+    metadata: { creator_id: creator.userId, room, token, kind: 'call' },
+  });
+
+  // Track the call session so the room can capture-on-connect or void-on-no-show.
+  await putSession(env, room, {
+    room, token,
+    creatorId: creator.userId,
+    creatorAccount: creator.stripeAccountId,
+    name, amountCents, feeCents,
+    mode: mode || 'standard',
+    memberId: memberId || null,
+    status: 'pending',       // pending → authorized → connected → completed | voided
+    paymentIntentId: null,
+    createdAt: Date.now(),
   });
 
   return { url: session.url, room };
+}
+
+// ─── Join-and-call: new-member acquisition signup (free month) ────────────────
+// A caller becoming a member to unlock the one-time 17.2%-covered call. Creates a
+// free-trial subscription (card on file, $0 now) and sends them back to the call
+// page as a member. Twilio free-number provisioning is a separate, later step.
+async function handleMembershipStart(request, env) {
+  const { email, handle } = await request.json();
+  if (!email) throw new Error('email is required');
+  const userId = 'member-' + randToken(12);
+  const platformUrl = env.PLATFORM_URL || 'https://velvetrope2you.com';
+  const backTo = handle ? `/call/${encodeURIComponent(handle)}` : '/';
+
+  // Pre-create the member record (pending until the subscription is confirmed).
+  await putCreator(env, userId, {
+    userId, email, role: 'member',
+    subscriptionStatus: 'pending',
+    acquisitionCallUsed: false,
+    createdAt: Date.now(), updatedAt: Date.now(),
+  });
+
+  const session = await stripe(env, 'POST', '/checkout/sessions', {
+    mode: 'subscription',
+    payment_method_types: ['card'],
+    customer_email: email,
+    line_items: [{
+      price_data: {
+        currency: 'usd',
+        product_data: { name: PRODUCT_NAME },
+        recurring: { interval: 'month' },
+        unit_amount: SUBSCRIPTION_AMOUNT_CENTS,
+      },
+      quantity: 1,
+    }],
+    subscription_data: { trial_period_days: TRIAL_DAYS, metadata: { creator_id: userId } },
+    success_url: `${platformUrl}${backTo}?joined=${userId}&s={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${platformUrl}${backTo}`,
+    metadata: { creator_id: userId, source: 'join-and-call' },
+  });
+
+  return { url: session.url, userId };
+}
+
+// Confirm the membership synchronously on return (no webhook race), so the caller
+// can immediately take their discounted call.
+async function handleMembershipConfirm(request, env) {
+  const { userId, sessionId } = await request.json();
+  if (!userId || !sessionId) throw new Error('userId and sessionId are required');
+  const member = await getCreator(env, userId);
+  if (!member) throw new Error('member not found');
+
+  const cs = await stripe(env, 'GET', `/checkout/sessions/${sessionId}`);
+  let active = false;
+  if (cs.subscription) {
+    const sub = await stripe(env, 'GET', `/subscriptions/${cs.subscription}`);
+    active = ['trialing', 'active'].includes(sub.status);
+  }
+  if (!active) throw new Error('membership not active yet');
+
+  await putCreator(env, userId, {
+    ...member,
+    stripeCustomerId: cs.customer || member.stripeCustomerId,
+    subscriptionId: cs.subscription,
+    subscriptionStatus: 'active_trial',
+    subscriptionStarted: Date.now(),
+    updatedAt: Date.now(),
+  });
+  return { ok: true, memberId: userId };
 }
 
 async function handleConnectOnboard(request, env) {
@@ -445,11 +580,21 @@ async function onCheckoutComplete(session, env) {
   if (!creatorId) return;
   const creator = await getCreator(env, creatorId) || { userId: creatorId };
 
-  // A caller just paid for a call — surface the room so the creator can join it.
+  // A caller just authorized a call — record the held PaymentIntent against the
+  // room and surface the room so the creator can accept/join it.
   if (session.metadata?.kind === 'call') {
+    const room = session.metadata.room;
+    const s = await getSession(env, room);
+    if (s) {
+      s.paymentIntentId = session.payment_intent || s.paymentIntentId;
+      s.status = 'authorized';
+      s.authorizedAt = Date.now();
+      await putSession(env, room, s);
+    }
     await putCreator(env, creatorId, {
       ...creator,
-      activeRoom: session.metadata.room,
+      activeRoom: room,
+      activeRoomToken: session.metadata.token || null,
       activeRoomAt: Date.now(),
       updatedAt: Date.now(),
     });
@@ -527,6 +672,96 @@ async function onCallPaymentSucceeded(paymentIntent, env) {
       });
       break;
     }
+  }
+}
+
+// ─── Call sessions — charge only when a call actually connects ────────────────
+// The room page calls these. On a real connection we CAPTURE the held payment;
+// on a no-show we CANCEL the authorization so the caller is never charged.
+// All transitions are idempotent so duplicate webhooks / retries can't double-act.
+
+function roomFromPath(path) {
+  // /room/<room>  or  /room/<room>/connected  or  /room/<room>/void
+  const seg = path.split('/').filter(Boolean); // ['room', <room>, ...]
+  return decodeURIComponent(seg[1] || '');
+}
+
+async function getSession(env, room) {
+  if (!env.KV_72 || !room) return null;
+  const raw = await env.KV_72.get(`callsession:${room}`);
+  return raw ? JSON.parse(raw) : null;
+}
+
+async function putSession(env, room, s) {
+  if (!env.KV_72 || !room) return;
+  await env.KV_72.put(`callsession:${room}`, JSON.stringify(s));
+}
+
+// Public status for the room page: safe fields only.
+async function handleRoomStatus(env, room) {
+  const s = await getSession(env, room);
+  if (!s) throw new Error('room not found');
+  return {
+    room: s.room,
+    name: s.name,
+    amount: (s.amountCents / 100).toFixed(2),
+    status: s.status,
+  };
+}
+
+// Both parties are in the room → capture the held payment. Idempotent.
+async function handleRoomConnected(request, env, room) {
+  const body = await request.json().catch(() => ({}));
+  const s = await getSession(env, room);
+  if (!s) throw new Error('room not found');
+  if (s.token && body.token && s.token !== body.token) throw new Error('invalid token');
+  if (s.status === 'completed') return { ok: true, status: 'completed' }; // already captured
+  if (s.status === 'voided') throw new Error('this call was cancelled');
+  if (!s.paymentIntentId) throw new Error('payment not authorized yet');
+
+  // Capture the authorization. payment_intent.succeeded then records earnings.
+  const pi = await stripe(env, 'POST', `/payment_intents/${s.paymentIntentId}/capture`, {});
+  s.status = 'completed';
+  s.connectedAt = s.connectedAt || Date.now();
+  s.completedAt = Date.now();
+  await putSession(env, room, s);
+  await clearCreatorActiveRoom(env, s.creatorId, room); // stop the dashboard ringing
+
+  // Burn the one-time new-member acquisition deal only on a completed join call.
+  if (s.mode === 'join' && s.memberId) {
+    const m = await getCreator(env, s.memberId);
+    if (m && !m.acquisitionCallUsed) {
+      await putCreator(env, s.memberId, { ...m, acquisitionCallUsed: true, acquisitionCallAt: Date.now(), updatedAt: Date.now() });
+    }
+  }
+  return { ok: true, status: 'completed', paymentStatus: pi.status };
+}
+
+// No connection happened → release the hold. Idempotent; won't undo a capture.
+async function handleRoomVoid(request, env, room) {
+  const body = await request.json().catch(() => ({}));
+  const s = await getSession(env, room);
+  if (!s) throw new Error('room not found');
+  if (s.token && body.token && s.token !== body.token) throw new Error('invalid token');
+  if (s.status === 'completed') return { ok: false, status: 'completed' }; // too late — call connected
+  if (s.status === 'voided') return { ok: true, status: 'voided' };
+  if (s.paymentIntentId) {
+    try { await stripe(env, 'POST', `/payment_intents/${s.paymentIntentId}/cancel`, {}); }
+    catch (_) { /* already cancelled/expired — treat as voided */ }
+  }
+  s.status = 'voided';
+  s.voidedAt = Date.now();
+  await putSession(env, room, s);
+  await clearCreatorActiveRoom(env, s.creatorId, room); // stop the dashboard ringing
+  return { ok: true, status: 'voided' };
+}
+
+// Clear a creator's active-room pointer once its call resolves (captured/voided).
+async function clearCreatorActiveRoom(env, creatorId, room) {
+  if (!env.KV_72 || !creatorId) return;
+  const c = await getCreator(env, creatorId);
+  if (c && c.activeRoom === room) {
+    await putCreator(env, creatorId, { ...c, activeRoom: null, activeRoomToken: null, updatedAt: Date.now() });
   }
 }
 

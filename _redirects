@@ -1,3 +1,5 @@
 # Cloudflare Pages routing
-# Pretty call links: /call/<handle> serves call.html (which reads the handle from the path).
-/call/*   /call.html   200
+# Primary caller entry: the $10 first-call page (Emergence). Reads the handle from the path.
+/call/*   /call-first.html   200
+# The easy option: pay the creator's standard per-call rate and connect.
+/pay/*    /call.html         200

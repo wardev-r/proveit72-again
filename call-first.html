@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Connect on 72</title>
+<meta name="robots" content="noindex" />
+<meta name="theme-color" content="#080808" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#080808;--surface:#111;--surface-2:#181818;--border:#252525;
+    --text:#f0f0e8;--muted:#888;--accent:#D4A017;--accent-light:#f0c040;
+    --accent-dim:rgba(212,160,23,.12);--green:#4caf7d;--green-dim:rgba(76,175,125,.14);
+    --red:#e05555;--radius:14px;
+  }
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);
+    line-height:1.55;min-height:100vh;display:flex;flex-direction:column;align-items:center;
+    padding:26px 20px 40px}
+  .rope{font-size:.68rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:22px}
+  .rope b{color:var(--accent)}
+  .stage{width:100%;max-width:400px}
+  .skeleton{color:var(--muted);text-align:center;padding:60px 0;font-size:.9rem}
+
+  /* who */
+  .who{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+  .avatar{width:54px;height:54px;border-radius:50%;flex-shrink:0;background:var(--accent-dim);
+    color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:1.45rem;font-weight:800}
+  .who-name{font-size:1.2rem;font-weight:800;letter-spacing:-.02em;line-height:1.2}
+  .who-handle{font-size:.82rem;color:var(--muted)}
+  .avail{display:inline-flex;align-items:center;gap:6px;font-size:.76rem;font-weight:600;margin-top:3px}
+  .avail .dot{width:8px;height:8px;border-radius:50%}
+  .avail.on{color:var(--green)} .avail.on .dot{background:var(--green);box-shadow:0 0 0 3px var(--green-dim)}
+  .avail.off{color:var(--muted)} .avail.off .dot{background:var(--red)}
+
+  .pitch{font-size:.95rem;color:rgba(240,240,232,.8);margin-bottom:8px}
+  .pitch b{color:var(--text)}
+  .assure{font-size:.82rem;color:var(--muted);margin-bottom:22px}
+  .assure .k{color:var(--accent);font-weight:600}
+
+  /* primary call-only */
+  .btn{display:block;width:100%;padding:16px;border:none;border-radius:var(--radius);
+    background:var(--accent);color:#000;font-family:inherit;font-size:1.05rem;font-weight:800;
+    cursor:pointer;transition:background .15s,transform .1s;text-align:center;text-decoration:none}
+  .btn:hover{background:var(--accent-light)} .btn:active{transform:translateY(1px)}
+  .btn:disabled{opacity:.5;cursor:default}
+  .btn .sub{display:block;font-size:.72rem;font-weight:600;opacity:.7;margin-top:2px}
+
+  .or{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--muted);font-size:.7rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+  .or::before,.or::after{content:'';flex:1;height:1px;background:var(--border)}
+
+  /* join card — the acquisition hook, secondary */
+  .join{background:var(--surface);border:1px solid rgba(212,160,23,.28);border-radius:var(--radius);padding:20px 20px 22px}
+  .join-tag{display:inline-block;background:var(--accent-dim);color:var(--accent);font-size:.7rem;font-weight:700;
+    letter-spacing:.04em;padding:4px 10px;border-radius:999px;margin-bottom:12px}
+  .join h3{font-size:1.02rem;font-weight:800;margin-bottom:8px}
+  .join ul{list-style:none;margin:0 0 16px;padding:0}
+  .join li{font-size:.86rem;color:rgba(240,240,232,.8);padding-left:22px;position:relative;margin-bottom:6px}
+  .join li::before{content:'✓';position:absolute;left:0;color:var(--green);font-weight:800}
+  .join li b{color:var(--accent)}
+  .price-line{display:flex;align-items:baseline;gap:8px;justify-content:center;margin-bottom:14px}
+  .was{font-size:1rem;color:var(--muted);text-decoration:line-through}
+  .now{font-size:1.9rem;font-weight:900;color:var(--accent);letter-spacing:-.03em}
+  .now small{font-size:.8rem;font-weight:600;color:var(--muted)}
+  .btn.join-btn{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+  .btn.join-btn:hover{background:var(--accent-dim)}
+
+  .easy-link{display:block;text-align:center;margin-top:16px;font-size:.8rem;color:var(--muted);text-decoration:none}
+  .easy-link:hover{color:var(--accent)}
+  .foot{margin-top:24px;font-size:.72rem;color:var(--muted);text-align:center;line-height:1.6}
+  .foot a{color:var(--accent);text-decoration:none}
+  .state-msg{text-align:center;padding:40px 0}
+  .state-msg .big{font-size:1.05rem;font-weight:700;margin-bottom:6px}
+  .state-msg .small{font-size:.86rem;color:var(--muted)}
+  .note{margin-top:18px;font-size:.72rem;color:var(--muted);text-align:center;background:var(--surface-2);
+    border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+</style>
+</head>
+<body>
+  <div class="rope"><b>Velvet Rope</b> · powered by 72</div>
+  <div class="stage">
+    <div id="loading" class="skeleton">Loading…</div>
+    <div id="content" style="display:none"></div>
+  </div>
+  <div class="foot">
+    No accepted connection, no charge · <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a>
+  </div>
+
+<script>
+  // ── Config ──────────────────────────────────────────────────────────────────
+  const API = 'https://api.velvetrope2you.com';
+  const FIRST_CALL = 10.00;   // fixed first-call asking price
+  const COVERED_PCT = 0.172;  // 17.2% covered for callers who join 72
+  const DISCOUNTED = +(FIRST_CALL * (1 - COVERED_PCT)).toFixed(2); // 8.28
+
+  const params = new URLSearchParams(location.search);
+  let handle = params.get('u') || '';
+  if (!handle){ const m = location.pathname.match(/\/call\/([^\/?#]+)/); if (m) handle = decodeURIComponent(m[1]); }
+  const demo = params.get('demo');
+
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const money = n => '$' + Number(n).toFixed(2);
+
+  async function boot(){
+    if (demo){ return render({displayName:'Alex Rivera', username:'alex', isOnline:true, ready:true}); }
+    if (await handleReturn()) return; // came back from membership signup
+    if (!handle){ return missing("No creator specified.", "This link is missing a handle."); }
+    try {
+      const res = await fetch(`${API}/call-info/${encodeURIComponent(handle)}`);
+      if (!res.ok) throw new Error('nf');
+      render(await res.json());
+    } catch(_) {
+      missing("This 72 line isn't live yet.", "Check the link, or contact support@velvetrope2you.com.");
+    }
+  }
+
+  function missing(big, small){
+    $('loading').style.display='none';
+    const el=$('content'); el.style.display='block';
+    el.innerHTML = `<div class="state-msg"><div class="big">${esc(big)}</div><div class="small">${esc(small)}</div></div>`;
+  }
+
+  function render(c){
+    $('loading').style.display='none';
+    const el=$('content'); el.style.display='block';
+    const name = c.displayName || c.username || 'A 72 member';
+    const initial = name.trim().charAt(0).toUpperCase() || '7';
+    const online = c.isOnline !== false;
+
+    if (!online){
+      el.innerHTML = `
+        <div class="who">
+          <div class="avatar">${esc(initial)}</div>
+          <div><div class="who-name">${esc(name)}</div>
+          <div class="who-handle">@${esc(c.username||handle)}</div>
+          <div class="avail off"><span class="dot"></span>Away right now</div></div>
+        </div>
+        <div class="state-msg"><div class="big">Not available to take a call</div>
+        <div class="small">${esc(name)} steps up to the rope when they're ready. Try again soon — you're only asked to pay when they're live.</div></div>`;
+      return;
+    }
+
+    el.innerHTML = `
+      <div class="who">
+        <div class="avatar">${esc(initial)}</div>
+        <div>
+          <div class="who-name">${esc(name)}</div>
+          <div class="who-handle">@${esc(c.username||handle)}</div>
+          <div class="avail on"><span class="dot"></span>Available now</div>
+        </div>
+      </div>
+
+      <div class="pitch">Private paid access to <b>${esc(name)}</b>. First call is <b>${money(FIRST_CALL)}</b>.</div>
+      <div class="assure"><span class="k">${esc(name)} personally accepts</span> — if they don't pick up, you're not charged. No accepted call, no charge.</div>
+
+      <button class="btn" id="callBtn">
+        Call now — ${money(FIRST_CALL)}
+        <span class="sub">Pay, they accept, you're connected</span>
+      </button>
+
+      <div class="or">New to 72?</div>
+
+      <div class="join">
+        <div class="join-tag">17.2% covered</div>
+        <h3>Join 72 before you call</h3>
+        <ul>
+          <li>First month of membership <b>free</b></li>
+          <li>Your own 72 number <b>free</b></li>
+          <li>We cover <b>17.2%</b> of this call</li>
+        </ul>
+        <div class="price-line">
+          <span class="was">${money(FIRST_CALL)}</span>
+          <span class="now">${money(DISCOUNTED)}<small> for this call</small></span>
+        </div>
+        <button class="btn join-btn" id="joinBtn">Join &amp; call — ${money(DISCOUNTED)} →</button>
+      </div>
+
+      <a class="easy-link" href="/pay/${encodeURIComponent(c.username||handle)}">Prefer their standard rate? Pay &amp; connect →</a>
+
+      ${demo ? `<div class="note">Preview. "Call now" → ${money(FIRST_CALL)} checkout. "Join &amp; call" → free-month signup, then the ${money(DISCOUNTED)} member call. "No thanks" always drops back to ${money(FIRST_CALL)}.</div>` : ''}`;
+
+    wire(c, name);
+  }
+
+  function wire(c, name){
+    $('callBtn').addEventListener('click', () => goCheckout('first-call'));
+    $('joinBtn').addEventListener('click', () => startJoin(c));
+  }
+
+  // Start a call checkout. 'first-call' = $10; 'join' = $8.28 (needs a memberId).
+  // A failed join silently falls back to the $10 call — declining is never a dead end.
+  async function goCheckout(mode, memberId){
+    if (demo){
+      alert(`[preview] Pay ${mode === 'join' ? money(DISCOUNTED) : money(FIRST_CALL)} → they accept → private room.\n\nNo accepted connection = no charge.`);
+      return;
+    }
+    try {
+      const res = await fetch(`${API}/create-call-checkout`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ handle, mode, memberId }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.url) throw new Error(data.error || 'checkout');
+      location.href = data.url;
+    } catch(_) {
+      if (mode === 'join') { alert(`Couldn't apply the member rate — continuing at ${money(FIRST_CALL)}.`); goCheckout('first-call'); }
+      else alert('Could not start checkout. Please try again or contact support@velvetrope2you.com.');
+    }
+  }
+
+  // Join path: already a member → discounted call; otherwise collect email to sign up.
+  function startJoin(c){
+    const memberId = localStorage.getItem('72_userId');
+    if (memberId) return goCheckout('join', memberId);
+    showJoinForm();
+  }
+
+  function showJoinForm(){
+    const join = document.querySelector('.join');
+    join.innerHTML = `
+      <div class="join-tag">17.2% covered · new members</div>
+      <h3>Start your free month, then call</h3>
+      <p style="font-size:.84rem;color:var(--muted);margin-bottom:12px">First month free · your own 72 number · we cover 17.2% of this call. $7.20/mo after — cancel anytime.</p>
+      <input id="joinEmail" type="email" placeholder="you@email.com" autocomplete="email"
+        style="width:100%;padding:13px 14px;margin-bottom:10px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:1rem;font-family:inherit;outline:none" />
+      <button class="btn join-btn" id="joinGo">Start free month &amp; call — ${money(DISCOUNTED)} →</button>
+      <div id="joinErr" style="color:var(--red);font-size:.8rem;min-height:16px;margin-top:8px;text-align:center"></div>
+      <a class="easy-link" id="joinBail" href="#" style="margin-top:6px">No thanks — just pay ${money(FIRST_CALL)}</a>`;
+    document.getElementById('joinEmail').focus();
+    document.getElementById('joinGo').addEventListener('click', submitJoin);
+    document.getElementById('joinBail').addEventListener('click', (e) => { e.preventDefault(); goCheckout('first-call'); });
+  }
+
+  async function submitJoin(){
+    const email = document.getElementById('joinEmail').value.trim();
+    const err = document.getElementById('joinErr');
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { err.textContent = 'Enter a valid email.'; return; }
+    const btn = document.getElementById('joinGo'); btn.disabled = true; const t = btn.textContent; btn.textContent = 'Starting…';
+    try {
+      const res = await fetch(`${API}/membership-start`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, handle }) });
+      const data = await res.json();
+      if (!res.ok || !data.url) throw new Error(data.error || 'join');
+      if (data.userId) localStorage.setItem('72_userId', data.userId);
+      location.href = data.url;
+    } catch(_) {
+      btn.disabled = false; btn.textContent = t;
+      err.textContent = `Could not start membership — try again, or just pay ${money(FIRST_CALL)}.`;
+    }
+  }
+
+  // Returning from the free-month signup → confirm membership, then the $8.28 call.
+  async function handleReturn(){
+    const joined = params.get('joined'), s = params.get('s');
+    if (!joined || !s) return false;
+    localStorage.setItem('72_userId', joined);
+    $('loading').style.display = 'block'; $('loading').textContent = 'Finishing your membership…';
+    $('content').style.display = 'none';
+    try {
+      const res = await fetch(`${API}/membership-confirm`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: joined, sessionId: s }) });
+      if (!res.ok) throw new Error();
+      await goCheckout('join', joined);
+      return true;
+    } catch(_) { return false; } // couldn't confirm → fall through; $10 still available
+  }
+
+  boot();
+</script>
+</body>
+</html>

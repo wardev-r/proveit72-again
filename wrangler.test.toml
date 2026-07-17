@@ -1,0 +1,11 @@
+# TEST-ONLY config. Deploys the worker to a throwaway *.workers.dev URL with NO
+# custom domain, so it never touches the live api.velvetrope2you.com route.
+# Use with:  wrangler deploy --config wrangler.test.toml
+name = "proveit72-test"
+main = "72-stripe-worker.js"
+compatibility_date = "2024-09-23"
+workers_dev = true
+
+[[kv_namespaces]]
+binding = "KV_72"
+id = "0fb09e694dcc4b2fa5bab232724482f8"

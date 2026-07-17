@@ -4,6 +4,23 @@
 no ceiling), keep 72%, platform takes 28% via Stripe. Static HTML front-ends + one
 Cloudflare Worker backend.
 
+## 🚨 HARDLINE — the URL is set FIRST. Non-negotiable.
+On every build, the live domain is wired up and confirmed loading **before** any
+other work. Robert does not budge on this. Do not treat the domain as a "last step."
+
+The DNS truth so this never causes a 2-day panic again:
+- **If the domain's nameservers already point to Cloudflare** (velvetrope2you.com
+  does), DNS/Pages changes are authoritative and land in **seconds to minutes — NOT
+  48 hours.** The "up to 48h" warning ONLY applies when changing nameservers at the
+  registrar. That's the one slow step; everything after is fast.
+- To know if a fix works **without waiting**: open the Pages **`.pages.dev`** URL
+  directly. It serves the exact same deploy, bypasses DNS entirely, and updates
+  immediately. The custom domain is just a pretty pointer at that.
+- "Site can't be found" on the custom domain = almost always one of: (a) nameservers
+  not fully switched to Cloudflare yet, (b) the Pages project's **Custom domain**
+  isn't attached / SSL still provisioning, or (c) a stale/conflicting DNS record on
+  the apex. Check those in the Cloudflare dashboard — do not just "wait it out."
+
 ## Repo map
 - `index.html` — live marketing landing (gold design, Stripe Payment Link)
 - `72-landing-opal.html` — opal velvet-rope landing variant (animated gradient, wired signup)

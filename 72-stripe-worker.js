@@ -244,7 +244,7 @@ async function handleCallInfo(request, env, path) {
 // Caller pays via hosted Checkout, then is redirected into a fresh private room.
 // Destination charge: creator keeps 72% (amount − 28% application fee). Inviolable.
 async function handleCallCheckout(request, env) {
-  const { handle } = await request.json();
+  const { handle, mode } = await request.json();
   if (!handle) throw new Error('handle is required');
   const creator = await resolveCreatorByHandle(env, handle);
   if (!creator) throw new Error('Creator not found');
@@ -253,14 +253,34 @@ async function handleCallCheckout(request, env) {
     throw new Error('This creator has not finished payout setup yet');
   }
 
-  const amountDollars = Math.max(5, Number(creator.pricePerCall) || 5);
-  const amountCents = Math.round(amountDollars * 100);
-  const feeCents = Math.round(amountCents * PLATFORM_FEE_PERCENT); // 28% platform
   const handleSlug = (creator.username || creator.userId).toString().replace(/[^a-zA-Z0-9]/g, '');
   const room = `velvetrope-${handleSlug}-${randToken(10)}`; // one-time, hard to guess
   const token = randToken(24);                              // gates connect/void on this room
   const platformUrl = env.PLATFORM_URL || 'https://velvetrope2you.com';
   const name = creator.displayName || creator.username || 'a 72 creator';
+
+  // Amount by mode. 'first-call' = the fixed $10 Emergence first call. 'join' covers
+  // 17.2% for a caller who becomes a member (→ $8.28). Any other/absent mode falls back
+  // to the creator's standard per-call rate (the simple pay-and-connect flow). The
+  // member's 72% of the STATED $10 ($7.20) is inviolable in both first-call modes — the
+  // join discount comes out of the platform's cut, never the creator's.
+  const STATED_FIRST_CALL_CENTS = 1000;
+  const MEMBER_FIRST_CALL_CENTS = Math.round(STATED_FIRST_CALL_CENTS * (1 - PLATFORM_FEE_PERCENT)); // 720
+  let amountCents, feeCents, label;
+  if (mode === 'first-call') {
+    amountCents = STATED_FIRST_CALL_CENTS;                     // $10.00
+    feeCents = amountCents - MEMBER_FIRST_CALL_CENTS;          // $2.80 platform · $7.20 member
+    label = `72 first call with ${name}`;
+  } else if (mode === 'join') {
+    amountCents = Math.round(STATED_FIRST_CALL_CENTS * (1 - 0.172)); // $8.28 (17.2% covered)
+    feeCents = amountCents - MEMBER_FIRST_CALL_CENTS;          // $1.08 platform · $7.20 member
+    label = `72 first call with ${name} · member rate`;
+  } else {
+    const amt = Math.max(5, Number(creator.pricePerCall) || 5);
+    amountCents = Math.round(amt * 100);
+    feeCents = Math.round(amountCents * PLATFORM_FEE_PERCENT); // standard 28%
+    label = `72 call with ${name}`;
+  }
 
   const session = await stripe(env, 'POST', '/checkout/sessions', {
     mode: 'payment',
@@ -268,7 +288,7 @@ async function handleCallCheckout(request, env) {
     line_items: [{
       price_data: {
         currency: 'usd',
-        product_data: { name: `72 call with ${name}` },
+        product_data: { name: label },
         unit_amount: amountCents,
       },
       quantity: 1,
@@ -279,7 +299,7 @@ async function handleCallCheckout(request, env) {
       capture_method: 'manual',
       application_fee_amount: feeCents,
       transfer_data: { destination: creator.stripeAccountId },
-      description: `72 call with ${name}`,
+      description: label,
       metadata: {
         creator_id: creator.userId,
         creator_account: creator.stripeAccountId,
@@ -299,6 +319,7 @@ async function handleCallCheckout(request, env) {
     creatorId: creator.userId,
     creatorAccount: creator.stripeAccountId,
     name, amountCents, feeCents,
+    mode: mode || 'standard',
     status: 'pending',       // pending → authorized → connected → completed | voided
     paymentIntentId: null,
     createdAt: Date.now(),

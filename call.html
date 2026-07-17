@@ -3,313 +3,122 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>72 — Call a creator</title>
+<title>Connect on 72</title>
+<meta name="description" content="Pay to connect on 72 — you'll drop straight into a private call room." />
+<meta name="theme-color" content="#D4A017" />
 <meta name="robots" content="noindex" />
-<meta name="theme-color" content="#080808" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23080808'/%3E%3Ctext x='32' y='45' font-family='Inter,Arial,sans-serif' font-size='34' font-weight='800' fill='%23D4A017' text-anchor='middle'%3E72%3C/text%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 <style>
+  :root{--bg:#080808;--surface:#111;--surface-2:#161616;--border:#252525;--text:#f0f0e8;--muted:#8a8a80;--accent:#D4A017;--accent-light:#f0c040;--red:#e05555;--green:#4caf7d}
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  :root{
-    --bg:#080808;--surface:#111;--surface-2:#181818;--border:#252525;
-    --text:#f0f0e8;--muted:#888;--accent:#D4A017;--accent-light:#f0c040;
-    --accent-dim:rgba(212,160,23,.12);--green:#4caf7d;--green-dim:rgba(76,175,125,.12);
-    --red:#e05555;--radius:14px;
-  }
-  body{
-    font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);
-    line-height:1.6;min-height:100vh;padding:28px 20px 40px;
-    display:flex;flex-direction:column;align-items:center;
-  }
-  .brand{font-size:1.4rem;font-weight:900;color:var(--accent);letter-spacing:-.04em;margin-bottom:24px}
-  .stage{width:100%;max-width:420px}
-
-  /* ── Creator card ── */
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:26px 24px;margin-bottom:16px}
-  .id-row{display:flex;align-items:center;gap:14px;margin-bottom:18px}
-  .avatar{
-    width:56px;height:56px;border-radius:50%;flex-shrink:0;
-    background:var(--accent-dim);color:var(--accent);
-    display:flex;align-items:center;justify-content:center;
-    font-size:1.5rem;font-weight:800;
-  }
-  .id-name{font-size:1.25rem;font-weight:800;letter-spacing:-.02em;line-height:1.2}
-  .id-handle{font-size:.85rem;color:var(--muted)}
-  .avail{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:600;margin-top:3px}
-  .avail .dot{width:8px;height:8px;border-radius:50%;background:var(--red)}
-  .avail.online{color:var(--green)}
-  .avail.online .dot{background:var(--green);box-shadow:0 0 0 3px var(--green-dim)}
-  .avail.offline{color:var(--muted)}
-
-  .bio{font-size:.9rem;color:var(--muted);margin-bottom:18px}
-
-  .price-tag{
-    display:flex;align-items:baseline;gap:8px;justify-content:center;
-    background:var(--accent-dim);border:1px solid rgba(212,160,23,.3);
-    border-radius:var(--radius);padding:16px;
-  }
-  .price-num{font-size:2.4rem;font-weight:900;color:var(--accent);letter-spacing:-.04em;line-height:1}
-  .price-unit{font-size:.85rem;color:var(--muted);font-weight:600}
-
-  /* ── How it works ── */
-  .how{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:16px}
-  .how-title{font-size:.7rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
-  .step{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
-  .step:last-child{margin-bottom:0}
-  .step-n{
-    width:22px;height:22px;flex-shrink:0;border-radius:50%;
-    background:var(--surface-2);border:1px solid var(--border);
-    display:flex;align-items:center;justify-content:center;
-    font-size:.72rem;font-weight:700;color:var(--accent);margin-top:1px;
-  }
-  .step-t{font-size:.88rem;color:var(--text)}
-  .step-t span{color:var(--muted)}
-
-  /* ── Reveal ── */
-  .reveal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px 22px;text-align:center}
-  .locked-num{
-    font-size:1.7rem;font-weight:800;letter-spacing:.04em;color:var(--muted);
-    font-variant-numeric:tabular-nums;margin-bottom:6px;filter:blur(.5px);
-  }
-  .reveal-note{font-size:.82rem;color:var(--muted);margin-bottom:18px}
-  .btn{
-    display:block;width:100%;padding:15px;border:none;border-radius:var(--radius);
-    background:var(--accent);color:#000;font-family:inherit;font-size:1rem;font-weight:800;
-    cursor:pointer;transition:background .15s,transform .1s;text-decoration:none;text-align:center;
-  }
-  .btn:hover{background:var(--accent-light)}
-  .btn:active{transform:translateY(1px)}
-  .btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent-dim);margin-top:10px}
-  .btn.ghost:hover{background:var(--accent-dim)}
-  .btn:disabled{opacity:.6;cursor:default}
-
-  /* signup form */
-  .signup{text-align:left}
-  .signup label{display:block;font-size:.78rem;color:var(--muted);margin:0 0 6px;font-weight:600}
-  .signup input{
-    width:100%;padding:13px 14px;margin-bottom:14px;
-    background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:var(--radius);
-    color:var(--text);font-size:1rem;font-family:inherit;outline:none;
-  }
-  .signup input:focus{border-color:var(--accent)}
-  .su-err{color:var(--red);font-size:.82rem;min-height:18px;margin-top:8px;text-align:center}
-  .su-fine{font-size:.74rem;color:var(--muted);text-align:center;margin-top:12px;line-height:1.5}
-  .freebadge{
-    display:inline-block;background:var(--green-dim);color:var(--green);
-    font-size:.78rem;font-weight:700;padding:5px 12px;border-radius:999px;margin-bottom:12px;
-  }
-
-  /* revealed state */
-  .revealed{display:none}
-  .revealed.show{display:block}
-  .live-num{
-    font-size:1.9rem;font-weight:900;letter-spacing:.02em;color:var(--accent);
-    font-variant-numeric:tabular-nums;margin-bottom:4px;
-  }
-  .live-sub{font-size:.8rem;color:var(--muted);margin-bottom:18px}
-  .qr-scan{background:#fff;border-radius:12px;padding:12px;width:172px;margin:0 auto 8px;line-height:0}
-  .qr-scan img{width:148px;height:148px;display:block}
-  .qr-cap{font-size:.75rem;color:var(--muted);margin-bottom:18px}
-
-  .locked-panel.hide{display:none}
-
-  /* states */
-  .state-msg{text-align:center;padding:14px 0}
-  .state-msg .big{font-size:1.05rem;font-weight:700;margin-bottom:6px}
-  .state-msg .small{font-size:.85rem;color:var(--muted)}
-
-  footer{margin-top:26px;font-size:.75rem;color:var(--muted);text-align:center}
-  footer a{color:var(--accent);text-decoration:none}
-  .skeleton{color:var(--muted);text-align:center;padding:60px 0;font-size:.9rem}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column;
+    background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(212,160,23,.14),transparent 70%),var(--bg)}
+  .wrap{width:100%;max-width:440px;margin:auto;padding:40px 22px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:34px 28px;text-align:center;box-shadow:0 30px 70px rgba(0,0,0,.5)}
+  .badge{width:46px;height:46px;margin:0 auto 20px;border-radius:12px;background:#080808;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--accent);font-size:1.15rem}
+  .avatar{width:76px;height:76px;margin:0 auto 16px;border-radius:50%;background:var(--accent-dim,rgba(212,160,23,.14));border:1px solid rgba(212,160,23,.4);display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:800;color:var(--accent)}
+  .eyebrow{font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+  h1{font-size:1.5rem;font-weight:800;letter-spacing:-.02em;margin-bottom:4px}
+  .status{font-size:.82rem;color:var(--muted);margin-bottom:22px}
+  .status .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle}
+  .status.off .dot{background:var(--muted)}
+  .price{font-size:3rem;font-weight:900;letter-spacing:-.03em;line-height:1;margin-bottom:4px}
+  .price small{font-size:1.1rem;font-weight:700;color:var(--muted);vertical-align:super}
+  .per{font-size:.85rem;color:var(--muted);margin-bottom:26px}
+  .btn{width:100%;padding:16px;background:var(--accent);color:#000;font-weight:800;font-size:1rem;border:none;border-radius:12px;cursor:pointer;transition:transform .15s,opacity .15s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+  .fine{font-size:.76rem;color:var(--muted);margin-top:14px;line-height:1.5}
+  .steps{display:flex;justify-content:center;gap:6px;margin-top:22px;font-size:.72rem;color:var(--muted)}
+  .steps b{color:var(--text);font-weight:600}
+  .err{color:var(--red);font-size:.85rem;margin-top:14px;min-height:1.2em}
+  .skeleton{color:var(--muted);padding:20px 0}
+  a.back{display:block;text-align:center;margin-top:20px;font-size:.8rem;color:var(--muted);text-decoration:none}
 </style>
 </head>
 <body>
-  <div class="brand">72</div>
-
-  <div class="stage">
-    <div id="loading" class="skeleton">Loading…</div>
-    <div id="content" style="display:none"></div>
+  <div class="wrap">
+    <div class="card" id="card">
+      <div class="badge">72</div>
+      <div id="body"><div class="skeleton">Loading…</div></div>
+    </div>
+    <a class="back" href="/">← 72 · velvetrope2you.com</a>
   </div>
 
-  <footer>
-    Powered by <strong>72</strong> · <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a>
-  </footer>
-
 <script>
-  // ── Config ──────────────────────────────────────────────────────────────────
-  const WORKER_URL = 'https://lively-mud-9c4b.ward602.workers.dev';
+  const API = 'https://api.velvetrope2you.com';
 
-  // ── Resolve which creator ───────────────────────────────────────────────────
-  // Supports ?u=jane  and  pretty /call/jane  (via _redirects → ?u=:splat)
-  const params = new URLSearchParams(location.search);
-  let handle = params.get('u') || '';
-  if (!handle) {
-    const m = location.pathname.match(/\/call\/([^\/?#]+)/);
-    if (m) handle = decodeURIComponent(m[1]);
+  function getHandle(){
+    const p = new URLSearchParams(location.search);
+    if (p.get('h')) return p.get('h');
+    const segs = location.pathname.split('/').filter(Boolean); // /call/<handle>
+    const i = segs.indexOf('call');
+    if (i !== -1 && segs[i+1]) return decodeURIComponent(segs[i+1]);
+    return segs[segs.length-1] && segs[segs.length-1] !== 'call.html' ? decodeURIComponent(segs[segs.length-1]) : null;
   }
 
-  const $ = id => document.getElementById(id);
-  const esc = s => String(s).replace(/[&<>"']/g, c => (
-    {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-
-  function prettyNumber(n){
-    const d = String(n).replace(/[^\d+]/g,'');
-    const m = d.match(/^\+1(\d{3})(\d{3})(\d{4})$/);
-    return m ? `+1 (${m[1]}) ${m[2]}-${m[3]}` : n;
-  }
-
-  async function boot(){
-    if (!handle){ return renderMissing("No creator specified.", "This link is missing a creator handle."); }
-    let c;
-    try {
-      const res = await fetch(`${WORKER_URL}/call/${encodeURIComponent(handle)}`);
-      if (!res.ok) throw new Error('not found');
-      c = await res.json();
-    } catch(_) {
-      return renderMissing("This 72 number isn't live yet.", "Check the link, or ask the creator to finish setup.");
-    }
-    render(c);
-  }
-
-  function renderMissing(big, small){
-    $('loading').style.display='none';
-    const el = $('content'); el.style.display='block';
-    el.innerHTML = `<div class="card"><div class="state-msg">
-      <div class="big">${esc(big)}</div><div class="small">${esc(small)}</div></div></div>`;
-  }
+  const handle = getHandle();
+  const demo = new URLSearchParams(location.search).get('demo');
 
   function render(c){
-    $('loading').style.display='none';
-    const el = $('content'); el.style.display='block';
-
-    const name = c.displayName || c.username || 'A 72 creator';
-    const initial = name.trim().charAt(0).toUpperCase() || '7';
-    const price = (c.pricePerCall != null) ? `$${c.pricePerCall}` : '$—';
-    const online = c.isOnline !== false;
-    const canCall = online && c.hasNumber && c.twilioNumber;
-
-    const availClass = online ? 'online' : 'offline';
-    const availText = online ? 'Available now' : 'Offline right now';
-
-    el.innerHTML = `
-      <div class="card">
-        <div class="id-row">
-          <div class="avatar">${esc(initial)}</div>
-          <div>
-            <div class="id-name">${esc(name)}</div>
-            <div class="id-handle">@${esc(c.username || handle)}</div>
-            <div class="avail ${availClass}"><span class="dot"></span>${availText}</div>
-          </div>
-        </div>
-        ${c.bio ? `<div class="bio">${esc(c.bio)}</div>` : ''}
-        <div class="price-tag">
-          <span class="price-num">${esc(price)}</span>
-          <span class="price-unit">per call</span>
-        </div>
-      </div>
-
-      <div class="how">
-        <div class="how-title">How it works</div>
-        <div class="step"><div class="step-n">1</div><div class="step-t">Sign up <span>— quick, just proves you're real.</span></div></div>
-        <div class="step"><div class="step-n">2</div><div class="step-t">Your first call is on us. <span>After that, ${esc(price)} per call — nothing charged before you connect.</span></div></div>
-        <div class="step"><div class="step-n">3</div><div class="step-t">Call ${esc(name)}'s number. <span>You're connected. They keep 72%, always.</span></div></div>
-      </div>
-
-      <div class="reveal">
-        ${ canCall ? `
-          <div class="locked-panel" id="lockedPanel">
-            <div class="locked-num">+1 (•••) •••-••••</div>
-            <div class="reveal-note">Sign up to prove you're real — your <strong>first call is free</strong>.</div>
-            <button class="btn" id="startBtn">Claim your first call free</button>
-          </div>
-          <form class="signup" id="signupForm" style="display:none">
-            <label for="suName">Your name</label>
-            <input id="suName" placeholder="Alex" autocomplete="name" maxlength="80" />
-            <label for="suPhone">Your mobile (the phone you'll call from)</label>
-            <input id="suPhone" placeholder="+1 555 123 4567" autocomplete="tel" inputmode="tel" />
-            <button class="btn" type="submit" id="suSubmit">Get the number →</button>
-            <div class="su-err" id="suErr"></div>
-            <div class="su-fine">First call's on us. After that, ${esc(price)} per call. Your number is used to connect the call — nothing else.</div>
-          </form>
-          <div class="revealed" id="revealedPanel">
-            <div class="freebadge">🎁 First call's on us</div>
-            <div class="live-num" id="liveNum"></div>
-            <div class="live-sub">Call from the mobile you just entered. Tap, or scan to dial.</div>
-            <div class="qr-scan"><img id="callQr" alt="Scan to call" /></div>
-            <div class="qr-cap">Point your phone camera here to dial</div>
-            <a class="btn" id="callLink" href="#">📞 Call now — free</a>
-            <button class="btn ghost" id="copyBtn">Copy number</button>
-          </div>
-        ` : online ? `
-          <div class="state-msg">
-            <div class="big">Setting up their number</div>
-            <div class="small">${esc(name)} is online but hasn't finished connecting a 72 number yet. Check back soon.</div>
-          </div>
-        ` : `
-          <div class="state-msg">
-            <div class="big">Not taking calls right now</div>
-            <div class="small">${esc(name)} is offline. Scan again when they're live.</div>
-          </div>
-        `}
-      </div>`;
-
-    if (canCall) wireReveal(c);
+    const initial = (c.name||'?').charAt(0).toUpperCase();
+    const off = !c.isOnline;
+    const notReady = !c.ready;
+    document.getElementById('body').innerHTML = `
+      <div class="avatar">${initial}</div>
+      <div class="eyebrow">Pay to connect</div>
+      <h1>${c.name}</h1>
+      <div class="status ${off?'off':''}"><span class="dot"></span>${off?'Offline right now':'Online — ready to talk'}</div>
+      <div class="price"><small>$</small>${c.pricePerCall}</div>
+      <div class="per">one call · you drop straight into a private room</div>
+      <button class="btn" id="pay" ${off||notReady?'disabled':''}>Pay $${c.pricePerCall} &amp; connect →</button>
+      <div class="err" id="err">${notReady?'This creator hasn’t finished payout setup yet.':''}</div>
+      <div class="steps"><b>Pay</b> → <b>Private room</b> → <b>Talk</b></div>
+      <p class="fine">Secure checkout by Stripe. Audio or video — your choice.</p>`;
+    const btn = document.getElementById('pay');
+    if (btn && !off && !notReady) btn.onclick = startCheckout;
   }
 
-  function wireReveal(c){
-    const num = c.twilioNumber;
-    const dial = String(num).replace(/[^\d+]/g,'');
+  function renderError(msg){
+    document.getElementById('body').innerHTML = `
+      <div class="eyebrow" style="color:var(--muted)">72</div>
+      <h1>Can’t connect</h1>
+      <p class="fine" style="margin-top:10px">${msg}</p>`;
+  }
 
-    function revealNumber(){
-      $('lockedPanel').style.display = 'none';
-      $('signupForm').style.display = 'none';
-      const panel = $('revealedPanel'); panel.classList.add('show');
-      $('liveNum').textContent = prettyNumber(num);
-      $('callLink').href = `tel:${dial}`;
-      $('callQr').src = `https://api.qrserver.com/v1/create-qr-code/?size=296x296&margin=0&data=${encodeURIComponent('tel:'+dial)}`;
-      panel.scrollIntoView({behavior:'smooth', block:'center'});
+  async function startCheckout(){
+    const btn = document.getElementById('pay');
+    const err = document.getElementById('err');
+    btn.disabled = true; btn.textContent = 'Opening secure checkout…'; err.textContent='';
+    try{
+      const res = await fetch(`${API}/create-call-checkout`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ handle })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.url) throw new Error(data.error || 'Could not start checkout');
+      location.href = data.url;
+    }catch(e){
+      btn.disabled=false; btn.textContent = 'Try again';
+      err.textContent = e.message || 'Something went wrong.';
     }
-
-    $('startBtn').addEventListener('click', () => {
-      $('lockedPanel').style.display = 'none';
-      $('signupForm').style.display = 'block';
-      $('suName').focus();
-    });
-
-    $('signupForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const err = $('suErr'); err.textContent = '';
-      const name = $('suName').value.trim();
-      const phone = $('suPhone').value.trim();
-      if (name.length < 2) { err.textContent = 'Enter your name.'; return; }
-      if (phone.replace(/\D/g,'').length < 10) { err.textContent = 'Enter a valid mobile number.'; return; }
-
-      const btn = $('suSubmit'); const label = btn.textContent;
-      btn.disabled = true; btn.textContent = 'One sec…';
-      try {
-        const res = await fetch(`${WORKER_URL}/signup`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, phone, creator: c.username || handle }),
-        });
-        if (!res.ok) throw new Error('signup failed');
-      } catch(_) {
-        btn.disabled = false; btn.textContent = label;
-        err.textContent = 'Could not sign you up — try again.';
-        return;
-      }
-      revealNumber();
-    });
-
-    $('copyBtn').addEventListener('click', () => {
-      navigator.clipboard?.writeText(prettyNumber(num)).then(() => {
-        const b = $('copyBtn'); const t = b.textContent; b.textContent = '✓ Copied';
-        setTimeout(() => b.textContent = t, 1800);
-      }).catch(() => prompt('Copy this number:', prettyNumber(num)));
-    });
   }
 
-  boot();
+  (async function boot(){
+    if (demo){ render({name:'Alex Rivera', pricePerCall:25, isOnline:true, ready:true}); return; }
+    if (!handle){ renderError('This call link is missing a creator. Check the link and try again.'); return; }
+    try{
+      const res = await fetch(`${API}/call-info/${encodeURIComponent(handle)}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Creator not found');
+      render(data);
+    }catch(e){
+      renderError(e.message || 'We couldn’t find that creator.');
+    }
+  })();
 </script>
 </body>
 </html>

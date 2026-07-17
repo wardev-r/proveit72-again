@@ -1,3 +1,5 @@
-# Cloudflare Pages redirects
-# Pretty fan-call links: /call/jane  →  call.html?u=jane  (keeps the URL in the bar)
-/call/*   /call.html?u=:splat   200
+# Cloudflare Pages routing
+# Primary caller entry: the $10 first-call page (Emergence). Reads the handle from the path.
+/call/*   /call-first.html   200
+# The easy option: pay the creator's standard per-call rate and connect.
+/pay/*    /call.html         200

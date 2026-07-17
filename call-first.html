@@ -67,6 +67,8 @@
   .btn.join-btn{background:transparent;color:var(--accent);border:1px solid var(--accent)}
   .btn.join-btn:hover{background:var(--accent-dim)}
 
+  .easy-link{display:block;text-align:center;margin-top:16px;font-size:.8rem;color:var(--muted);text-decoration:none}
+  .easy-link:hover{color:var(--accent)}
   .foot{margin-top:24px;font-size:.72rem;color:var(--muted);text-align:center;line-height:1.6}
   .foot a{color:var(--accent);text-decoration:none}
   .state-msg{text-align:center;padding:40px 0}
@@ -174,6 +176,8 @@
         </div>
         <button class="btn join-btn" id="joinBtn">Join &amp; call — ${money(DISCOUNTED)} →</button>
       </div>
+
+      <a class="easy-link" href="/pay/${encodeURIComponent(c.username||handle)}">Prefer their standard rate? Pay &amp; connect →</a>
 
       ${demo ? `<div class="note">Preview. Buttons show the intended flow — the fixed ${money(FIRST_CALL)} first-call price and the ${money(DISCOUNTED)} join-discount checkout are worker changes pending the ledger sign-off.</div>` : ''}`;
 

@@ -42,6 +42,19 @@ End cold on **72**. The stamp should be a full stop, not a soft sell: "…That's
 - Leading with the **phone number / the 72% / the mechanics.** Nobody feels plumbing.
   Lead with the feeling (the table, the filter); the number is proof, not hook.
 
+## The onboarding perk — frame the gain, not the net price
+- First call is **always $10.** Deliberate anchor — always show it, never hide it.
+- New members get **17.2% covered** on that first call = **$1.72 back**. Lead with
+  **"$1.72 back in your pocket,"** NOT "$8.28." People don't get excited about $8.28;
+  they notice a buck-seventy-two landing back in their pocket.
+- **On-brand magic: $1.72 hides the 72.** The discount literally carries the brand
+  (17.2% off $10 = 1.72). Weaponize it — let people clock the 72 in the number.
+- Line (member-facing): *"First call's $10. Join, and 72 puts $1.72 back in your
+  pocket — your buy-in to the table."*
+- Truth for us only: that $1.72 is the **acquisition cost** of a new member. The
+  customer never hears "coupon" or "acquisition cost" — they hear *"72 spotted me my
+  way in,"* and the number winks. Never call it a discount/coupon in copy.
+
 ## Note for site copy
 Legitimacy is **priced** (72% to the creator) but must also be **said** — the customer
 doesn't feel the fairness automatically. Say the story out loud, or it's just a number.

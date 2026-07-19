@@ -49,9 +49,14 @@ End cold on **72**. The stamp should be a full stop, not a soft sell: "…That's
   they notice a buck-seventy-two landing back in their pocket.
 - **On-brand magic: $1.72 hides the 72.** The discount literally carries the brand
   (17.2% off $10 = 1.72). Weaponize it — let people clock the 72 in the number.
-- Line (member-facing): *"First call's $10. Join, and 72 puts $1.72 back in your
-  pocket — your buy-in to the table."*
-- Truth for us only: that $1.72 is the **acquisition cost** of a new member. The
+- The full new-member welcome is a **three-part gift, all on 72**: first month free,
+  **the number's on us**, and **$1.72 back** on the first call.
+- Line (member-facing): *"First call's $10. Join, and the number's on us, the first
+  month's on us, and $1.72 lands back in your pocket — that's 72 pulling out your
+  seat at the table."*
+- Truth for us only: the free month, the covered number, and the $1.72 are all
+  **acquisition cost** — recovered fast from month-two membership ($7.20/mo), and the
+  discounted call still nets a little. It's a healthy funnel, not a giveaway. The
   customer never hears "coupon" or "acquisition cost" — they hear *"72 spotted me my
   way in,"* and the number winks. Never call it a discount/coupon in copy.
 

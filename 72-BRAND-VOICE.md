@@ -25,6 +25,18 @@ creator is the host holding the table, never the beggar asking to be paid.
 > Harassers, scammers, posers, and time-wasters have no place at your table.
 > Anyone vying for a seat proves it. Paid access to your time. **That's 72.**
 
+## The arc that welds the two brands (velvet rope → the table)
+"Velvet Rope 2 You" (the gate) and "the seat at the table" (the reward) are one
+story, not two metaphors. The whole customer journey lives in one image:
+> **Outside the rope → you prove it → the rope unhooks → you're led to the table.**
+The rope is the gate you earn past; the table is where you land. The name becomes
+the promise: 72 takes *you* past the rope, to the table.
+
+**The welcome line** (the moment someone joins — the payoff, not the pitch):
+> Unhooking the rope, leading you to the table.
+
+(Sharper CTA variant: *"The rope's unhooked. Come to the table."*)
+
 ## The engine (use this to generate new copy in-voice)
 Every winning line hits three beats, in this order:
 1. **Status flip** — you're the host / it's your table (kills the scoff)

@@ -1,5 +1,33 @@
 # 72 — project guide for Claude (and humans)
 
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+## 🧭 START HERE — read this before touching anything (added 2026-07-20)
+
+**There is ONE source-of-truth branch: `claude/twilio-emergence-4qbonn` ("emergence").**
+It is a clean *superset* of everything else — the real, complete product lives here:
+the paid **$10 first-call** flow (`call-first.html`), authorize-then-capture money
+logic, the **ringing Accept/Decline** dashboard + **Claim-number (772)** card, the
+test rig (`wrangler.test.toml`, `scripts/seed-test.sh`), and the go-live runbook
+(`GOLIVE-EMERGENCE.md`). **Edit here. Do all new work here.**
+
+**Do NOT start "fixing" the old branches.** They are thinner, older copies. The pain
+this project keeps hitting = a fresh session lands on an old branch, can't find the
+real work, and re-does it. If a file looks unfinished, you're probably on the wrong
+branch — come back to emergence.
+
+**Branch map (2026-07-20):**
+- `claude/twilio-emergence-4qbonn` — ⭐ KING. All real work. Becomes live via `GOLIVE-EMERGENCE.md`.
+- `claude/twilio-deploy-bi6sbr` — the OLDER live-deploy branch (thinner copy). Emergence supersets it.
+- `claude/72-marketplace-deployment-ax8w3w` — kept in sync with bi6sbr; possible Pages prod branch. **Confirm the real Pages production branch in the Cloudflare `vrpi72-home` settings — that ambiguity is the root of the drift.**
+- everything else — dead/retired.
+
+**Before acting:** read the latest `.claude/handoffs/*.md`, then `agents.json`, then this file.
+
+**The permanent fix (owner action):** in Cloudflare Pages `vrpi72-home`, point the
+Production branch at ONE branch (ideally emergence once it's live) and retire the rest,
+so edit-branch = deploy-branch = source-of-truth. No gap left to drift.
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+
 72 is a creator phone marketplace: claim a number, set a per-call price ($5 base,
 no ceiling), keep 72%, platform takes 28% via Stripe. Static HTML front-ends + one
 Cloudflare Worker backend.
@@ -41,7 +69,7 @@ When a build or design gets killed: don't just delete it. Move it to `boneyard/`
 good_for, why it died), and drop a screenshot for memory.
 
 ## Working conventions
-- Develop on a **feature branch**, not `main`. Current branch: `claude/workers-completion-40a0lp`.
+- Develop on the ONE king branch: `claude/twilio-emergence-4qbonn` (see START HERE at top).
 - One clear, descriptive commit per change; push to the branch.
 - Promote to `index.html` / merge to `main` deliberately — keep `main` presentable.
 - Stripe **secret** key never goes in the repo or HTML — only `wrangler secret put STRIPE_SECRET_KEY` on the Worker.

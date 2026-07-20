@@ -25,6 +25,11 @@ creator is the host holding the table, never the beggar asking to be paid.
 > Harassers, scammers, posers, and time-wasters have no place at your table.
 > Anyone vying for a seat proves it. Paid access to your time. **That's 72.**
 
+## "The Proof Call" — the $10 first call
+The first call is **The Proof Call**: the caller pays **$10 to prove they belong at
+the table.** Same "prove it" spine as the whole brand. It's the fixed price everyone
+starts at; the creator's own rate unlocks after. (Name locked 2026-07-20.)
+
 ## The arc that welds the two brands (velvet rope → the table)
 "Velvet Rope 2 You" (the gate) and "the seat at the table" (the reward) are one
 story, not two metaphors. The whole customer journey lives in one image:

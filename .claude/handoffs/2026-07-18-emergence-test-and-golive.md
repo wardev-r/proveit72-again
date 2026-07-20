@@ -86,4 +86,36 @@ The **entire emergence branch is the cued-up change set** awaiting test + promot
 
 ---
 
+## Parked for later — pricing architecture + site-copy pass (added 2026-07-20)
+Decided, NOT yet built. Do these **after** the Emergence test proves the flow (one
+variable at a time). Full rationale is in chat + `72-BRAND-VOICE.md`.
+
+**Pricing architecture (Stripe):**
+- **"The Proof Call"** ($10 first call) → make it a real Stripe **Product + fixed $10
+  Price** (shared by all creators). Cleaner reporting; receipts say "Proof Call." Worker
+  would reference the price id instead of inline `price_data`.
+- **Member join discount** → implement as a real Stripe **coupon "17.2% off" (= $1.72)**
+  applied to the Proof Call price → the receipt literally prints **"–$1.72"** (the 72
+  winks). Replaces the hand-computed $8.28. Keep `application_fee_amount` set so the
+  creator still nets **$7.20**.
+- **Creator's ongoing rate** → keep **dynamic `price_data`** (any amount, true "no
+  ceiling"). **Do NOT** pre-build a product per price tier — breaks "no ceiling", ~40
+  objects, zero gain.
+- **Tiered slider** ($1 steps to ~$20, $5 to $50, $10 after, open "custom" at the top)
+  → pure **UI slider step logic**, no Stripe product behind each notch.
+
+**Site-copy tweak pass (greenlit by Robert, NOT yet applied — index.html / paygate.html / why72.html):**
+- **Hero:** swap the 4 rotator slides to the **table voice**, $10 as the only price.
+  Drafted slides: *"72 is the seat at the table"* / *"Not everyone gets a seat"* /
+  *"$10 to reach you · you keep 72%"* / *"One link. Your table. All yours."*
+- **Payout = weekly** everywhere (fix "Instant payouts", index.html:723).
+- **$10 is the ONLY price written in** — remove "From $5", the per-minute dropdown
+  (paygate.html:146/150), and the "$3 call" example (index.html:766 → **"$7.20 on a
+  $10 call"**).
+- **One CTA:** "Claim your number →" → **"Claim your 72 link →"** (Robert may pick
+  "Take your seat →" instead). Kill "Start free".
+- **Welcome note** under the CTA: keep "First 30 days free", add **"your number's on us."**
+
+---
+
 **First move when this session starts:** Greet Robert, confirm in a sentence you've absorbed this, then ask: *"Did Jane's account hit Transfers: Active, and what's her `acct_…` id?"* — then continue directing him through steps 2→4. Keep it click-first, one step at a time, no lectures.

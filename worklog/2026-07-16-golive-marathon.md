@@ -21,7 +21,7 @@
 - **Every user is a member:** first month free, then **$7.20/month** (verified live).
 - **Twilio: 772 area code ONLY** (on-brand with "72").
 - **Dashboards (`72-app-dashboard.html`, `72-owner-dashboard.html`) left untouched** per owner — only fixed a dead QR URL + price floor + a chart-crash bug earlier.
-- Two-branch mess resolved: Pages production branch is now `claude/twilio-deploy-bi6sbr`; every push auto-deploys — **no more manual merges.**
+- ⚠️ **Two-branch reality (corrected 2026-07-20):** the earlier claim that Pages deploys from `claude/twilio-deploy-bi6sbr` was WRONG — the live site actually deploys from **`claude/72-marketplace-deployment-ax8w3w`** ("production"), which had drifted **11 commits behind** bi6sbr. That drift = the recurring "this isn't the newest version" bug. **Fixed:** both branches force-synced to the same commit (`63ef9f5`). **Rule until this is ended for good:** work happens on `bi6sbr`, but you MUST also advance `ax8w3w` (fast-forward `bi6sbr` → `ax8w3w`) or the site stays stale. Watch out — automated sessions push to BOTH branches, so they diverge on their own; re-sync before assuming a push went live. **Permanent fix (do this):** in Cloudflare Pages `vrpi72-home`, set the production branch to a single branch and retire the other, so one push = one deploy.
 
 ### Status
 - **Front-of-house LIVE:** site + membership signup work end to end. A stranger can find it (send the link — the `2` gets mistyped, so paste, don't dictate) and sign up today.

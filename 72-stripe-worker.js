@@ -874,8 +874,10 @@ async function handleTestSetupJane(request, env) {
     individual: {
       first_name: 'Jane',
       last_name: 'Rivers',
+      email: 'jane@test72.com',
       dob: { day: 1, month: 1, year: 1990 },
     },
+    external_account: 'btok_us',
     capabilities: { transfers: { requested: true } },
   });
 

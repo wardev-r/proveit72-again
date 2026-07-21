@@ -73,6 +73,8 @@ export default {
         result = await handleDashboardLink(request, env, url);
       } else if (path === '/creators' && request.method === 'GET') {
         result = await handleListCreators(request, env);
+      } else if (path === '/test/setup-jane' && request.method === 'GET') {
+        result = await handleTestSetupJane(request, env);
       } else if (path === '/voice' && request.method === 'POST') {
         return await handleVoice(request, env);
       } else if (path === '/webhook' && request.method === 'POST') {
@@ -852,6 +854,56 @@ async function getCreator(env, userId) {
   if (!env.KV_72) return null;
   const raw = await env.KV_72.get(`creator:${userId}`);
   return raw ? JSON.parse(raw) : null;
+}
+
+// ─── One-time TEST helper: finish Jane's Connect account + seed her in KV ─────
+// Test-mode only. Accepts ToS, sets DOB, requests the Transfers capability
+// (Stripe clears these instantly in test mode), then seeds creator:testcreator.
+// Hit it once: GET /test/setup-jane?acct=acct_XXXX  (defaults to Jane's acct).
+async function handleTestSetupJane(request, env) {
+  if (!env.STRIPE_SECRET_KEY || !env.STRIPE_SECRET_KEY.startsWith('sk_test_')) {
+    throw new Error('Refusing to run: this endpoint only works on a TEST Stripe key (sk_test_…).');
+  }
+  const url = new URL(request.url);
+  const acct = url.searchParams.get('acct') || 'acct_1TuZa1PxRH6hMZgu';
+
+  // 1) Update the connected account — the test-mode requirement bypass.
+  const account = await stripe(env, 'POST', `/accounts/${acct}`, {
+    business_type: 'individual',
+    tos_acceptance: { date: Math.floor(Date.now() / 1000), ip: '127.0.0.1' },
+    individual: {
+      first_name: 'Jane',
+      last_name: 'Rivers',
+      dob: { day: 1, month: 1, year: 1990 },
+    },
+    capabilities: { transfers: { requested: true } },
+  });
+
+  // 2) Seed Jane into KV so the call flow can find her.
+  const creator = {
+    userId: 'testcreator',
+    username: 'jane',
+    displayName: 'Jane Rivers',
+    stripeAccountId: acct,
+    chargesEnabled: true,
+    isOnline: true,
+    pricePerCall: 20,
+    forwardNumber: '+15555550100',
+    subscriptionStatus: 'active_trial',
+    acquisitionCallUsed: false,
+  };
+  await putCreator(env, 'testcreator', creator);
+
+  const transfers = account.capabilities?.transfers || 'unknown';
+  return {
+    ok: true,
+    message: transfers === 'active'
+      ? 'Jane is READY — Transfers active and seeded into KV as creator:testcreator.'
+      : `ToS accepted + transfers requested; capability now "${transfers}". Seeded into KV.`,
+    account: acct,
+    transfers,
+    seeded: creator,
+  };
 }
 
 async function putCreator(env, userId, data) {

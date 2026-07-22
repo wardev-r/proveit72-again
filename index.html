@@ -578,6 +578,31 @@
 <!-- ── Main page ── -->
 <div id="mainPage">
 
+  <!-- ── Cinematic hero video (opalescent "uninterrupted attention") ── -->
+  <section class="cinehero">
+    <video class="cinehero-video" autoplay muted loop playsinline preload="auto" poster="/hero-poster.jpg">
+      <source src="/72-uninterrupted.mp4" type="video/mp4" />
+    </video>
+    <button class="cinehero-sound" id="cineSound" aria-label="Toggle sound" onclick="toggleCineSound()">🔇</button>
+    <div class="cinehero-scrim"></div>
+    <a class="cinehero-cue" href="#pricing" aria-label="Enter">
+      <span>enter</span>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </section>
+  <style>
+    .cinehero{position:relative;width:100%;height:100svh;min-height:560px;background:#05050a;overflow:hidden}
+    .cinehero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+    .cinehero-scrim{position:absolute;left:0;right:0;bottom:0;height:32%;background:linear-gradient(to bottom,transparent,#080808);pointer-events:none}
+    .cinehero-sound{position:absolute;top:18px;right:18px;z-index:3;width:46px;height:46px;border-radius:50%;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.28);color:#fff;font-size:1.1rem;cursor:pointer;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+    .cinehero-cue{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);z-index:3;display:flex;flex-direction:column;align-items:center;gap:2px;color:rgba(240,240,232,.72);text-decoration:none;font-family:'Inter',system-ui,sans-serif;font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;animation:cineBob 2.4s ease-in-out infinite}
+    @keyframes cineBob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+    @media (prefers-reduced-motion:reduce){.cinehero-cue{animation:none}}
+  </style>
+  <script>
+    function toggleCineSound(){var v=document.querySelector('.cinehero-video'),b=document.getElementById('cineSound');if(!v)return;v.muted=!v.muted;b.textContent=v.muted?'🔇':'🔊';if(!v.muted&&v.play)v.play();}
+  </script>
+
   <!-- Hero -->
   <section class="hero">
     <div class="hero-watermark">72</div>

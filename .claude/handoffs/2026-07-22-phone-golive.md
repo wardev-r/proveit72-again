@@ -5,6 +5,36 @@ test-mode/Jane dry-run, build for real, prove with ONE real call, go live by mor
 He wants speed and explicit steps — direct him click-by-click, no lectures.
 
 ---
+## ✅ STATUS (end of 2026-07-22 build session) — the CODE and COPY are DONE and pushed
+All on `claude/twilio-emergence-4qbonn` (HEAD ~`fa9ef35`). **Nothing is live yet** — it's all
+staged on emergence; the live site still serves the OLD frontend. Code + copy go live TOGETHER
+when emergence is promoted (Robert's step).
+
+- **§2 Phone pay-gate — BUILT (`node --check` clean):** `handleCallCheckout` mints a 6-digit
+  `callpass:<pin>` → room, and routes checkout success to **`connect.html`** (phone; default) or
+  **`room.html`** (video, `channel:'video'` = the upsell). Voice legs: `/voice` `<Gather>`s the
+  code → **`/voice/verify`** validates the paid session, spends the code, `<Dial>`s the member's
+  `forwardNumber` with a status callback → **`/voice/status`** captures on `DialCallStatus=completed`,
+  voids otherwise (via shared `captureSessionByRoom` / `voidSessionByRoom`). Reuses the existing
+  manual-capture money engine — **72% ($7.20) intact.** New **`connect.html`** = after-pay page:
+  the 772 number (tap-to-call), the code, and a live status line that flips to charged/not-charged.
+- **§5 Copy truth-pass — DONE.** index/paygate/why72/call/meet/events swept: killed "No phone
+  number needed"; "audio or video / land in your room" → "your 72 number rings, video optional";
+  `meet.html` = the video **upsell**; "paid out weekly" → "paid out through Stripe" (no cadence
+  promise). Meta/OG fixed. **$10-or-join / $8.28 pricing untouched — that's the design.**
+
+## ▶️ REMAINING = go-live, all Robert-side (then verify). Everything code/copy is ready.
+1. **Promote emergence to production** / confirm the live worker `proveit72-again` builds from it
+   (Workers Builds git auto-deploy — NOT local wrangler, it crashes on his machine).
+2. **Twilio:** each 772 number → Voice "A call comes in" → Webhook POST →
+   `https://api.velvetrope2you.com/voice`.
+3. **Assign his number** to the member record (`twilioNumber` + `forwardNumber`) in KV.
+4. **Smoke call (the proof):** pay his own $10 → call the 772 → enter code → his phone rings →
+   Stripe shows $10 captured / $7.20 to him. Second run: don't answer → confirm $0 (voided).
+   Then open to others.
+---
+
+---
 
 ## 0. VISION LOCK (the correction that reframes everything)
 **The product IS the phone number.** A real **772** number that rings the member's real

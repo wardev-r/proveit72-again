@@ -119,3 +119,50 @@ variable at a time). Full rationale is in chat + `72-BRAND-VOICE.md`.
 ---
 
 **First move when this session starts:** Greet Robert, confirm in a sentence you've absorbed this, then ask: *"Did Jane's account hit Transfers: Active, and what's her `acct_…` id?"* — then continue directing him through steps 2→4. Keep it click-first, one step at a time, no lectures.
+
+---
+
+## 2026-07-22 session note — Jane onboarding is a TRAP; do NOT repeat it
+
+Spent a long, painful session trying to get Jane (`acct_1TuZa1PxRH6hMZgu`) to
+**Transfers: Active** and it fought the whole way. What we learned, so the next
+session does NOT walk into the same wall:
+
+- **`acct_1TuZa1PxRH6hMZgu` is an EXPRESS account** where Stripe collects
+  requirements (`controller[requirement_collection]=stripe`). That means **the
+  platform CANNOT accept ToS / set DOB via the API** — `POST /v1/accounts/{id}`
+  with `tos_acceptance` returns *"You cannot accept the Terms of Service on behalf
+  of accounts where controller[requirement_collection]=stripe."* So the
+  `/test/setup-jane` endpoint I added (updates an existing Express acct) is the
+  WRONG shape — it can't work on this account. **Abandon that account.**
+- Trying to finish the Express account via **hosted onboarding** dead-ended too:
+  it demanded a **real government ID photo + money** to verify. That is a **live-mode
+  verification** — test mode never asks for a real ID or a fee. Robert (correctly)
+  bailed. **NEVER put a real ID / real money against a throwaway test creator.**
+- **THE RIGHT WAY (do this next time):** create a **fresh, platform-controlled test
+  account** via `POST /v1/accounts` with `controller[requirement_collection]=application`
+  (+ `controller[fees][payer]=application`, `controller[losses][payments]=application`,
+  `controller[stripe_dashboard][type]=none`) plus `capabilities[transfers][requested]=true`,
+  full `individual[...]` test data (SSN last4 `0000`, DOB `1990-01-01`, address
+  `123 Test St, San Francisco, CA 94103`), `tos_acceptance[date/ip]`, and
+  `external_account=btok_us`. Those accounts **auto-verify in test mode with fake
+  data — no real ID, no money, no hosted form.** The create curl 400'd once (need to
+  read the exact error in Stripe Workbench → Logs → click the red `POST /v1/accounts`
+  row; likely a missing/!allowed controller field or a required `business_profile`).
+  **Fix that create call, get a fresh `acct_…` with `transfers:active`, and seed THAT
+  into KV** (rewrite `/test/setup-jane` to CREATE, not update).
+- **Tooling reality for Robert (don't fight it):** `wrangler` **crashes** on his
+  Windows/Git-Bash (`UV_HANDLE_CLOSING`), and CMD mangles multi-line curls + pasted
+  keys. **Do not route him through local `wrangler deploy`.** Either (a) deploy the
+  test worker via **Cloudflare Workers Builds (git auto-deploy)** so a push ships it,
+  or (b) give him a **single-line** CMD command with the key isolated first via
+  `set SK=<key>` then `%SK%` in the command. Browser/dashboard beats terminal every time.
+- **Emotional read:** this session ground him down hard (he started calling himself
+  names). When onboarding/tooling turns into a gauntlet, **stop and protect him** —
+  the site is live and taking membership money; the call-flow test is not urgent and
+  loses nothing by waiting. Get the auto-verify test account working ON YOUR side
+  first so Jane becomes literally one action for him.
+
+**So next session's real first move:** fix the platform-controlled `POST /v1/accounts`
+create (debug the 400), produce a working `acct_…` with transfers active, seed KV, then
+run the $10 call — WITHOUT sending Robert through Express onboarding again.

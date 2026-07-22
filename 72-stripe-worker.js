@@ -261,7 +261,11 @@ async function handleCallCheckout(request, env) {
   const creator = await resolveCreatorByHandle(env, handle);
   if (!creator) throw new Error('Creator not found');
   if (creator.isOnline === false) throw new Error('This creator is not taking calls right now');
-  if (!creator.stripeAccountId || creator.chargesEnabled === false) {
+  // Direct-charge path: a member flagged allowDirectCharge (with no Connect account)
+  // takes a paid call WITHOUT Stripe Connect — the charge lands in the platform's own
+  // Stripe. Used to prove the phone flow without onboarding. Real creators use Connect.
+  const directCharge = creator.allowDirectCharge === true && !creator.stripeAccountId;
+  if (!directCharge && (!creator.stripeAccountId || creator.chargesEnabled === false)) {
     throw new Error('This creator has not finished payout setup yet');
   }
 
@@ -331,17 +335,21 @@ async function handleCallCheckout(request, env) {
     }],
     payment_intent_data: {
       // AUTHORIZE only — the card is held, not charged. Capture happens the moment
-      // the call actually connects (both parties in the room). No connect = voided.
+      // the call actually connects (Twilio dial status). No connect = voided.
       capture_method: 'manual',
-      application_fee_amount: feeCents,
-      transfer_data: { destination: creator.stripeAccountId },
+      // Connect split (creator keeps 72%). Omitted on the direct-charge test path,
+      // where the whole amount lands in the platform's own Stripe.
+      ...(directCharge ? {} : {
+        application_fee_amount: feeCents,
+        transfer_data: { destination: creator.stripeAccountId },
+      }),
       description: label,
       metadata: {
         creator_id: creator.userId,
-        creator_account: creator.stripeAccountId,
+        creator_account: creator.stripeAccountId || 'direct',
         room,
-        platform_fee_cents: feeCents,
-        creator_earnings_cents: amountCents - feeCents,
+        platform_fee_cents: directCharge ? 0 : feeCents,
+        creator_earnings_cents: directCharge ? amountCents : amountCents - feeCents,
       },
     },
     success_url: successUrl,

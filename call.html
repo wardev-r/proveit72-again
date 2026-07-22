@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Connect on 72</title>
-<meta name="description" content="Pay to connect on 72 — you'll drop straight into a private call room." />
+<meta name="description" content="Pay to connect on 72 — you call their dedicated 72 number and talk." />
 <meta name="theme-color" content="#D4A017" />
 <meta name="robots" content="noindex" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23080808'/%3E%3Ctext x='32' y='45' font-family='Inter,Arial,sans-serif' font-size='34' font-weight='800' fill='%23D4A017' text-anchor='middle'%3E72%3C/text%3E%3C/svg%3E" />
@@ -73,11 +73,11 @@
       <h1>${c.name}</h1>
       <div class="status ${off?'off':''}"><span class="dot"></span>${off?'Offline right now':'Online — ready to talk'}</div>
       <div class="price"><small>$</small>${c.pricePerCall}</div>
-      <div class="per">one call · you drop straight into a private room</div>
+      <div class="per">one call · pay, then their 72 number connects you</div>
       <button class="btn" id="pay" ${off||notReady?'disabled':''}>Pay $${c.pricePerCall} &amp; connect →</button>
       <div class="err" id="err">${notReady?'This creator hasn’t finished payout setup yet.':''}</div>
-      <div class="steps"><b>Pay</b> → <b>Private room</b> → <b>Talk</b></div>
-      <p class="fine">Secure checkout by Stripe. Audio or video — your choice.</p>`;
+      <div class="steps"><b>Pay</b> → <b>Call the number</b> → <b>Talk</b></div>
+      <p class="fine">Secure checkout by Stripe. You call their 72 number — video optional.</p>`;
     const btn = document.getElementById('pay');
     if (btn && !off && !notReady) btn.onclick = startCheckout;
   }

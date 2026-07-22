@@ -77,6 +77,10 @@ export default {
         result = await handleTestSetupJane(request, env);
       } else if (path === '/voice' && request.method === 'POST') {
         return await handleVoice(request, env);
+      } else if (path === '/voice/verify' && request.method === 'POST') {
+        return await handleVoiceVerify(request, env);
+      } else if (path === '/voice/status' && request.method === 'POST') {
+        return await handleVoiceStatus(request, env);
       } else if (path === '/webhook' && request.method === 'POST') {
         return await handleWebhook(request, env);
       } else if (path.startsWith('/creator/')) {
@@ -252,7 +256,7 @@ async function handleCallInfo(request, env, path) {
 // Caller pays via hosted Checkout, then is redirected into a fresh private room.
 // Destination charge: creator keeps 72% (amount − 28% application fee). Inviolable.
 async function handleCallCheckout(request, env) {
-  const { handle, mode, memberId } = await request.json();
+  const { handle, mode, memberId, channel } = await request.json();
   if (!handle) throw new Error('handle is required');
   const creator = await resolveCreatorByHandle(env, handle);
   if (!creator) throw new Error('Creator not found');
@@ -302,6 +306,18 @@ async function handleCallCheckout(request, env) {
     label = `72 call with ${name}`;
   }
 
+  // Phone delivery: the caller gets a 6-digit code + the member's 772 number. They
+  // call it, punch the code, and the member's phone rings. Card captures only when
+  // the call actually connects (Twilio dial status), voids otherwise.
+  const pin = String(Math.floor(100000 + Math.random() * 900000));
+  const dialNumber = creator.twilioNumber || env.PLATFORM_CALL_NUMBER || '';
+
+  // Base product = phone call (connect.html: call the 772 number + code). Video is the
+  // upsell (channel='video' → the browser room). Both share the same money/capture engine.
+  const successUrl = channel === 'video'
+    ? `${platformUrl}/room.html?r=${encodeURIComponent(room)}&role=caller&t=${token}`
+    : `${platformUrl}/connect.html?pin=${pin}&num=${encodeURIComponent(dialNumber)}&r=${encodeURIComponent(room)}&t=${token}`;
+
   const session = await stripe(env, 'POST', '/checkout/sessions', {
     mode: 'payment',
     payment_method_types: ['card'],
@@ -328,17 +344,21 @@ async function handleCallCheckout(request, env) {
         creator_earnings_cents: amountCents - feeCents,
       },
     },
-    success_url: `${platformUrl}/room.html?r=${encodeURIComponent(room)}&role=caller&t=${token}`,
+    success_url: successUrl,
     cancel_url: `${platformUrl}/call/${encodeURIComponent(handle)}`,
     metadata: { creator_id: creator.userId, room, token, kind: 'call' },
   });
 
-  // Track the call session so the room can capture-on-connect or void-on-no-show.
+  // Track the call session so the phone gate can capture-on-connect or void-on-no-show.
   await putSession(env, room, {
     room, token,
     creatorId: creator.userId,
     creatorAccount: creator.stripeAccountId,
     name, amountCents, feeCents,
+    pin,
+    creatorTwilioNumber: dialNumber || null,
+    forwardNumber: creator.forwardNumber || null,
+    used: false,
     mode: mode || 'standard',
     memberId: memberId || null,
     status: 'pending',       // pending → authorized → connected → completed | voided
@@ -346,7 +366,12 @@ async function handleCallCheckout(request, env) {
     createdAt: Date.now(),
   });
 
-  return { url: session.url, room };
+  // Code → room pointer so the phone leg can find the paid session. Auto-expires (1h).
+  if (env.KV_72) {
+    await env.KV_72.put(`callpass:${pin}`, JSON.stringify({ room }), { expirationTtl: 3600 });
+  }
+
+  return { url: session.url, room, pin };
 }
 
 // ─── Join-and-call: new-member acquisition signup (free month) ────────────────
@@ -828,14 +853,109 @@ async function handleVoice(request, env) {
     `<?xml version="1.0" encoding="UTF-8"?><Response>${body}</Response>`,
     { headers: { 'Content-Type': 'text/xml' } }
   );
-  // Quick demo: webhook URL ?fwd=+1XXXXXXXXXX dials that number directly (no KV needed).
-  let forward = url.searchParams.get('fwd');
-  if (!forward) {
-    const creator = await findCreatorByTwilioNumber(env, called);
-    if (creator && creator.isOnline !== false) forward = creator.forwardNumber;
+  // Escape hatch for a raw forward test (no pay gate): ?fwd=+1XXXXXXXXXX
+  const fwd = url.searchParams.get('fwd');
+  if (fwd) return xml(`<Say>Connecting you on 72.</Say><Dial callerId="${called}">${fwd}</Dial>`);
+
+  // Pay-gate: ask for the 6-digit access code the caller received after paying.
+  const creator = await findCreatorByTwilioNumber(env, called);
+  const who = creator?.displayName ? ` with ${creator.displayName}` : '';
+  return xml(
+    `<Gather numDigits="6" action="/voice/verify?to=${encodeURIComponent(called)}" method="POST" timeout="15" finishOnKey="#">` +
+    `<Say>Welcome to 72. Enter the six digit access code from your payment confirmation to connect${who}.</Say>` +
+    `</Gather>` +
+    `<Say>We didn't get a code. Goodbye.</Say>`
+  );
+}
+
+// Caller entered their code → verify the paid session, then dial the member's phone.
+async function handleVoiceVerify(request, env) {
+  const url = new URL(request.url);
+  const form = await request.formData();
+  const digits = (form.get('Digits') || '').trim();
+  const called = url.searchParams.get('to') || form.get('To') || '';
+  const xml = (body) => new Response(
+    `<?xml version="1.0" encoding="UTF-8"?><Response>${body}</Response>`,
+    { headers: { 'Content-Type': 'text/xml' } }
+  );
+  const reject = (msg) => xml(`<Say>${msg}</Say><Hangup/>`);
+
+  if (!env.KV_72 || !digits) return reject('No code entered. Goodbye.');
+  const raw = await env.KV_72.get(`callpass:${digits}`);
+  if (!raw) return reject('That code is not valid. Goodbye.');
+  const s = await getSession(env, JSON.parse(raw).room);
+  if (!s) return reject('That code is not valid. Goodbye.');
+  if (s.used) return reject('That code has already been used. Goodbye.');
+  if (s.status === 'voided' || s.status === 'completed') return reject('This call is already closed. Goodbye.');
+  if (!s.paymentIntentId) return reject('Your payment is not confirmed yet. Please wait a moment, then call again.');
+  if (s.creatorTwilioNumber && called && s.creatorTwilioNumber !== called) {
+    return reject('That code is not valid for this number. Goodbye.');
   }
-  if (!forward) return xml(`<Say>This 72 number isn't taking calls right now. Goodbye.</Say>`);
-  return xml(`<Say>Connecting you on 72.</Say><Dial callerId="${called}">${forward}</Dial>`);
+  const forward = s.forwardNumber || (await getCreator(env, s.creatorId))?.forwardNumber;
+  if (!forward) return reject('This number is not taking calls right now. Goodbye.');
+
+  // Spend the code so it can't be reused, then connect the two phones.
+  s.used = true;
+  s.dialStartedAt = Date.now();
+  await putSession(env, s.room, s);
+  await env.KV_72.delete(`callpass:${digits}`).catch(() => {});
+
+  const callerId = s.creatorTwilioNumber || called;
+  return xml(
+    `<Say>Connecting you now.</Say>` +
+    `<Dial callerId="${callerId}" action="/voice/status?room=${encodeURIComponent(s.room)}" method="POST" timeout="25">` +
+    `<Number>${forward}</Number></Dial>`
+  );
+}
+
+// Twilio reports how the dial ended → capture on a real connection, void otherwise.
+async function handleVoiceStatus(request, env) {
+  const url = new URL(request.url);
+  const form = await request.formData();
+  const room = url.searchParams.get('room');
+  const status = form.get('DialCallStatus') || '';
+  if (room) {
+    if (status === 'completed') await captureSessionByRoom(env, room).catch(() => {});
+    else await voidSessionByRoom(env, room).catch(() => {});
+  }
+  const msg = status === 'completed'
+    ? 'Thanks for using 72. Goodbye.'
+    : 'That call did not connect, so you were not charged. Goodbye.';
+  return new Response(
+    `<?xml version="1.0" encoding="UTF-8"?><Response><Say>${msg}</Say></Response>`,
+    { headers: { 'Content-Type': 'text/xml' } }
+  );
+}
+
+// Capture the held payment for a resolved session (shared by phone + room). Idempotent.
+async function captureSessionByRoom(env, room) {
+  const s = await getSession(env, room);
+  if (!s || s.status === 'completed' || s.status === 'voided' || !s.paymentIntentId) return;
+  await stripe(env, 'POST', `/payment_intents/${s.paymentIntentId}/capture`, {});
+  s.status = 'completed';
+  s.connectedAt = s.connectedAt || Date.now();
+  s.completedAt = Date.now();
+  await putSession(env, room, s);
+  await clearCreatorActiveRoom(env, s.creatorId, room);
+  if (s.mode === 'join' && s.memberId) {
+    const m = await getCreator(env, s.memberId);
+    if (m && !m.acquisitionCallUsed) {
+      await putCreator(env, s.memberId, { ...m, acquisitionCallUsed: true, acquisitionCallAt: Date.now(), updatedAt: Date.now() });
+    }
+  }
+}
+
+// Release the hold for a session that never connected. Idempotent; won't undo a capture.
+async function voidSessionByRoom(env, room) {
+  const s = await getSession(env, room);
+  if (!s || s.status === 'completed' || s.status === 'voided') return;
+  if (s.paymentIntentId) {
+    try { await stripe(env, 'POST', `/payment_intents/${s.paymentIntentId}/cancel`, {}); } catch (_) {}
+  }
+  s.status = 'voided';
+  s.voidedAt = Date.now();
+  await putSession(env, room, s);
+  await clearCreatorActiveRoom(env, s.creatorId, room);
 }
 
 async function findCreatorByTwilioNumber(env, number) {

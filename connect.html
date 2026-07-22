@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Connect your call — 72</title>
+<meta name="theme-color" content="#080808" />
+<meta name="robots" content="noindex" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23080808'/%3E%3Ctext x='32' y='45' font-family='Inter,Arial,sans-serif' font-size='34' font-weight='800' fill='%23D4A017' text-anchor='middle'%3E72%3C/text%3E%3C/svg%3E" />
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#080808;--surface:#111;--border:#252525;--text:#f0f0e8;--muted:#8a8a80;--accent:#D4A017;--accent-light:#f0c040;--green:#4caf7d;--red:#e0655b}
+  body{font-family:'Inter',system-ui,sans-serif;background:radial-gradient(900px 380px at 50% -160px,rgba(212,160,23,.12),transparent 70%),var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;line-height:1.5}
+  .card{width:100%;max-width:400px;text-align:center}
+  .tick{width:56px;height:56px;margin:0 auto 18px;border-radius:50%;background:rgba(76,175,125,.14);border:1px solid rgba(76,175,125,.5);display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:var(--green)}
+  h1{font-size:1.5rem;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
+  .sub{color:var(--muted);font-size:.92rem;margin-bottom:28px}
+  .block{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:14px}
+  .lbl{font-size:.7rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+  .num{font-size:1.9rem;font-weight:800;letter-spacing:-.01em}
+  a.num{color:var(--accent-light);text-decoration:none;display:inline-block}
+  .pin{font-size:2.6rem;font-weight:900;letter-spacing:.14em;color:var(--text);font-variant-numeric:tabular-nums}
+  .cta{display:block;width:100%;margin:6px 0 16px;padding:16px;background:var(--accent);color:#0a0a0a;font-weight:800;font-size:1rem;border:none;border-radius:12px;text-decoration:none;font-family:inherit}
+  .steps{font-size:.9rem;color:var(--muted);text-align:left;max-width:320px;margin:4px auto 0;line-height:1.9}
+  .steps b{color:var(--text);font-weight:600}
+  .status{margin-top:22px;font-size:.9rem;font-weight:600;min-height:22px}
+  .status.wait{color:var(--muted)}
+  .status.live{color:var(--green)}
+  .status.nil{color:var(--red)}
+  .fine{margin-top:14px;font-size:.78rem;color:#5a5e66}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="tick">✓</div>
+    <h1>You're in. Now place the call.</h1>
+    <p class="sub" id="who">Your payment is held — you're only charged when the call connects.</p>
+
+    <a class="cta" id="callCta" href="#">📞 Call the number</a>
+
+    <div class="block">
+      <div class="lbl">Call this number</div>
+      <a class="num" id="numText" href="#">—</a>
+    </div>
+
+    <div class="block">
+      <div class="lbl">Then enter this code</div>
+      <div class="pin" id="pinText">——————</div>
+    </div>
+
+    <p class="steps"><b>1.</b> Tap call. <b>2.</b> Enter the code when asked. <b>3.</b> You're connected.</p>
+
+    <div class="status wait" id="status">Waiting for your call…</div>
+    <p class="fine">If they don't pick up, the hold is released and your card is never charged.</p>
+  </div>
+
+<script>
+  const WORKER_URL = 'https://api.velvetrope2you.com';
+  const p = new URLSearchParams(location.search);
+  const num = p.get('num') || '';
+  const pin = p.get('pin') || '';
+  const room = p.get('r') || '';
+
+  document.getElementById('pinText').textContent = pin || '——————';
+  const numText = document.getElementById('numText');
+  const cta = document.getElementById('callCta');
+  if (num) {
+    const pretty = num.replace(/^(\+1)(\d{3})(\d{3})(\d{4})$/, '$1 ($2) $3-$4');
+    numText.textContent = pretty; numText.href = 'tel:' + num;
+    cta.href = 'tel:' + num;
+  } else {
+    numText.textContent = 'Number sent by text';
+    cta.style.display = 'none';
+    document.getElementById('who').textContent = 'Your access code is below — we\'ll text you the number to call.';
+  }
+
+  // Live status: reflect capture/void the moment the phone leg resolves.
+  const statusEl = document.getElementById('status');
+  async function poll() {
+    if (!room) return;
+    try {
+      const res = await fetch(`${WORKER_URL}/room/${encodeURIComponent(room)}`);
+      if (!res.ok) return;
+      const s = await res.json();
+      if (s.status === 'completed') {
+        statusEl.className = 'status live';
+        statusEl.textContent = `Connected — $${s.amount} charged. Enjoy your call.`;
+        return true;
+      }
+      if (s.status === 'voided') {
+        statusEl.className = 'status nil';
+        statusEl.textContent = 'Call ended — you were not charged.';
+        return true;
+      }
+    } catch (_) {}
+    return false;
+  }
+  const iv = setInterval(async () => { if (await poll()) clearInterval(iv); }, 4000);
+</script>
+</body>
+</html>

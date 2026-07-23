@@ -142,6 +142,62 @@ excuse skipping the first paying stranger — it's what that first call is *seed
 
 ---
 
+## The two moats (near + far — a relay, not a choice)
+
+72 has **two** moats on two clocks. They are not alternatives; the first buys the
+time to build the second. Do not "optimize away" the near moat to protect margin —
+that was a wrong instinct, corrected here on purpose.
+
+- **Near moat (live *now*): generosity — "takes the least, gives the most."**
+  Structural, not charity. A bigger player can copy any feature and outspend on ads,
+  but **cannot** copy taking the least, because their whole machine is built to
+  *extract* — the day they match it, they break their own model. This is the only wall
+  a nobody can hold against giants **today**, while small. It is **permanent**, not a
+  launch gimmick. A moat you use once was never a moat.
+  - Guardrail (protects the moat, doesn't retract it): **give from margin, never from
+    below zero.** Fees come **off the top**, then the split — so the give is
+    *sustainable deal after deal*, forever. A moat around a sunk boat guards nothing.
+
+- **Far moat (matures *later*): the long arc — number as owned property.** The wall
+  giants **structurally can't** fold in, because they rent numbers (recycling is their
+  economics) and 72 owns them. Honest: a vision isn't a moat *today* — the long arc is
+  the **destination**, and becomes a wall only once the installed base + standard pile
+  up.
+
+- **The bridge (why they're one story):** nobody hands a stranger their permanent,
+  inheritable identity number. They'd only trust that to someone they've watched take
+  the least and give the most for years. So the **generosity moat earns the trust that
+  makes the long-arc moat possible.** Near carries the baton until far is big enough to
+  run.
+
+## First proof case / deal template: the Tom MacDonald promo
+
+The template for a marquee creator drop (named example: Tom MacDonald — independent,
+huge direct-to-fan base, anti-grift / veteran-aligned audience). This is also the
+right *shape* for the near-term skrill: one creator, an audience that already wants
+them, a guaranteed digital good that scales.
+
+- **$5 buys a guaranteed thing: code-gated VIP access** (a fan area / merch unlock,
+  delivered by a unique code). Digital → **scales to infinity, no creator bottleneck.**
+  This is where big numbers live (100k × $5 = $500k in an afternoon).
+- **On top (surprise-and-delight):** the creator randomly answers some live lines;
+  **numbered draws** for bigger prizes. Riding on the 72 call rail.
+- **Why this is legal, not a lottery:** the $5 delivers **full standalone value**
+  (real VIP access), so the calls/prizes are *incidental* — the **McDonald's Monopoly**
+  structure (you really bought the fries; the game piece is a thrill on top). A pure
+  "pay for a chance to win" is a regulated lottery; "guaranteed VIP + you might get a
+  call" is a promo. Keep the guaranteed good real.
+- **The split (marquee / cause deal):** creator **72** · veterans fund **17.2** ·
+  platform **10.8** — and the platform visibly takes the **smallest** slice (devastating
+  trust signal for an anti-grift crowd). **Fees off the top, then split.** The 17.2
+  keeps the 72 wink.
+- **Must-haves ("proper promises"):** real, transparent fund (named 501(c)(3) or
+  tracked pool + receipts); guaranteed good actually delivered to every payer; honest
+  terms. One whiff of grift with a veteran audience and it's over.
+- **72's skrill:** platform runs the rail and keeps its lean slice on **volume** — plus
+  the case study ("72 helped raise $X for veterans in an afternoon") is worth more than
+  the cut; it buys the next ten creators.
+
 ## Words / framing locked
 - **Deed / title / domain**, not **SSN** (surveillance connotation — avoid).
 - **Skins / layers / cloaks** for the per-context faces; **core** for the anchor;

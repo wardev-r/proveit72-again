@@ -84,6 +84,20 @@ control is what makes "all of them" **sovereign** instead of merely automatic.
 > The estate, in one line: **one deed, a wardrobe of skins over one core, and a will
 > that says what each skin does when you're gone.**
 
+### The clean-mint promise: no more dirty recycled numbers
+
+The recycle wound cuts both ways. You don't just *lose* your number to the pool — the
+next person gets handed **your** old one, and you get handed **someone else's dirty
+recycled** number: their debt collectors, their spam, their old logins still pointed
+at it, their baggage riding on *your* new line from day one. You inherit a stranger's
+mess and spend months scrubbing it.
+
+A **minted** number is **clean by definition** — yours from the mint, **never anyone
+else's, never recycled.** No ghost accounts, no collectors calling for the person who
+had it before you, no residue. This is the *felt* promise of "owned instead of
+rented," and it's the everyday version of the whole thesis: **no more getting a dirty
+recycled number.**
+
 This is the payoff of the whole "minted property" thesis: a number you can **title,
 value, hold in trust, and will** is an **asset class that does not exist yet.** Big
 telecom structurally *can't* fold this in easily — recycling numbers is how their

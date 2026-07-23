@@ -215,6 +215,18 @@ them, a guaranteed digital good that scales.
   `/create-call-checkout`), flip `DEMO=false`, point `172collect.com` at the deploy,
   and only with the creator (Tom) actually signed on + a real, named, tracked fund.
 
+**Verified Tom facts (for accuracy — don't guess these):**
+- Handles: **@IAMTOMMACDONALD** (X); fanbase/brand **Hangover Gang (H.O.G)**,
+  **@hangovergang**; store **hangovergangofficial.com**; **@TomMacDonaldOfficial** (FB).
+- He *already* runs six-figure veterans fundraisers by hand — **~$137K** (2023) and
+  **$100K+** (2025) via Memorial Day merch drops. Beneficiary he's used: **U.S. VETS.**
+  So the pitch is NOT "try this new thing" — it's "you already do this, here's a bigger,
+  repeatable hammer." That's the whole cold-approach unlock.
+- Angle: this is a *warm-cold* pitch if Robert is himself Hangover Gang — authenticity
+  from inside the community is what gets it past the wall.
+- Caveat: U.S. VETS is named as the *proposed* beneficiary (the one Tom's used);
+  actually routing funds to them must be set up/confirmed with Tom, not assumed.
+
 ## Words / framing locked
 - **Deed / title / domain**, not **SSN** (surveillance connotation — avoid).
 - **Skins / layers / cloaks** for the per-context faces; **core** for the anchor;

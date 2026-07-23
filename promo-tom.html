@@ -149,14 +149,14 @@
         <div class="avatar">TM</div>
         <div>
           <div class="who-name">Tom&nbsp;MacDonald</div>
-          <div class="who-handle">@hangover · the drop</div>
+          <div class="who-handle">@IAMTOMMACDONALD · Hangover Gang</div>
           <div class="avail"><span class="dot"></span>Line's open</div>
         </div>
       </div>
 
       <div class="hero">
-        <h1>Get behind the rope.<br><em>And maybe I pick up.</em></h1>
-        <p class="lead"><b>$5</b> gets you in the VIP room — real, yours the second you pay. And every line I'm answering live today, one of you picks up. All of it builds the <b>veterans fund</b>.</p>
+        <h1>Behind the rope, Gang.<br><em>And maybe I pick up.</em></h1>
+        <p class="lead"><b>$5</b> gets you in the VIP room — real, yours the second you pay. And every line I'm answering live today, one of you picks up. Every dollar goes to <b>U.S. VETS</b> — same fight, bigger hammer.</p>
       </div>
 
       <div class="offer">
@@ -195,7 +195,7 @@
         </div>
         <div class="legend">
           <div class="leg creator"><span class="sw seg-creator"></span><span class="lbl"><b>Tom</b> — the artist</span><span class="pct">72%</span></div>
-          <div class="leg fund"><span class="sw seg-fund"></span><span class="lbl"><b>Veterans fund</b></span><span class="pct">17.2%</span></div>
+          <div class="leg fund"><span class="sw seg-fund"></span><span class="lbl"><b>U.S. VETS</b> — the fund</span><span class="pct">17.2%</span></div>
           <div class="leg plat"><span class="sw seg-plat"></span><span class="lbl"><b>72</b> — runs the rail</span><span class="pct">10.8%</span></div>
         </div>
         <div class="least">Card fees come off the top, then it splits. <b>The platform takes the least in the room.</b><br>The <b>17.2</b> to the fund is right in the name — <b>172collect</b>.</div>
@@ -211,22 +211,23 @@
       <div class="promises">
         <h3>The promises</h3>
         <li><b>Guaranteed:</b> VIP access delivered to every single person who pays. No exceptions.</li>
-        <li><b>Real fund:</b> the veterans cut goes to a named, tracked pool — receipts posted.</li>
+        <li><b>Real fund:</b> the 17.2% goes straight to <b>U.S. VETS</b> — tracked, receipts posted.</li>
         <li><b>No grift:</b> the platform takes the smallest slice. On purpose. That's 72.</li>
       </div>
 
       <details class="deal">
         <summary><span>See the deal — for the artist</span><span class="chev">▾</span></summary>
         <div class="body">
-          <p>This is the pitch, Tom. You drop your <b>72 line</b>. Fans pay <b>$5</b> for guaranteed VIP — a code-gated room, scales to everyone at once, no bottleneck. You answer random lines live on stream; numbered draws hit for bigger prizes. Because the $5 delivers <b>real value</b>, the calls and prizes are a bonus on top — a promo, not a lottery.</p>
+          <p>Tom — you already do this. <b>$137K.</b> <b>$100K+.</b> Veterans, by hand, through merch drops, every year, and the Gang shows up every time. This is that <b>same fight with a bigger hammer</b> — a rail built to do it again, repeatable, and scale past what a merch drop can hold.</p>
+          <p>You drop your <b>72 line</b>. Fans pay <b>$5</b> for guaranteed VIP — a code-gated room, scales to everyone at once, no bottleneck. You answer random lines live; numbered draws hit for bigger prizes. Because the $5 delivers <b>real value</b>, the calls and prizes ride on top — a promo, not a lottery.</p>
           <div class="math">
-            <div class="row"><span>Say 100,000 fans buy in</span><span class="v">$500,000</span></div>
+            <div class="row"><span>Say 100,000 of the Gang buy in</span><span class="v">$500,000</span></div>
             <div class="row"><span>You keep — 72%</span><span class="v" style="color:var(--accent)">$360,000</span></div>
-            <div class="row"><span>Veterans fund — 17.2%</span><span class="v" style="color:var(--green)">$86,000</span></div>
+            <div class="row"><span>U.S. VETS — 17.2%</span><span class="v" style="color:var(--green)">$86,000</span></div>
             <div class="row tot"><span>72 platform — 10.8%</span><span class="v">$54,000</span></div>
           </div>
-          <p>And 72 doesn't just take the least — <b>we put 17.2% of the whole raise into the fund ourselves.</b> The platform in the deal that gives the most back. Nobody can copy that without breaking their own model.</p>
-          <p style="margin-top:10px;color:var(--muted)">Your line. Your fans. Your cause. 72 handles the money, the codes, the promises, the payout — you just pick up.</p>
+          <p>And 72 doesn't just take the least — <b>we put 17.2% of the whole raise into the fund ourselves.</b> The platform in the deal that gives the <b>most</b> back. Nobody can copy that without breaking their own model.</p>
+          <p style="margin-top:10px;color:var(--muted)">Your line. Your Gang. Your cause. 72 handles the money, the codes, the promises, the payout — you just pick up.</p>
         </div>
       </details>
 
@@ -259,7 +260,7 @@
     try{
       const res = await fetch(`${API}/create-vip-checkout`, {
         method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ handle:'hangover', promo:'tom-drop', amount:VIP_PRICE, split:SPLIT })
+        body: JSON.stringify({ handle:'iamtommacdonald', promo:'tom-drop', amount:VIP_PRICE, split:SPLIT })
       });
       const data = await res.json();
       if(!res.ok || !data.url) throw new Error(data.error||'checkout');
@@ -269,12 +270,12 @@
 
   // Demo "you're in" — shows the guaranteed good arriving: a real VIP code + draw number.
   function showIn(){
-    const code = `TOM-${rid(4)}`;
+    const code = `HOG-${rid(4)}`;
     const draw = String(10000 + Math.floor(Math.random()*90000));
     $('stage').innerHTML = `
       <div class="din">
         <div class="check">✓</div>
-        <h2>You're behind the rope.</h2>
+        <h2>You're behind the rope, Gang.</h2>
         <div class="p">Access delivered — instantly, guaranteed. This is exactly what every fan sees the second they pay.</div>
         <div class="code-card">
           <div class="k">Your VIP code</div>

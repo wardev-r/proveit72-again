@@ -440,7 +440,7 @@
 
 <div class="mobile-bar">
   <div class="mobile-logo">72</div>
-  <div id="mobileStatus" style="font-size:0.82rem;color:var(--muted);">Offline</div>
+  <div id="mobileStatus" style="font-size:0.82rem;color:var(--muted);">⚫ Rope's closed</div>
 </div>
 
 <div class="layout">
@@ -470,7 +470,7 @@
     <div class="status-row">
       <div class="status-dot" id="statusDot"></div>
       <div>
-        <div class="status-label" id="statusLabel">Offline</div>
+        <div class="status-label" id="statusLabel">Rope's closed</div>
         <div class="status-sub">Toggle to start accepting calls</div>
       </div>
       <div class="toggle-wrap">
@@ -533,7 +533,7 @@
             <button class="btn-copy" onclick="copyLink()">Copy link</button>
             <a class="btn-copy" id="previewLink" href="#" target="_blank" rel="noopener">Preview →</a>
           </div>
-          <p class="qr-help">This is <strong>your call page</strong>. Share the link or QR anywhere — callers pay your rate, then you both land in a private video room. No app, no phone number to hand out. Flip <strong>Online</strong> above when you're ready to take calls.</p>
+          <p class="qr-help">This is <strong>your call page</strong>. Share the link or QR anywhere — callers pay your rate, then your 72 number rings your real phone. You talk on the phone; video is optional. Flip the rope <strong>open</strong> above when you're ready to take calls.</p>
         </div>
       </div>
 
@@ -679,8 +679,8 @@
   function setStatus(online) {
     document.getElementById('onlineToggle').checked = online;
     document.getElementById('statusDot').className = 'status-dot' + (online ? ' online' : '');
-    document.getElementById('statusLabel').textContent = online ? 'Online — accepting calls' : 'Offline';
-    document.getElementById('mobileStatus').textContent = online ? '🟢 Online' : '⚫ Offline';
+    document.getElementById('statusLabel').textContent = online ? 'Online — the rope is open' : "Rope's closed";
+    document.getElementById('mobileStatus').textContent = online ? '🟢 Rope open' : "⚫ Rope's closed";
   }
 
   async function toggleStatus(online) {

@@ -61,7 +61,7 @@
   // ── Capture on real connection · void on no-show. Server side is idempotent. ──
   async function markConnected(){
     if (connectedFired || voidedFired) return; connectedFired = true;
-    setBanner('live', amount ? `Connected — $${amount} charged. Enjoy your call.` : 'Connected — you\'re now charged.');
+    setBanner('live', amount ? `Conversation approved — $${amount} charged. Enjoy your call.` : 'Conversation approved — you\'re now charged.');
     if (demo) return;
     try { await fetch(`${API}/room/${encodeURIComponent(room)}/connected`, {
       method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ token }) }); } catch(_){}

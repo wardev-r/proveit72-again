@@ -50,7 +50,7 @@
 
     <p class="steps"><b>1.</b> Tap call. <b>2.</b> Enter the code when asked. <b>3.</b> You're connected.</p>
 
-    <div class="status wait" id="status">Waiting for your call…</div>
+    <div class="status wait" id="status">One moment… the line's this way.</div>
     <p class="fine">If they don't pick up, the hold is released and your card is never charged.</p>
   </div>
 
@@ -84,7 +84,7 @@
       const s = await res.json();
       if (s.status === 'completed') {
         statusEl.className = 'status live';
-        statusEl.textContent = `Connected — $${s.amount} charged. Enjoy your call.`;
+        statusEl.textContent = `Conversation approved — $${s.amount} charged. Enjoy your call.`;
         return true;
       }
       if (s.status === 'voided') {

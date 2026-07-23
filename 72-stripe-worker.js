@@ -870,7 +870,7 @@ async function handleVoice(request, env) {
   const who = creator?.displayName ? ` with ${creator.displayName}` : '';
   return xml(
     `<Gather numDigits="6" action="/voice/verify?to=${encodeURIComponent(called)}" method="POST" timeout="15" finishOnKey="#">` +
-    `<Say>Welcome to 72. Enter the six digit access code from your payment confirmation to connect${who}.</Say>` +
+    `<Say>You've got 72. Enter the six digit access code from your payment confirmation to connect${who}.</Say>` +
     `</Gather>` +
     `<Say>We didn't get a code. Goodbye.</Say>`
   );
@@ -910,7 +910,7 @@ async function handleVoiceVerify(request, env) {
 
   const callerId = s.creatorTwilioNumber || called;
   return xml(
-    `<Say>Connecting you now.</Say>` +
+    `<Say>Rope's open. Connecting you now.</Say>` +
     `<Dial callerId="${callerId}" action="/voice/status?room=${encodeURIComponent(s.room)}" method="POST" timeout="25">` +
     `<Number>${forward}</Number></Dial>`
   );

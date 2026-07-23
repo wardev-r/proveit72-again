@@ -585,7 +585,7 @@
     </video>
     <button class="cinehero-sound" id="cineSound" aria-label="Toggle sound" onclick="toggleCineSound()">🔇</button>
     <div class="cinehero-scrim"></div>
-    <a class="cinehero-cue" href="#pricing" aria-label="Enter">
+    <a class="cinehero-cue" href="#what" aria-label="Enter">
       <span>enter</span>
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </a>
@@ -602,6 +602,14 @@
   <script>
     function toggleCineSound(){var v=document.querySelector('.cinehero-video'),b=document.getElementById('cineSound');if(!v)return;v.muted=!v.muted;b.textContent=v.muted?'🔇':'🔊';if(!v.muted&&v.play)v.play();}
   </script>
+
+  <!-- What 72 is (the payoff for the "enter" curiosity — value before price) -->
+  <section class="section" id="what" style="text-align:center;">
+    <div class="section-label">What 72 is</div>
+    <h2 class="section-title">Your line,<br>behind a velvet rope.</h2>
+    <p style="color:rgba(240,240,232,0.74);font-size:1.14rem;max-width:600px;margin:0 auto 20px;line-height:1.75;">72 isn't a subscription. It's a way to make real conversations valuable again. Set a price on your line — people pay to get through, and <em style="color:var(--accent);font-style:normal;font-weight:600;">if the conversation doesn't happen, you don't pay.</em></p>
+    <p style="color:rgba(240,240,232,0.5);font-size:0.92rem;max-width:520px;margin:0 auto;line-height:1.7;">The card is held, not charged — and released the moment a call fails to connect. That's not a promise on paper. It's how the line already works.</p>
+  </section>
 
   <!-- Hero -->
   <section class="hero">

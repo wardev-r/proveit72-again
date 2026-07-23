@@ -198,6 +198,23 @@ them, a guaranteed digital good that scales.
   the case study ("72 helped raise $X for veterans in an afternoon") is worth more than
   the cut; it buys the next ten creators.
 
+### Archived build: `promo-tom.html` → lives at **172collect.com**
+
+- **Home domain: `172collect.com`** (Robert owns it). The collect / fund-drop domain —
+  and the **17.2 is right in the name** (17.2 → the cause). This is the campaign home for
+  creator drops; `velvetrope2you.com` stays the main 72 site.
+- **The build: `promo-tom.html`** — the first drop, borrowed straight from the live 72
+  build DNA (call-first.html tokens + the 72-stripe-worker checkout shape). Fan-facing
+  $5 code-gated VIP page with: guaranteed-good offer, surprise-and-delight (live lines +
+  numbered draws), the **72 / 17.2 / 10.8** split shown on-page (fees off the top,
+  "platform takes the least"), a demo "you're in" screen that delivers a VIP code +
+  draw number, and a collapsed **"See the deal — for the artist"** panel with the
+  $500k math. Ships as a **proposal/demo** (`DEMO=true`, noindex, no live charges) —
+  it's the pitch to hand Tom, not a live fundraiser in his name.
+- **To go live:** add a `/create-vip-checkout` worker endpoint (same shape as
+  `/create-call-checkout`), flip `DEMO=false`, point `172collect.com` at the deploy,
+  and only with the creator (Tom) actually signed on + a real, named, tracked fund.
+
 ## Words / framing locked
 - **Deed / title / domain**, not **SSN** (surveillance connotation — avoid).
 - **Skins / layers / cloaks** for the per-context faces; **core** for the anchor;

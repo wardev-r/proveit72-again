@@ -23,6 +23,11 @@ branch — come back to emergence.
 
 **Before acting:** read the latest `.claude/handoffs/*.md`, then `agents.json`, then this file.
 
+**The long-arc vision is canon in `VISION-LONGARC.md`.** The $10 Proof Call is only
+Phase 1 — the real play is a phone number as *owned property* (deed → core → skins,
+an inheritable estate, a 40–50 yr arc). It has been re-derived cold too many times.
+Read it before "reinventing" the vision; extend it, don't rebuild it.
+
 **The permanent fix (owner action):** in Cloudflare Pages `vrpi72-home`, point the
 Production branch at ONE branch (ideally emergence once it's live) and retire the rest,
 so edit-branch = deploy-branch = source-of-truth. No gap left to drift.

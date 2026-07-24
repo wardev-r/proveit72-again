@@ -25,6 +25,31 @@ creator is the host holding the table, never the beggar asking to be paid.
 > Harassers, scammers, posers, and time-wasters have no place at your table.
 > Anyone vying for a seat proves it. Paid access to your time. **That's 72.**
 
+## 🐜 The 72 Ant — "Keeper of the Rope" (mascot + agent voice · CANON)
+The face of 72. He's the **agAnt** — *agent + ant*: your **agent** (works for you, vets
+your callers, guards your time) who happens to be an **ant** (small but mighty). A
+tuxedo-wearing bouncer ant — shades, backwards **72** cap, gold bow tie, Chuck Taylors
+("**Chucks. Always.**") — working the velvet rope at your door.
+
+- **Tagline:** *Your time. Your price.*
+- **Bio:** Keeper of the Rope · Values conversations · **Hates time-wasters.**
+- **The flip that makes it work:** he's NOT a humble worker ant — he's the **bouncer.**
+  Small-but-mighty *in service of the rope.* This resolves the tension (ant = humble
+  vs. velvet rope = exclusive): he **guards** the exclusivity instead of undermining it.
+- **What he commits the brand to:** the **approachable / everyman / fun** soul (a
+  welcoming bouncer), not cold luxury. Humor disarms the "pay-to-talk = sleazy" reflex
+  and makes the whole thing shareable. This is the chosen soul.
+- **Voice lines (already wired into the app — keep them canon):**
+  *"One moment…"* · *"The line's this way."* · *"You've got 72."* ·
+  *"Conversation approved."* (connected/charged) · *"Rope's open. Connecting you now."*
+  (Twilio connect) · *"Rope's closed."* (offline/declined) · *"…did you pay your phone
+  bill?"* (playful).
+- **Two rules that keep him lovable, not hostile:** (1) he only ever tosses the
+  **time-waster** (the "can I pick your brain real quick?" brain-picker), **never** a
+  paying guest; (2) lock his look with the **16-pose card file** so he never drifts
+  off-model.
+- **Home:** `72.velvetrope2you.com`
+
 ## "The Proof Call" — the $10 first call
 The first call is **The Proof Call**: the caller pays **$10 to prove they belong at
 the table.** Same "prove it" spine as the whole brand. It's the fixed price everyone

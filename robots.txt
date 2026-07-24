@@ -2,14 +2,10 @@ User-agent: *
 Allow: /
 
 # Internal tools / dynamic pages — not for indexing
-Disallow: /72-app-dashboard.html
-Disallow: /72-owner-dashboard.html
-Disallow: /72-mission-control.html
+Disallow: /dashboards/
 Disallow: /qr.html
 Disallow: /call.html
 Disallow: /call/
 Disallow: /room.html
-Disallow: /72-landing-merged.html
-Disallow: /72-landing-opal.html
 
 Sitemap: https://velvetrope2you.com/sitemap.xml

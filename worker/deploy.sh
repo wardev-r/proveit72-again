@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
-# 72 Worker deploy — run:  bash deploy-worker.sh
+# 72 Worker deploy — run from repo root:  bash worker/deploy.sh
 # Paste each key at its prompt. Keys are NOT stored in this file or history.
 set -e
+
+# Change to this script's directory so wrangler picks up worker/wrangler.toml
+cd "$(dirname "$0")"
 
 echo "== 72 Worker deploy =="
 wrangler login

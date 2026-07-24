@@ -14,8 +14,8 @@ until a real connection.
 
 ## ⚠ Confirmed from the Cloudflare dashboard (2026-07-17)
 - **Worker name:** `api.velvetrope2you.com` is served by the Worker **`proveit72-again`**,
-  NOT `lively-mud-9c4b`. `wrangler.toml` `name` is now set to `proveit72-again` so
-  `wrangler deploy` lands on the live worker. **Confirm this is the right worker before
+  NOT `lively-mud-9c4b`. `worker/wrangler.toml` `name` is now set to `proveit72-again` so
+  `cd worker && wrangler deploy` lands on the live worker. **Confirm this is the right worker before
   first deploy** (Workers & Pages list) — if `lively-mud-9c4b` is actually the live one,
   revert the name.
 - **"Others can't see the site" fix:** DNS is correct (apex + www CNAME → `vrpi72-home.pages.dev`,
@@ -29,7 +29,7 @@ until a real connection.
       `claude/twilio-account-restored-4qbonn`.
 - [ ] Skim the diff vs live — it should be 6 files only:
       `git diff --stat origin/claude/twilio-deploy-bi6sbr..origin/claude/twilio-emergence-4qbonn`
-- [ ] `node --check 72-stripe-worker.js` passes.
+- [ ] `node --check worker/stripe-worker.js` passes.
 
 ## 1 · Worker secrets (set on `lively-mud-9c4b`)
 Run each separately. Use **test** Stripe keys first.
@@ -41,7 +41,7 @@ Run each separately. Use **test** Stripe keys first.
 - [ ] `wrangler secret put TWILIO_ACCOUNT_SID`     → `AC...`
 - [ ] `wrangler secret put TWILIO_AUTH_TOKEN`      → the restored account's token
 - [ ] `wrangler secret put OWNER_API_KEY`          → any long random string (guards `/creators`)
-- [ ] KV `KV_72` is already bound in `wrangler.toml` — no action.
+- [ ] KV `KV_72` is already bound in `worker/wrangler.toml` — no action.
 
 > Until the two `TWILIO_*` secrets exist, **`/provision-number` no-ops safely** —
 > the dashboard shows "not switched on yet," nothing is bought. Good for the test run.
@@ -57,7 +57,7 @@ Run each separately. Use **test** Stripe keys first.
       sit in **`requires_capture`** until a call connects. This is intended.
 
 ## 3 · Deploy (preview / test)
-- [ ] `wrangler deploy` the Worker with the **test** secrets.
+- [ ] `cd worker && wrangler deploy` the Worker with the **test** secrets.
 - [ ] Cloudflare Pages: deploy this branch to a **preview** URL (do NOT point the
       production domain at it yet).
 - [ ] Seed a test creator in KV: `creator:<userId>` with `username`, `stripeAccountId`,
@@ -92,7 +92,7 @@ Card `4242 4242 4242 4242`, any future expiry/CVC.
 - [ ] Swap Worker secrets to **live**: `STRIPE_SECRET_KEY=sk_live_...`, live
       `STRIPE_WEBHOOK_SECRET` from a **live-mode** webhook endpoint.
 - [ ] Stripe → **Live mode** on; confirm Connect payouts enabled for real creators.
-- [ ] `wrangler deploy` again with live secrets.
+- [ ] `cd worker && wrangler deploy` again with live secrets.
 - [ ] Promote the site: point Cloudflare Pages production at
       `claude/twilio-emergence-4qbonn` (or merge it into `claude/twilio-deploy-bi6sbr`
       and keep that as production). **Do the domain last.**

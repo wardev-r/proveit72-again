@@ -1,6 +1,6 @@
 {
   "$comment": "Boneyard Rolodex — one card per salvageable part. Scan this BEFORE building any UI/visual from scratch; a part here may already do the job. When a build is killed, add its card here with its code under parts/.",
-  "updated": "2026-06-28",
+  "updated": "2026-07-24",
   "cards": [
     {
       "id": "palm-silhouette",
@@ -31,6 +31,24 @@
       "tags": ["palette", "opal", "pearly", "cool", "gradient", "tokens"],
       "good_for": "A calm, cool, spa/tech-y brand. Palette vars + a full-bleed sky→sea gradient.",
       "from": "Rejected for 72 — read too cold/grey for a warm brand"
+    },
+    {
+      "id": "landing-opal",
+      "title": "Opal velvet-rope landing variant",
+      "type": "html",
+      "file": "parts/landing-opal.html",
+      "tags": ["landing", "opal", "animated-gradient", "velvet-rope", "signup"],
+      "good_for": "Full alternative landing page with animated opal gradient, login button, and Stripe signup flow. Swap for index.html if a cooler palette is ever wanted.",
+      "from": "Parked — too cool/grey for the warm gold brand; index.html is canonical landing"
+    },
+    {
+      "id": "landing-merged-redirect",
+      "title": "Legacy landing redirect shim",
+      "type": "html",
+      "file": "parts/landing-merged.html",
+      "tags": ["redirect", "shim", "legacy"],
+      "good_for": "Template for a redirect shim that preserves query-string + hash (invite links, signup params). Copy the script block if you ever need another redirect page.",
+      "from": "Was a byte-copy of index.html that drifted; collapsed to a redirect shim; retired 2026-07-24 now that _redirects handles /72-landing-merged.html → /"
     }
   ]
 }

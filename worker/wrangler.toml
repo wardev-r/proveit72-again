@@ -1,5 +1,5 @@
 name = "proveit72-again"
-main = "72-stripe-worker.js"
+main = "stripe-worker.js"
 compatibility_date = "2024-09-23"
 
 # Public API is served on a stable custom domain so the URL never changes when

@@ -15,24 +15,31 @@ he *is* the product's personality.
 "Your time. Your price." · "You've got 72." · "Real conversations only." ·
 "The line's this way." · "Rope's closed." · "…did you pay your phone bill?"
 
-## Pose → where it lives  (fill image URLs once hosted on Cloudflare)
-| Pose | Use in product / content |
-|---|---|
-| Boss Stand / Arms Crossed | hero corner, "on duty" |
-| Gatekeeper (clipboard) | verifying / checking state |
-| Welcome / The line's this way | onboarding, CTA |
-| The Coin / Holding the 72 | pricing, payment |
-| Approved / Thumbs Up | success (payment/connection approved) |
-| Taking a Call / On the Phone | connected / in-call (connect.html, room) |
-| On It / running | loading / processing |
-| Rope's Closed | member offline / not taking calls |
-| Not Worth It / Slug Removal / Cleanup (SPLAT) | the "pick your brain" wedge — spam/time-waster content |
-| "…did you pay your phone bill?" | call-failed error state |
-| Director | owner/creator dashboard |
-| Backend (laptop) | member dashboard / settings |
-| Stay Zen | waiting / empty states |
-| See Ya / Let's Go | call ended, sign-off |
-| Vibe Check / The Look | 404, "you sure?" moments |
+## Turning him on (one file: `/agant.js`)
+He's already **wired into the site** — every slot below is live in code and waiting.
+The images are the ONLY thing missing. To light him up:
+1. Host each pose on Cloudflare (Images or R2), copy the URL.
+2. Paste it next to the matching `key` in the `POSES` map at the top of `/agant.js`.
+That's it — that pose appears everywhere it's mapped. Empty = clean (no broken image).
+
+## Pose → key → where it's wired
+| Pose | `agant.js` key | Wired into (live now) |
+|---|---|---|
+| Boss Stand / Arms Crossed | `boss` | hero corner (index.html) |
+| Gatekeeper (clipboard) | `gate` | verifying / checking state |
+| Welcome / The line's this way | `welcome` | onboarding, CTA |
+| The Coin / Holding the 72 | `coin` | pricing, payment |
+| Approved / Thumbs Up | `approved` | payment/connection approved (connect.html) |
+| Taking a Call / On the Phone | `call` | waiting-to-connect (connect.html) |
+| On It / running | `onit` | loading / processing |
+| Rope's Closed | `closed` | member offline (call-first.html) |
+| SPLAT (slug removal) | `splat` | "pick your brain" spam content |
+| "…did you pay your phone bill?" | `phonebill` | call not connected (connect.html, room.html) |
+| Director | `director` | owner dashboard (72-owner-dashboard.html) |
+| Backend (laptop) | `backend` | member dashboard (72-app-dashboard.html) |
+| Stay Zen | `zen` | waiting / empty states |
+| See Ya / Let's Go | `seeya` | call ended (room.html) |
+| Vibe Check / The Look | `vibe` | broken/missing link (call-first.html), 404 |
 
 ## Rules
 - **Reuse, don't redraw.** Same character, same wardrobe, everywhere.

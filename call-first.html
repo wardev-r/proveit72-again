@@ -121,6 +121,7 @@
     $('loading').style.display='none';
     const el=$('content'); el.style.display='block';
     el.innerHTML = `<div class="state-msg"><div class="big">${esc(big)}</div><div class="small">${esc(small)}</div></div>`;
+    if (window.AGANT) AGANT.mount('vibe', el.querySelector('.state-msg'), {className:'agant-badge', prepend:true});
   }
 
   function render(c){
@@ -140,6 +141,7 @@
         </div>
         <div class="state-msg"><div class="big">Rope's closed.</div>
         <div class="small">${esc(name)} steps up to the rope when they're ready. Try again soon — you're only asked to pay when they're live.</div></div>`;
+      if (window.AGANT) AGANT.mount('closed', el.querySelector('.state-msg'), {className:'agant-badge', prepend:true});
       return;
     }
 
@@ -272,5 +274,6 @@
 
   boot();
 </script>
+<script src="/agant.js"></script>
 </body>
 </html>

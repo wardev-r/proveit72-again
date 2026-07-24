@@ -51,6 +51,7 @@
     <p class="steps"><b>1.</b> Tap call. <b>2.</b> Enter the code when asked. <b>3.</b> You're connected.</p>
 
     <div class="status wait" id="status">One moment… the line's this way.</div>
+    <div id="antSlot" data-agant="call" data-agant-class="agant-badge"></div>
     <p class="fine">If they don't pick up, the hold is released and your card is never charged.</p>
   </div>
 
@@ -85,11 +86,13 @@
       if (s.status === 'completed') {
         statusEl.className = 'status live';
         statusEl.textContent = `Conversation approved — $${s.amount} charged. Enjoy your call.`;
+        if (window.AGANT) AGANT.mount('approved', '#antSlot', {className:'agant-badge', replace:true});
         return true;
       }
       if (s.status === 'voided') {
         statusEl.className = 'status nil';
         statusEl.textContent = 'Call ended — you were not charged.';
+        if (window.AGANT) AGANT.mount('phonebill', '#antSlot', {className:'agant-badge', replace:true});
         return true;
       }
     } catch (_) {}
@@ -97,5 +100,6 @@
   }
   const iv = setInterval(async () => { if (await poll()) clearInterval(iv); }, 4000);
 </script>
+<script src="/agant.js"></script>
 </body>
 </html>

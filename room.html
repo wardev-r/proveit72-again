@@ -78,6 +78,7 @@
     stage.innerHTML = connectedFired
       ? '<div class="msg"><h1>Call ended</h1><p>Thanks for connecting on 72.'+(amount?' You were charged $'+amount+'.':'')+'</p><a href="/">Back to 72</a></div>'
       : '<div class="msg"><h1>Call ended</h1><p>You weren\'t connected, so your card was <b>not</b> charged.</p><a href="/">Back to 72</a></div>';
+    if (window.AGANT) AGANT.mount(connectedFired ? 'seeya' : 'phonebill', stage.querySelector('.msg'), {className:'agant-badge', prepend:true});
   }
 
   document.getElementById('leaveBtn').addEventListener('click', (e) => { e.preventDefault(); markVoidIfUnconnected(); showEnded(); });
@@ -147,5 +148,6 @@
 
   boot();
 </script>
+<script src="/agant.js"></script>
 </body>
 </html>

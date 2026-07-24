@@ -8,7 +8,7 @@
 ```
 Landing page (static HTML)
     │
-    └─▶ Cloudflare Worker (72-stripe-worker.js)
+    └─▶ Cloudflare Worker (worker/stripe-worker.js)
             │
             ├─▶ Stripe API (subscriptions, payments, Connect)
             └─▶ Cloudflare KV (creator profiles)
@@ -74,11 +74,11 @@ wrangler login
 
 ### 2b. Create wrangler.toml
 
-Create `wrangler.toml` in the same directory as `72-stripe-worker.js`:
+Create `wrangler.toml` in the same directory as `worker/stripe-worker.js`:
 
 ```toml
 name = "72-marketplace"
-main = "72-stripe-worker.js"
+main = "worker/stripe-worker.js"
 compatibility_date = "2024-01-01"
 
 [[kv_namespaces]]
@@ -125,18 +125,18 @@ Note your Worker URL — you'll need it in the next step.
 
 In **three files**, replace the placeholder Worker URL:
 
-**72-landing-merged.html** (line ~260):
+**index.html** (line ~260):
 ```js
 const WORKER_URL = 'https://72-marketplace.YOUR-SUBDOMAIN.workers.dev';
 ```
 
-**72-app-dashboard.html** (line ~260):
+**dashboards/app.html** (line ~260):
 ```js
 const WORKER_URL = 'https://72-marketplace.YOUR-SUBDOMAIN.workers.dev';
 const BASE_CALL_URL = 'https://your-domain.com/call/';
 ```
 
-**72-owner-dashboard.html** (line ~220):
+**dashboards/owner.html** (line ~220):
 ```js
 const WORKER_URL = 'https://72-marketplace.YOUR-SUBDOMAIN.workers.dev';
 const OWNER_KEY  = 'YOUR_OWNER_API_KEY'; // same value as secret above
@@ -155,9 +155,9 @@ npm install -g @cloudflare/pages-cli
 # Create a Pages project
 # In Cloudflare dashboard → Pages → Create project → Direct upload
 # Upload these files:
-#   72-landing-merged.html  → rename to index.html
-#   72-app-dashboard.html
-#   72-owner-dashboard.html
+#   index.html  → rename to index.html
+#   dashboards/app.html
+#   dashboards/owner.html
 #   wagoneer.png
 ```
 
@@ -198,12 +198,12 @@ For the Worker:
 - [ ] Email form calls Worker and redirects to Stripe Checkout
 - [ ] Stripe Checkout shows $7.20/month with 30-day trial
 - [ ] After checkout, redirected back to landing page with success message
-- [ ] Creator dashboard loads at `/72-app-dashboard.html`
+- [ ] Creator dashboard loads at `/dashboards/app.html`
 - [ ] Price slider moves from $3 to $72
 - [ ] Online/offline toggle calls Worker
 - [ ] QR code generates for the creator's call link
 - [ ] "Connect bank" calls Worker and redirects to Stripe Connect Express
-- [ ] Owner dashboard at `/72-owner-dashboard.html` shows creator table
+- [ ] Owner dashboard at `/dashboards/owner.html` shows creator table
 - [ ] Revenue chart renders
 - [ ] Export CSV downloads correctly
 

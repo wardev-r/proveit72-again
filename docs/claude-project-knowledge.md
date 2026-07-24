@@ -9,18 +9,18 @@ keeps **72%**; platform keeps **28%** via Stripe Application Fees. Owner: Robie.
 
 ## Architecture
 ```
-Static HTML front-ends  ─▶  Cloudflare Worker (72-stripe-worker.js)
+Static HTML front-ends  ─▶  Cloudflare Worker (worker/stripe-worker.js)
                                 ├─▶ Stripe (subscriptions, per-call PaymentIntents, Connect)
                                 └─▶ Cloudflare KV (creator profiles)
 ```
 
 ## Repo map
 - `index.html` — live marketing landing (gold design, Stripe Payment Link)
-- `72-landing-opal.html` — opal velvet-rope landing variant (animated gradient, wired signup)
-- `72-landing-merged.html` — ⚠️ duplicate of `index.html`, still linked from dashboards (to be removed)
-- `72-app-dashboard.html` / `72-owner-dashboard.html` — creator & owner dashboards
-- `72-stripe-worker.js` + `wrangler.toml` — Cloudflare Worker (Stripe + KV)
-- `72-DEPLOYMENT-FINAL.md` / `72-PROJECT-HANDOFF.md` — deploy + handoff
+- `boneyard/parts/landing-opal.html` — opal velvet-rope landing variant (animated gradient, wired signup)
+- `boneyard/parts/landing-merged.html` — ⚠️ duplicate of `index.html`, still linked from dashboards (to be removed)
+- `dashboards/app.html` / `dashboards/owner.html` — creator & owner dashboards
+- `worker/stripe-worker.js` + `wrangler.toml` — Cloudflare Worker (Stripe + KV)
+- `docs/deployment.md` / `docs/project-handoff.md` — deploy + handoff
 - `boneyard/` — salvage from killed builds (`parts/` = reusable code, `index.json` = rolodex)
 - `CLAUDE.md` — auto-loaded project guide
 

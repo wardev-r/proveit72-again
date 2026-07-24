@@ -14,13 +14,13 @@
 
 | File | Purpose |
 |------|---------|
-| `72-landing-merged.html` | Marketing landing page + Stripe subscription checkout |
-| `72-app-dashboard.html` | Creator dashboard (QR, price slider, status, earnings) |
-| `72-owner-dashboard.html` | Platform analytics + creator management (owner only) |
-| `72-stripe-worker.js` | Cloudflare Worker — all backend/Stripe logic |
+| `index.html` | Marketing landing page + Stripe subscription checkout |
+| `dashboards/app.html` | Creator dashboard (QR, price slider, status, earnings) |
+| `dashboards/owner.html` | Platform analytics + creator management (owner only) |
+| `worker/stripe-worker.js` | Cloudflare Worker — all backend/Stripe logic |
 | `wagoneer.png` | Hero background image for landing page |
-| `72-DEPLOYMENT-FINAL.md` | Step-by-step deployment guide |
-| `72-PROJECT-HANDOFF.md` | This file |
+| `docs/deployment.md` | Step-by-step deployment guide |
+| `docs/project-handoff.md` | This file |
 
 ---
 
@@ -30,10 +30,10 @@
 Creator signs up
     │
     ▼
-72-landing-merged.html
+index.html
     │  POST /create-checkout-session
     ▼
-72-stripe-worker.js (Cloudflare Worker)
+worker/stripe-worker.js (Cloudflare Worker)
     │  Stripe Checkout Session (subscription)
     ▼
 Stripe → $7.20/month, 30-day trial
@@ -42,7 +42,7 @@ Stripe → $7.20/month, 30-day trial
 Worker stores creator in Cloudflare KV
     │
     ▼
-Creator accesses 72-app-dashboard.html
+Creator accesses dashboards/app.html
     ├── Sets price ($3–$72) → PUT /creator/:id
     ├── Toggles online/offline → PUT /creator/:id
     ├── Connects bank → POST /connect-onboard → Stripe Express
@@ -58,7 +58,7 @@ Stripe splits automatically:
     ├── 72% → Creator's connected Stripe account
     └── 28% → Platform Stripe account
 
-Robie monitors via 72-owner-dashboard.html
+Robie monitors via dashboards/owner.html
     ├── Platform revenue, gross volume, MRR
     ├── Creator table (status, calls, earnings)
     └── Export CSV for manual payout records
@@ -165,7 +165,7 @@ Switch to live keys (`sk_live_...`, `pk_live_...`) when going to production.
 
 ## Next Steps for Developer
 
-1. Deploy Cloudflare Worker (see `72-DEPLOYMENT-FINAL.md`)
+1. Deploy Cloudflare Worker (see `docs/deployment.md`)
 2. Update `WORKER_URL` in all three HTML files
 3. Host HTML files on Cloudflare Pages or any static host
 4. Wire telephony (Twilio recommended) to the `/create-call-payment` endpoint

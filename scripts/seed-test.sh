@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Seed / manage a test creator in KV_72 for the Emergence go-live test run.
-# See GOLIVE-EMERGENCE.md step 3–5.
+# See docs/golive-emergence.md step 3–5.
 #
 # Usage:
 #   STRIPE_ACCT=acct_123 FORWARD=+15551234567 ./scripts/seed-test.sh seed
@@ -44,7 +44,7 @@ case "${1:-seed}" in
       exit 1
     fi
     kv put "$KEY" "$(record true)"
-    echo "✓ seeded $KEY  (call it at /call/${USERNAME} · dashboard: 72-app-dashboard.html?userId=testcreator)"
+    echo "✓ seeded $KEY  (call it at /call/${USERNAME} · dashboard: /dashboards/app.html?userId=testcreator)"
     ;;
   get)     kv get "$KEY" ;;
   list)    kv list --prefix "creator:" ;;

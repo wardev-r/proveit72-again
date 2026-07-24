@@ -3,3 +3,9 @@
 /call/*   /call-first.html   200
 # The easy option: pay the creator's standard per-call rate and connect.
 /pay/*    /call.html         200
+
+# Backward-compat: old flat-root paths redirect to organised folders
+/72-app-dashboard.html    /dashboards/app.html    301
+/72-owner-dashboard.html  /dashboards/owner.html  301
+/72-landing-merged.html   /                       301
+/72-landing-opal.html     /                       301

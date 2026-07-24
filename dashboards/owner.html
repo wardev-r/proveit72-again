@@ -340,8 +340,8 @@
     <a href="#revenue" class="nav-item"><span class="nav-icon">💰</span> Revenue</a>
     <a href="#controls" class="nav-item"><span class="nav-icon">⚙️</span> Controls</a>
     <div class="nav-divider"></div>
-    <a href="72-landing-merged.html" class="nav-item" target="_blank"><span class="nav-icon">↗</span> Landing page</a>
-    <a href="72-app-dashboard.html" class="nav-item" target="_blank"><span class="nav-icon">↗</span> Creator view</a>
+    <a href="/" class="nav-item" target="_blank"><span class="nav-icon">↗</span> Landing page</a>
+    <a href="app.html" class="nav-item" target="_blank"><span class="nav-icon">↗</span> Creator view</a>
     <div class="sidebar-spacer"></div>
     <div class="owner-badge">🔐 Owner access</div>
   </aside>
@@ -471,7 +471,7 @@
         <div class="control-card">
           <h3>Platform fee</h3>
           <p>Current split: 72% creator / 28% platform.</p>
-          <button class="btn-outline" onclick="alert('Fee rate is set in the Worker. Edit PLATFORM_FEE_PERCENT in 72-stripe-worker.js')">Edit in Worker</button>
+          <button class="btn-outline" onclick="alert('Fee rate is set in the Worker. Edit PLATFORM_FEE_PERCENT in worker/stripe-worker.js')">Edit in Worker</button>
         </div>
       </div>
     </div>
@@ -591,7 +591,7 @@
   }
 
   function viewCreator(userId) {
-    window.open(`72-app-dashboard.html?userId=${userId}`, '_blank');
+    window.open(`app.html?userId=${userId}`, '_blank');
   }
 
   // ── Charts ────────────────────────────────────────────────────────────────
@@ -660,7 +660,7 @@
   function generateInvite() {
     const email = prompt('Enter creator email address:');
     if (!email) return;
-    const link = `${window.location.origin}/72-landing-merged.html?invite=${btoa(email)}&email=${encodeURIComponent(email)}`;
+    const link = `${window.location.origin}/?invite=${btoa(email)}&email=${encodeURIComponent(email)}`;
     prompt('Share this invite link:', link);
   }
 

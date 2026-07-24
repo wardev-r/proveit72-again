@@ -18,12 +18,12 @@ This file is for machines. Every page also embeds a `<script type="application/j
 
 ## Sources of truth (repo)
 - CLAUDE.md: project guide + conventions.
-- PUNCH.md: deploy/consolidation punch list.
-- 72-mission-control.html: human task/ops board (people-facing mirror).
+- docs/punch.md: deploy/consolidation punch list.
+- dashboards/mission-control.html: human task/ops board (people-facing mirror).
 
 ## Conventions for agents
 - Develop on a feature branch, never `main`.
-- Secrets: never commit `sk_live_*`/`sk_test_*`. Worker secrets go in via `wrangler secret put`, not the repo.
+- Secrets: never commit `sk_live_*`/`sk_test_*`. Worker secrets go in via `cd worker && wrangler secret put`, not the repo.
 - Publishable keys (`pk_*`) and Buy-Button IDs are safe to commit.
-- Do not edit the dashboards (72-app-dashboard.html, 72-owner-dashboard.html) unless explicitly asked.
+- Do not edit the dashboards (dashboards/app.html, dashboards/owner.html) unless explicitly asked.
 - Before hand-building UI, scan boneyard/index.json for reusable parts.

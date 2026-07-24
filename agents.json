@@ -17,8 +17,8 @@
     "branch": "Develop on a feature branch, never main.",
     "secrets_rule": "Never commit sk_live_*/sk_test_*. Worker secrets via `wrangler secret put`. pk_* and Buy-Button IDs are safe to commit.",
     "do_not_touch": [
-      "72-app-dashboard.html",
-      "72-owner-dashboard.html"
+      "dashboards/app.html",
+      "dashboards/owner.html"
     ],
     "reuse_first": "Scan boneyard/index.json before hand-building any UI.",
     "stack": {
@@ -32,8 +32,8 @@
   },
   "sources_of_truth": {
     "guide": "CLAUDE.md",
-    "deploy": "PUNCH.md",
-    "human_board": "72-mission-control.html",
+    "deploy": "docs/punch.md",
+    "human_board": "dashboards/mission-control.html",
     "link_map": "/llms.txt"
   },
   "pages": [
@@ -46,9 +46,9 @@
       "open_actions": 0
     },
     {
-      "path": "/72-landing-merged.html",
-      "title": "Legacy landing (redirect)",
-      "purpose": "Redirect shim to /index.html; kept so old dashboard/invite links resolve",
+      "path": "/boneyard/parts/landing-merged.html",
+      "title": "Legacy landing (retired to boneyard)",
+      "purpose": "Redirect shim to /index.html; _redirects now handles /72-landing-merged.html → /",
       "state": "deprecated",
       "spec": "#agent-spec",
       "open_actions": 0
@@ -118,8 +118,8 @@
       "do": "DONE: live Buy Button wired into paygate.html. (Human to confirm the rendered button shows the $7.20/mo membership, not a different product.)",
       "verify": "Load paygate.html; Buy Button renders in live mode; a real card is charged.",
       "refs": [
-        "PUNCH.md",
-        "72-mission-control.html#TK-06"
+        "docs/punch.md",
+        "dashboards/mission-control.html#TK-06"
       ]
     },
     {
@@ -132,7 +132,7 @@
       "do": "DONE: landing signup (goToStripe) now routes to /paygate.html, where the live membership Buy Button (buy_btn_1TsIzu\u2026) lives. The old test STRIPE_PAYMENT_LINK const was removed from the landing. (Earlier bpc_ link was the wrong product and was pulled.) 72-landing-opal.html still has its own STRIPE_PAYMENT_LINK on the TEST link \u2014 update or repoint it if that variant goes live.",
       "verify": "Landing signup buttons lead to the live $7.20 membership checkout.",
       "refs": [
-        "72-mission-control.html#TK-06"
+        "dashboards/mission-control.html#TK-06"
       ]
     },
     {
@@ -141,7 +141,7 @@
       "status": "blocked",
       "priority": "high",
       "type": "config",
-      "file": "72-stripe-worker.js",
+      "file": "worker/stripe-worker.js",
       "anchor": "STRIPE_SECRET_KEY",
       "do": "Set 4 secrets in the Cloudflare DASHBOARD (Worker 'proveit72-again' -> Settings -> Variables and Secrets, add each as type 'Secret'): STRIPE_SECRET_KEY (sk_live_), STRIPE_WEBHOOK_SECRET (whsec_ from a live webhook pointed at api.velvetrope2you.com/webhook), PLATFORM_URL (https://velvetrope2you.com), OWNER_API_KEY (any strong string). Deployed via Workers Builds, so use the dashboard, not local wrangler.",
       "inputs_required": [
@@ -150,7 +150,7 @@
       "blocked_by": "human-sets-secrets-in-dashboard",
       "verify": "Worker completes a live Stripe checkout session.",
       "refs": [
-        "72-mission-control.html#FN-03"
+        "dashboards/mission-control.html#FN-03"
       ]
     },
     {
@@ -163,7 +163,7 @@
       "do": "SCRUBBED: the 72\u00a2 / $7.20 10-call-pack 'toll' was removed from paygate (it clashed with the $5 per-call floor and doubled the $7.20 membership number). The free-5 whitelist stays; everyone else now just pays the creator's rate. Future paid whitelist expansion is tracked in whitelist-expansion-blocks.",
       "verify": "No 72\u00a2 / 10-call-pack / toll copy remains on paygate.",
       "refs": [
-        "72-mission-control.html#TK-10"
+        "dashboards/mission-control.html#TK-10"
       ]
     },
     {
@@ -189,12 +189,12 @@
       "status": "done",
       "priority": "med",
       "type": "refactor",
-      "file": "72-landing-merged.html",
+      "file": "boneyard/parts/landing-merged.html",
       "do": "DONE: 72-landing-merged.html was a byte-copy of index.html that drifted. Collapsed into a redirect shim to /index.html (preserves query string + hash), so the dashboard 'Your page' link and owner invite links still resolve without editing the dashboards. index.html is now the single landing source.",
       "verify": "72-landing-merged.html redirects to /index.html; no second full copy of the landing remains.",
       "refs": [
         "CLAUDE.md",
-        "72-mission-control.html#TK-08"
+        "dashboards/mission-control.html#TK-08"
       ]
     },
     {
@@ -220,8 +220,8 @@
       "file": "privacy.html",
       "do": "Once Netlify is fully removed from the stack, trim its mention from the privacy policy service list.",
       "refs": [
-        "PUNCH.md",
-        "72-mission-control.html#PG-05"
+        "docs/punch.md",
+        "dashboards/mission-control.html#PG-05"
       ]
     },
     {
@@ -262,7 +262,7 @@
       "status": "pending",
       "priority": "low",
       "type": "feature",
-      "file": "72-stripe-worker.js",
+      "file": "worker/stripe-worker.js",
       "do": "LATER (owner's note): creators get 5 free whitelisted numbers that always ring through; selling additional access as paid blocks/packs is the attention-toll model. Count + lock enforcement MUST live in the Worker/KV, never client-side (a member can reset localStorage).",
       "verify": "Creators can grow their whitelist; buyers can purchase expansion blocks; limits enforced server-side."
     },
@@ -272,7 +272,7 @@
       "status": "pending",
       "priority": "med",
       "type": "security",
-      "file": "72-owner-dashboard.html",
+      "file": "dashboards/owner.html",
       "do": "OWNER_KEY currently sits in client-side source (readable by anyone). Move owner auth to a server-side login/session so no admin key is exposed in the page.",
       "verify": "No admin key in page source; owner data requires an authenticated session."
     }

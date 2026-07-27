@@ -1,110 +1,114 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 540" width="400" height="540" role="img" aria-label="The 72 agANT">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 560" width="400" height="560" role="img" aria-label="The 72 agANT">
   <defs>
     <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#E6A94C"/>
-      <stop offset="1" stop-color="#B9772A"/>
+      <stop offset="0" stop-color="#EBB05A"/>
+      <stop offset="1" stop-color="#B4732A"/>
     </linearGradient>
     <linearGradient id="tux" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#1b1c20"/>
-      <stop offset="1" stop-color="#0c0c0e"/>
+      <stop offset="0" stop-color="#1c1d21"/>
+      <stop offset="1" stop-color="#0b0b0d"/>
     </linearGradient>
     <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#F4CE5E"/>
       <stop offset="1" stop-color="#C9992A"/>
     </linearGradient>
-    <radialGradient id="shine" cx="0.35" cy="0.3" r="0.8">
-      <stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/>
-      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    <radialGradient id="shine" cx="0.36" cy="0.28" r="0.85">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
     </radialGradient>
   </defs>
 
   <!-- ground shadow -->
-  <ellipse cx="200" cy="512" rx="118" ry="18" fill="#000" opacity="0.28"/>
+  <ellipse cx="200" cy="536" rx="120" ry="17" fill="#000" opacity="0.28"/>
 
-  <!-- ── legs + Chucks ── -->
-  <g stroke="#0c0c0e" stroke-width="3">
-    <!-- left leg -->
-    <path d="M168 430 q-26 24 -30 56" fill="none" stroke="url(#skin)" stroke-width="11" stroke-linecap="round"/>
-    <!-- right leg -->
-    <path d="M232 430 q26 24 30 56" fill="none" stroke="url(#skin)" stroke-width="11" stroke-linecap="round"/>
+  <!-- ══ ABDOMEN (ant rear segment — a real thing, gold & segmented) ══ -->
+  <g>
+    <ellipse cx="200" cy="408" rx="80" ry="74" fill="url(#skin)"/>
+    <ellipse cx="200" cy="408" rx="80" ry="74" fill="url(#shine)"/>
+    <path d="M126 388 q74 26 148 0" fill="none" stroke="#93601f" stroke-width="4" opacity="0.5"/>
+    <path d="M132 430 q68 24 136 0" fill="none" stroke="#93601f" stroke-width="4" opacity="0.5"/>
   </g>
+
+  <!-- ══ MIDDLE LEGS (the standing pair) + clean crisp Chucks ══ -->
+  <path d="M170 452 q-22 26 -28 52" fill="none" stroke="url(#skin)" stroke-width="12" stroke-linecap="round"/>
+  <path d="M230 452 q22 26 28 52" fill="none" stroke="url(#skin)" stroke-width="12" stroke-linecap="round"/>
   <!-- left chuck -->
   <g>
-    <path d="M112 486 q-6 -22 22 -24 q22 -1 26 16 l2 18 q1 12 -12 12 l-30 0 q-10 0 -10 -10 z" fill="#17181b"/>
-    <rect x="108" y="502" width="58" height="12" rx="6" fill="#F2ECDD"/>
-    <circle cx="150" cy="480" r="4" fill="#F2ECDD"/>
+    <path d="M110 508 q-6 -24 24 -26 q24 -1 28 18 l2 16 q1 12 -12 12 l-34 0 q-10 0 -10 -12 z" fill="#17181b"/>
+    <circle cx="150" cy="500" r="6" fill="#F5F0E4"/>
+    <rect x="104" y="522" width="66" height="12" rx="6" fill="#F5F0E4"/>
+    <path d="M120 512 l18 6 M124 504 l16 8" stroke="#F5F0E4" stroke-width="2.5" opacity="0.85"/>
   </g>
   <!-- right chuck -->
   <g>
-    <path d="M288 486 q6 -22 -22 -24 q-22 -1 -26 16 l-2 18 q-1 12 12 12 l30 0 q10 0 10 -10 z" fill="#17181b"/>
-    <rect x="234" y="502" width="58" height="12" rx="6" fill="#F2ECDD"/>
-    <circle cx="250" cy="480" r="4" fill="#F2ECDD"/>
+    <path d="M290 508 q6 -24 -24 -26 q-24 -1 -28 18 l-2 16 q-1 12 12 12 l34 0 q10 0 10 -12 z" fill="#17181b"/>
+    <circle cx="250" cy="500" r="6" fill="#F5F0E4"/>
+    <rect x="230" y="522" width="66" height="12" rx="6" fill="#F5F0E4"/>
+    <path d="M280 512 l-18 6 M276 504 l-16 8" stroke="#F5F0E4" stroke-width="2.5" opacity="0.85"/>
   </g>
 
-  <!-- ── abdomen / tux tails ── -->
-  <ellipse cx="200" cy="400" rx="70" ry="62" fill="url(#tux)"/>
-
-  <!-- ── thorax / jacket ── -->
-  <path d="M132 250 q68 -34 136 0 q14 60 4 120 q-72 26 -144 0 q-10 -60 4 -120 z" fill="url(#tux)"/>
+  <!-- ══ THORAX / tux jacket (sits on the abdomen) ══ -->
+  <path d="M140 262 q60 -30 120 0 q16 58 6 118 q-66 22 -132 0 q-10 -60 6 -118 z" fill="url(#tux)"/>
   <!-- shirt V -->
-  <path d="M200 258 l-26 18 q26 34 52 0 z" fill="#F2ECDD"/>
+  <path d="M200 270 l-24 16 q24 30 48 0 z" fill="#F2ECDD"/>
   <!-- lapels -->
-  <path d="M200 258 l-30 16 -6 70 22 -60 z" fill="#26272c"/>
-  <path d="M200 258 l30 16 6 70 -22 -60 z" fill="#26272c"/>
+  <path d="M200 270 l-28 15 -6 66 22 -56 z" fill="#282a2f"/>
+  <path d="M200 270 l28 15 6 66 -22 -56 z" fill="#282a2f"/>
   <!-- bow tie -->
   <g>
-    <path d="M200 268 l-22 -12 0 24 z" fill="url(#gold)"/>
-    <path d="M200 268 l22 -12 0 24 z" fill="url(#gold)"/>
-    <circle cx="200" cy="268" r="6" fill="#C9992A"/>
+    <path d="M200 280 l-22 -12 0 24 z" fill="url(#gold)"/>
+    <path d="M200 280 l22 -12 0 24 z" fill="url(#gold)"/>
+    <circle cx="200" cy="280" r="6" fill="#C9992A"/>
   </g>
-  <!-- buttons -->
-  <circle cx="200" cy="330" r="4" fill="url(#gold)"/>
-  <circle cx="200" cy="352" r="4" fill="url(#gold)"/>
+  <circle cx="200" cy="338" r="4" fill="url(#gold)"/>
+  <circle cx="200" cy="360" r="4" fill="url(#gold)"/>
 
-  <!-- ── crossed arms ── -->
-  <!-- upper (behind) forearm -->
-  <path d="M150 316 q54 26 116 8 q16 -4 20 10 q4 16 -12 22 q-70 22 -140 -4 q-16 -6 -10 -22 q4 -12 26 -14 z" fill="#141418"/>
-  <!-- lower (front) forearm crossing over -->
-  <path d="M250 328 q-54 26 -116 8 q-16 -4 -20 10 q-4 16 12 22 q70 22 140 -4 q16 -6 10 -22 q-4 -12 -26 -14 z" fill="url(#tux)"/>
-  <!-- hands tucked at the elbows (ant skin) -->
+  <!-- ══ FRONT LEGS = ARMS, crossed ══ -->
+  <path d="M150 320 q54 26 116 8 q16 -4 20 10 q4 16 -12 22 q-70 22 -140 -4 q-16 -6 -10 -22 q4 -12 26 -14 z" fill="#141418"/>
+  <path d="M250 332 q-54 26 -116 8 q-16 -4 -20 10 q-4 16 12 22 q70 22 140 -4 q16 -6 10 -22 q-4 -12 -26 -14 z" fill="url(#tux)"/>
   <g fill="url(#skin)">
-    <path d="M120 348 q-4 -16 14 -18 q18 -2 20 12 q1 12 -12 15 q-16 3 -22 -9 z"/>
-    <path d="M280 340 q4 -16 -14 -18 q-18 -2 -20 12 q-1 12 12 15 q16 3 22 -9 z"/>
+    <path d="M118 350 q-4 -16 15 -18 q18 -2 20 13 q1 12 -13 15 q-16 3 -22 -10 z"/>
+    <path d="M282 342 q4 -16 -15 -18 q-18 -2 -20 13 q-1 12 13 15 q16 3 22 -10 z"/>
   </g>
 
-  <!-- ── neck ── -->
-  <rect x="186" y="228" width="28" height="26" rx="10" fill="url(#skin)"/>
+  <!-- ══ neck ══ -->
+  <rect x="186" y="238" width="28" height="26" rx="10" fill="url(#skin)"/>
 
-  <!-- ── head ── -->
+  <!-- ══ HEAD ══ -->
   <g>
-    <!-- antennae -->
-    <path d="M170 150 q-24 -46 -46 -60" fill="none" stroke="url(#skin)" stroke-width="7" stroke-linecap="round"/>
-    <path d="M230 150 q24 -46 46 -60" fill="none" stroke="url(#skin)" stroke-width="7" stroke-linecap="round"/>
-    <circle cx="122" cy="88" r="9" fill="url(#gold)"/>
-    <circle cx="278" cy="88" r="9" fill="url(#gold)"/>
+    <!-- backward cap: the bill juts out behind the head -->
+    <path d="M250 128 q66 -6 82 20 q-8 14 -34 12 q-30 -2 -54 -16 z" fill="#0a0a0c"/>
 
-    <!-- head shape -->
-    <ellipse cx="200" cy="176" rx="86" ry="78" fill="url(#skin)"/>
-    <ellipse cx="200" cy="176" rx="86" ry="78" fill="url(#shine)"/>
+    <!-- head -->
+    <ellipse cx="200" cy="180" rx="88" ry="80" fill="url(#skin)"/>
+    <ellipse cx="200" cy="180" rx="88" ry="80" fill="url(#shine)"/>
 
-    <!-- shades -->
-    <g>
-      <rect x="130" y="150" width="140" height="10" rx="5" fill="#0a0a0c"/>
-      <path d="M132 158 q10 42 54 40 q22 -2 24 -26 q2 -18 -18 -20 q-40 -4 -60 6 z" fill="#0a0a0c"/>
-      <path d="M268 158 q-10 42 -54 40 q-22 -2 -24 -26 q-2 -18 18 -20 q40 -4 60 6 z" fill="#0a0a0c"/>
-      <path d="M150 168 q6 20 30 22" fill="none" stroke="#3a3a40" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
-      <path d="M250 168 q-6 20 -30 22" fill="none" stroke="#3a3a40" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
-    </g>
+    <!-- shades (wayfarer) -->
+    <rect x="126" y="154" width="148" height="10" rx="5" fill="#0a0a0c"/>
+    <path d="M130 162 q10 44 56 42 q24 -2 26 -28 q2 -18 -20 -20 q-42 -4 -62 6 z" fill="#0a0a0c"/>
+    <path d="M270 162 q-10 44 -56 42 q-24 -2 -26 -28 q-2 -18 20 -20 q42 -4 62 6 z" fill="#0a0a0c"/>
+    <path d="M148 172 q6 22 32 24" fill="none" stroke="#3a3a40" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
+    <path d="M252 172 q-6 22 -32 24" fill="none" stroke="#3a3a40" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
 
-    <!-- little confident smile -->
-    <path d="M182 218 q18 16 36 0" fill="none" stroke="#5a3813" stroke-width="5" stroke-linecap="round"/>
+    <!-- cute confident smile -->
+    <path d="M180 224 q20 18 40 0" fill="none" stroke="#5a3813" stroke-width="5" stroke-linecap="round"/>
 
-    <!-- ── 72 snapback ── -->
-    <path d="M120 138 q80 -52 160 0 q4 -70 -80 -72 q-84 -2 -80 72 z" fill="url(#tux)"/>
-    <path d="M118 138 q82 -18 164 0 q6 12 -6 16 q-76 -14 -152 0 q-12 -4 -6 -16 z" fill="#000"/>
-    <!-- brim -->
-    <path d="M116 138 q-30 6 -34 24 q60 -6 84 -8 q-30 -8 -50 -16 z" fill="#0a0a0c"/>
-    <!-- 72 mark -->
-    <text x="200" y="118" font-family="Georgia, 'Times New Roman', serif" font-size="40" font-weight="700" fill="url(#gold)" text-anchor="middle">72</text>
+    <!-- cap crown (backward — snap band faces us) -->
+    <path d="M116 140 q84 -58 168 0 q6 -74 -84 -76 q-90 -2 -84 76 z" fill="url(#tux)"/>
+    <!-- snap closure band across the front -->
+    <path d="M120 138 q80 -20 160 0 q4 12 -8 16 q-72 -16 -144 0 q-12 -4 -8 -16 z" fill="#d7d0bf"/>
+    <circle cx="160" cy="139" r="3" fill="#8f8a7c"/><circle cx="182" cy="136" r="3" fill="#8f8a7c"/>
+    <circle cx="200" cy="135" r="3" fill="#8f8a7c"/><circle cx="218" cy="136" r="3" fill="#8f8a7c"/>
+    <circle cx="240" cy="139" r="3" fill="#8f8a7c"/>
+    <!-- 72 on the back panel now facing us -->
+    <text x="200" y="112" font-family="Georgia, 'Times New Roman', serif" font-size="42" font-weight="700" fill="url(#gold)" text-anchor="middle">72</text>
+
+    <!-- ANTENNAE — prominent, cute, poking up through the cap -->
+    <path d="M182 72 q-14 -30 -36 -44" fill="none" stroke="url(#skin)" stroke-width="8" stroke-linecap="round"/>
+    <path d="M218 72 q14 -30 36 -44" fill="none" stroke="url(#skin)" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="144" cy="26" r="11" fill="url(#gold)"/>
+    <circle cx="256" cy="26" r="11" fill="url(#gold)"/>
+    <circle cx="141" cy="23" r="3.5" fill="#fff" opacity="0.6"/>
+    <circle cx="253" cy="23" r="3.5" fill="#fff" opacity="0.6"/>
   </g>
 </svg>

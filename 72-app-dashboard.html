@@ -482,6 +482,22 @@
       </div>
     </div>
 
+    <!-- Call mode: how callers reach you -->
+    <div class="status-row" style="flex-direction:column;align-items:stretch;gap:12px">
+      <div>
+        <div class="status-label">How your calls work</div>
+        <div class="status-sub" id="callModeSub">Dial-in code — callers get a code and call your number</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button type="button" id="modeCode" onclick="setCallMode('code')"
+          style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border,#252525);background:transparent;color:inherit;font:inherit;cursor:pointer;font-weight:600">
+          📟 Code<br><span style="font-size:.72rem;font-weight:400;opacity:.7">They call you</span></button>
+        <button type="button" id="modeFrontdesk" onclick="setCallMode('frontdesk')"
+          style="flex:1;padding:12px;border-radius:10px;border:1px solid var(--border,#252525);background:transparent;color:inherit;font:inherit;cursor:pointer;font-weight:600">
+          🛎️ Front desk<br><span style="font-size:.72rem;font-weight:400;opacity:.7">We call both of you</span></button>
+      </div>
+    </div>
+
     <!-- Incoming call (ringing) -->
     <div id="ringDock"></div>
 
@@ -660,6 +676,7 @@
     const displayName = creator?.displayName || creator?.email?.split('@')[0] || 'Member';
     const price = creator?.pricePerCall ?? 20;
     const isOnline = creator?.isOnline ?? false;
+    reflectCallMode(creator?.callMode === 'frontdesk' ? 'frontdesk' : 'code');
     const totalEarnings = ((creator?.totalEarningsCents || 0) / 100).toFixed(2);
     const totalCalls = creator?.totalCalls || 0;
 
@@ -691,6 +708,29 @@
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isOnline: online }),
+      });
+    } catch (_) {}
+  }
+
+  // ── Call mode: 'code' (dial-in, proven default) vs 'frontdesk' (we call both) ──
+  function reflectCallMode(mode){
+    const fd = mode === 'frontdesk';
+    const on = '2px solid var(--accent,#D4A017)', off = '1px solid var(--border,#252525)';
+    const c = document.getElementById('modeCode'), f = document.getElementById('modeFrontdesk');
+    if (c) c.style.border = fd ? off : on;
+    if (f) f.style.border = fd ? on : off;
+    const sub = document.getElementById('callModeSub');
+    if (sub) sub.textContent = fd
+      ? 'Front desk — we ring the caller and you; press 1 to accept. No code.'
+      : 'Dial-in code — callers get a code and call your number.';
+  }
+  async function setCallMode(mode){
+    reflectCallMode(mode);
+    try {
+      await fetch(`${WORKER_URL}/creator/${userId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ callMode: mode }),
       });
     } catch (_) {}
   }

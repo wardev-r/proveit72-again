@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>We're calling you — 72</title>
+<meta name="theme-color" content="#080808" />
+<meta name="robots" content="noindex" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23080808'/%3E%3Ctext x='32' y='45' font-family='Inter,Arial,sans-serif' font-size='34' font-weight='800' fill='%23D4A017' text-anchor='middle'%3E72%3C/text%3E%3C/svg%3E" />
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#080808;--surface:#111;--border:#252525;--text:#f0f0e8;--muted:#8a8a80;--accent:#D4A017;--accent-light:#f0c040;--green:#4caf7d;--red:#e0655b}
+  body{font-family:'Inter',system-ui,sans-serif;background:radial-gradient(900px 380px at 50% -160px,rgba(212,160,23,.12),transparent 70%),var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;line-height:1.5}
+  .card{width:100%;max-width:400px;text-align:center}
+  .ring{width:64px;height:64px;margin:0 auto 20px;border-radius:50%;border:2px solid rgba(212,160,23,.35);border-top-color:var(--accent);animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .tick{width:56px;height:56px;margin:0 auto 18px;border-radius:50%;background:rgba(76,175,125,.14);border:1px solid rgba(76,175,125,.5);display:none;align-items:center;justify-content:center;font-size:1.6rem;color:var(--green)}
+  h1{font-size:1.5rem;font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
+  .sub{color:var(--muted);font-size:.92rem;margin-bottom:24px}
+  .block{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:14px}
+  .steps{font-size:.92rem;color:var(--muted);text-align:left;max-width:320px;margin:0 auto;line-height:1.9}
+  .steps b{color:var(--text);font-weight:600}
+  #antSlot{margin:6px 0 2px}
+  .status{margin-top:22px;font-size:.95rem;font-weight:700;min-height:22px}
+  .status.wait{color:var(--muted)}
+  .status.live{color:var(--green)}
+  .status.nil{color:var(--red)}
+  .fine{margin-top:14px;font-size:.78rem;color:#5a5e66}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="ring" id="ring"></div>
+    <div class="tick" id="tick">✓</div>
+    <h1 id="head">We're calling you now.</h1>
+    <p class="sub" id="who">Your payment is held — you're only charged when the call connects.</p>
+
+    <div class="block">
+      <div class="steps">
+        <b>1.</b> Your phone rings from the 72 number — pick up.<br>
+        <b>2.</b> Hold for a moment while we ring them.<br>
+        <b>3.</b> They accept, and you're connected.
+      </div>
+    </div>
+
+    <div id="antSlot" data-agant="call" data-agant-class="agant-badge"></div>
+    <div class="status wait" id="status">One moment… the line's this way.</div>
+    <p class="fine">If they don't pick up, the hold is released and your card is never charged.</p>
+  </div>
+
+<script>
+  const WORKER_URL = 'https://api.velvetrope2you.com';
+  const p = new URLSearchParams(location.search);
+  const room = p.get('r') || '';
+  const token = p.get('t') || '';
+  const statusEl = document.getElementById('status');
+
+  // Kick off the calls. The payment webhook may land a beat after redirect, so retry
+  // /call/start until it's authorized (pending), then stop once ringing.
+  let started = false;
+  async function start(){
+    if (started || !room) return;
+    try {
+      const res = await fetch(`${WORKER_URL}/call/start`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ room, token })
+      });
+      const d = await res.json().catch(()=>({}));
+      if (res.ok && d.ringing) { started = true; }
+      else if (res.ok && d.already) { started = true; }
+      // d.pending → payment not authorized yet; leave started=false to retry
+    } catch(_){}
+  }
+
+  // Live status: capture/void the moment the call resolves.
+  async function poll(){
+    if (!room) return false;
+    try {
+      const res = await fetch(`${WORKER_URL}/room/${encodeURIComponent(room)}`);
+      if (!res.ok) return false;
+      const s = await res.json();
+      if (s.status === 'completed') {
+        document.getElementById('ring').style.display='none';
+        document.getElementById('tick').style.display='flex';
+        document.getElementById('head').textContent = 'You’re connected.';
+        document.getElementById('who').textContent = 'Talk away — enjoy your call.';
+        statusEl.className = 'status live';
+        statusEl.textContent = `Conversation approved — $${s.amount} charged.`;
+        if (window.AGANT) AGANT.mount('approved', '#antSlot', {className:'agant-badge', replace:true});
+        return true;
+      }
+      if (s.status === 'voided') {
+        document.getElementById('ring').style.display='none';
+        document.getElementById('head').textContent = 'Call ended.';
+        document.getElementById('who').textContent = 'No accepted call, no charge.';
+        statusEl.className = 'status nil';
+        statusEl.textContent = 'You were not charged.';
+        if (window.AGANT) AGANT.mount('phonebill', '#antSlot', {className:'agant-badge', replace:true});
+        return true;
+      }
+      if (s.status === 'ringing') statusEl.textContent = 'Ringing you now — pick up your phone.';
+    } catch(_){}
+    return false;
+  }
+
+  start();
+  const iv = setInterval(async () => {
+    if (!started) start();          // retry until the payment authorizes
+    if (await poll()) clearInterval(iv);
+  }, 3000);
+</script>
+<script src="/agant.js"></script>
+</body>
+</html>

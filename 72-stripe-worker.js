@@ -81,6 +81,14 @@ export default {
         return await handleVoiceVerify(request, env);
       } else if (path === '/voice/status' && request.method === 'POST') {
         return await handleVoiceStatus(request, env);
+      } else if (path === '/call/start' && request.method === 'POST') {
+        result = await handleCallStart(request, env);
+      } else if (path.startsWith('/twiml/')) {
+        return await handleTwiml(request, env, path);
+      } else if (path === '/call/member-status' && request.method === 'POST') {
+        return await handleMemberStatus(request, env);
+      } else if (path === '/call/caller-status' && request.method === 'POST') {
+        return await handleCallerStatus(request, env);
       } else if (path === '/webhook' && request.method === 'POST') {
         return await handleWebhook(request, env);
       } else if (path.startsWith('/creator/')) {
@@ -250,17 +258,29 @@ async function handleCallInfo(request, env, path) {
     pricePerCall: Math.max(5, Number(c.pricePerCall) || 5),
     isOnline: c.isOnline !== false,
     ready: !!(c.stripeAccountId && c.chargesEnabled !== false),
+    // Delivery mode: 'frontdesk' = we call the caller (needs their number); else the
+    // proven 'code' dial-in. Default is always the safe 'code' path.
+    callMode: c.callMode === 'frontdesk' ? 'frontdesk' : 'code',
   };
 }
 
 // Caller pays via hosted Checkout, then is redirected into a fresh private room.
 // Destination charge: creator keeps 72% (amount − 28% application fee). Inviolable.
 async function handleCallCheckout(request, env) {
-  const { handle, mode, memberId, channel } = await request.json();
+  const { handle, mode, memberId, channel, callerNumber } = await request.json();
   if (!handle) throw new Error('handle is required');
   const creator = await resolveCreatorByHandle(env, handle);
   if (!creator) throw new Error('Creator not found');
   if (creator.isOnline === false) throw new Error('This creator is not taking calls right now');
+
+  // Delivery mode is the member's choice. 'frontdesk' = we ring the caller AND the member,
+  // park the caller in a lobby, the member screens & accepts (press 1), we bridge & capture.
+  // Anything else = the proven 'code' dial-in. Front desk needs the caller's number.
+  const callMode = creator.callMode === 'frontdesk' ? 'frontdesk' : 'code';
+  const callerNum = typeof callerNumber === 'string' ? callerNumber.replace(/[^\d+]/g, '') : '';
+  if (callMode === 'frontdesk' && callerNum.length < 10) {
+    throw new Error('A phone number is required so we can call you.');
+  }
   // Direct-charge path: a member flagged allowDirectCharge (with no Connect account)
   // takes a paid call WITHOUT Stripe Connect — the charge lands in the platform's own
   // Stripe. Used to prove the phone flow without onboarding. Real creators use Connect.
@@ -318,9 +338,13 @@ async function handleCallCheckout(request, env) {
 
   // Base product = phone call (connect.html: call the 772 number + code). Video is the
   // upsell (channel='video' → the browser room). Both share the same money/capture engine.
+  // Success routing by delivery mode: video room (upsell) → room.html; front-desk →
+  // frontdesk.html (we call you); default phone → connect.html (code dial-in).
   const successUrl = channel === 'video'
     ? `${platformUrl}/room.html?r=${encodeURIComponent(room)}&role=caller&t=${token}`
-    : `${platformUrl}/connect.html?pin=${pin}&num=${encodeURIComponent(dialNumber)}&r=${encodeURIComponent(room)}&t=${token}`;
+    : callMode === 'frontdesk'
+      ? `${platformUrl}/frontdesk.html?r=${encodeURIComponent(room)}&t=${token}`
+      : `${platformUrl}/connect.html?pin=${pin}&num=${encodeURIComponent(dialNumber)}&r=${encodeURIComponent(room)}&t=${token}`;
 
   const session = await stripe(env, 'POST', '/checkout/sessions', {
     mode: 'payment',
@@ -367,6 +391,8 @@ async function handleCallCheckout(request, env) {
     creatorTwilioNumber: dialNumber || null,
     forwardNumber: creator.forwardNumber || null,
     used: false,
+    callMode,
+    callerNumber: callMode === 'frontdesk' ? callerNum : null,
     mode: mode || 'standard',
     memberId: memberId || null,
     status: 'pending',       // pending → authorized → connected → completed | voided
@@ -579,7 +605,7 @@ async function handleCreatorRoute(request, env, path) {
 
   if (request.method === 'PUT') {
     const body = await request.json();
-    const allowed = ['pricePerCall', 'isOnline', 'displayName', 'bio', 'phoneNumber', 'username', 'twilioNumber', 'forwardNumber'];
+    const allowed = ['pricePerCall', 'isOnline', 'displayName', 'bio', 'phoneNumber', 'username', 'twilioNumber', 'forwardNumber', 'callMode'];
     const updates = {};
     for (const key of allowed) {
       if (key in body) updates[key] = body[key];
@@ -1054,4 +1080,144 @@ function requireOwnerKey(request, env) {
   if (!env.OWNER_API_KEY) return; // not configured — skip
   const provided = request.headers.get('X-Owner-Key');
   if (provided !== env.OWNER_API_KEY) throw new Error('Unauthorized');
+}
+
+// ─── Front Desk call flow (per-member callMode='frontdesk') ───────────────────
+// Instead of the caller dialing in with a code, WE place the call. The caller is rung
+// into a lobby (a Twilio Conference, on hold, isolated); the member is rung as a "front
+// desk" screen and presses 1 to accept; we bridge them and CAPTURE. Decline / no-answer
+// → VOID. Reuses the same manual-capture money engine — 72% intact. See
+// 72-CONFERENCE-CALL-BUILD.md. Inert unless a member sets callMode='frontdesk' AND the
+// Twilio secrets are configured, so it can never touch the live 'code' flow.
+
+const CONF_PREFIX = 'vr72conf-';
+
+function xmlResp(body) {
+  return new Response(`<?xml version="1.0" encoding="UTF-8"?><Response>${body}</Response>`,
+    { headers: { 'Content-Type': 'text/xml' } });
+}
+
+function apiBase(env) { return env.PLATFORM_API || 'https://api.velvetrope2you.com'; }
+
+// Kicked off by frontdesk.html after checkout success. Rings the caller + the member.
+async function handleCallStart(request, env) {
+  const { room, token } = await request.json();
+  const s = await getSession(env, room);
+  if (!s) throw new Error('call session not found');
+  if (s.token !== token) throw new Error('invalid token');
+  if (s.callMode !== 'frontdesk') throw new Error('this call is not a front-desk call');
+  if (s.status === 'voided' || s.status === 'completed') throw new Error('this call is already closed');
+  if (!s.paymentIntentId) return { ok: false, pending: true }; // payment webhook not in yet — retry
+  if (s.dialStartedAt) return { ok: true, already: true };     // idempotent — don't double-ring
+  if (!env.TWILIO_ACCOUNT_SID || !env.TWILIO_AUTH_TOKEN) throw new Error('calling is not switched on yet');
+  if (!s.callerNumber) throw new Error('no caller number on file');
+  const forward = s.forwardNumber || (await getCreator(env, s.creatorId))?.forwardNumber;
+  if (!forward) throw new Error('this member is not taking calls right now');
+  const callerId = s.creatorTwilioNumber || env.PLATFORM_CALL_NUMBER;
+  if (!callerId) throw new Error('no 72 number configured for this member');
+  const api = apiBase(env);
+  const r = encodeURIComponent(room);
+
+  // 1) Ring the caller → lobby conference (on hold, isolated until the member accepts).
+  const callerCall = await twilio(env, 'POST', '/Calls.json', {
+    To: s.callerNumber, From: callerId,
+    Url: `${api}/twiml/lobby?room=${r}`, Method: 'POST',
+    StatusCallback: `${api}/call/caller-status?room=${r}`, StatusCallbackMethod: 'POST',
+    StatusCallbackEvent: 'completed', TimeLimit: 3600,
+  });
+  // 2) Ring the member → the front-desk screen (press 1 to accept).
+  const memberCall = await twilio(env, 'POST', '/Calls.json', {
+    To: forward, From: callerId,
+    Url: `${api}/twiml/frontdesk?room=${r}`, Method: 'POST',
+    StatusCallback: `${api}/call/member-status?room=${r}`, StatusCallbackMethod: 'POST',
+    StatusCallbackEvent: 'completed', Timeout: 25,
+  });
+
+  s.callerCallSid = callerCall.sid;
+  s.memberCallSid = memberCall.sid;
+  s.dialStartedAt = Date.now();
+  s.status = 'ringing';
+  await putSession(env, room, s);
+  return { ok: true, ringing: true };
+}
+
+// TwiML router for the front-desk legs (Twilio POSTs here).
+async function handleTwiml(request, env, path) {
+  const room = new URL(request.url).searchParams.get('room') || '';
+  const leg = path.split('/')[2] || '';
+  if (leg === 'lobby') {
+    const api = apiBase(env), r = encodeURIComponent(room);
+    // Caller waits here (default hold music) until the member joins and starts the conference.
+    return xmlResp(
+      `<Say>One moment. Connecting your 72 call.</Say>` +
+      `<Dial><Conference startConferenceOnEnter="false" endConferenceOnExit="true" beep="false">` +
+      `${CONF_PREFIX}${room}</Conference></Dial>`
+    );
+  }
+  if (leg === 'frontdesk') {
+    const api = apiBase(env), r = encodeURIComponent(room);
+    return xmlResp(
+      `<Gather numDigits="1" action="${api}/twiml/accept?room=${r}" method="POST" timeout="20">` +
+      `<Say>You've got 72. A paid call is waiting. Press 1 to open the rope.</Say>` +
+      `</Gather>` +
+      `<Redirect method="POST">${api}/twiml/decline?room=${r}</Redirect>`
+    );
+  }
+  if (leg === 'accept') {
+    const form = await request.formData().catch(() => null);
+    const digit = form ? (form.get('Digits') || '') : '';
+    if (digit !== '1') return await handleTwiml(request, env, '/twiml/decline');
+    // Member accepted → capture (idempotent) → bridge into the conference.
+    await captureSessionByRoom(env, room).catch(() => {});
+    return xmlResp(
+      `<Say>Rope's open. Connecting you now.</Say>` +
+      `<Dial><Conference startConferenceOnEnter="true" endConferenceOnExit="true" beep="false">` +
+      `${CONF_PREFIX}${room}</Conference></Dial>`
+    );
+  }
+  if (leg === 'decline') {
+    await voidSessionByRoom(env, room).catch(() => {});
+    await endCallerLobby(env, room);
+    return xmlResp(`<Say>No call taken. Goodbye.</Say><Hangup/>`);
+  }
+  return xmlResp(`<Hangup/>`);
+}
+
+// Member call ended. If they never accepted (no-answer/busy/failed/declined) → void +
+// release the caller. void is idempotent — a captured call is never undone.
+async function handleMemberStatus(request, env) {
+  const room = new URL(request.url).searchParams.get('room') || '';
+  const form = await request.formData().catch(() => null);
+  const status = form ? (form.get('CallStatus') || '') : '';
+  if (['no-answer', 'busy', 'failed', 'canceled', 'completed'].includes(status)) {
+    const s = await getSession(env, room);
+    if (s && s.status !== 'completed') {
+      await voidSessionByRoom(env, room).catch(() => {});
+      await endCallerLobby(env, room);
+    }
+  }
+  return xmlResp('');
+}
+
+// Caller leg ended and we never captured → the call didn't happen → void.
+async function handleCallerStatus(request, env) {
+  const room = new URL(request.url).searchParams.get('room') || '';
+  const form = await request.formData().catch(() => null);
+  const status = form ? (form.get('CallStatus') || '') : '';
+  if (['completed', 'no-answer', 'busy', 'failed', 'canceled'].includes(status)) {
+    const s = await getSession(env, room);
+    if (s && s.status !== 'completed') await voidSessionByRoom(env, room).catch(() => {});
+  }
+  return xmlResp('');
+}
+
+// Send the still-held caller a "not charged" hangup when the member doesn't take the call.
+async function endCallerLobby(env, room) {
+  const s = await getSession(env, room);
+  if (!s || !s.callerCallSid) return;
+  try {
+    await twilio(env, 'POST', `/Calls/${s.callerCallSid}.json`, {
+      Twiml: `<?xml version="1.0" encoding="UTF-8"?><Response><Say>They didn't pick up, so you were not charged. Goodbye.</Say><Hangup/></Response>`,
+    });
+  } catch (_) {}
 }

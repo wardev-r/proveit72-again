@@ -1,8 +1,24 @@
 # Build spec — the Front Desk call flow (a per-member choice)
 
-**Status:** approved direction (2026-07-25). This is a **per-member option, not a rip-and-
-replace.** Both flows stay live; each member picks how their line works. Build the Front
-Desk path alongside the proven PIN flow, prove it with one real call, then let members choose.
+**Status:** ✅ BUILT (2026-07-25), inert until switched on. Per-member option, NOT a rip-and-
+replace — both flows stay live; each member picks how their line works. Default is the proven
+`code` flow, so nothing changes for anyone until a member sets `callMode='frontdesk'` AND the
+Twilio secrets exist. Still needs ONE real proof call before offering the toggle to members.
+
+### What shipped
+- **Worker:** `POST /call/start`, `/twiml/{lobby,frontdesk,accept,decline}`, `/call/member-status`,
+  `/call/caller-status`, `endCallerLobby` — reuse `captureSessionByRoom`/`voidSessionByRoom`.
+  `handleCallCheckout` branches on `callMode`; `call-info` returns it; `/creator/{id}` PUT accepts it.
+- **Frontend:** `frontdesk.html` (we-call-you success page, retries `/call/start` until authorized,
+  polls to approved/void with agANT voice); `call-first.html` collects the caller's number for
+  front-desk members; dashboard has a Code ⟷ Front desk toggle.
+
+### To switch on (owner)
+1. Set Worker secrets: `wrangler secret put TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN`
+   (never in the repo). `PLATFORM_API` should point at `https://api.velvetrope2you.com`.
+2. In the dashboard, flip a test member to **Front desk**.
+3. Proof call: pay $10 → your phone rings → press 1 → connected → $7.20 captured. Second run:
+   don't press 1 → $0 (voided), caller hears "not charged". Then offer the toggle to members.
 
 ## The choice (per member, set in the dashboard)
 Each member picks their **call mode** on their record — default stays the proven one:

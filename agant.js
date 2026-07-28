@@ -13,26 +13,28 @@
    Poses come straight from brand/72-ant.md (the character bible).
    ─────────────────────────────────────────────────────────────── */
 (function () {
-  // Optional shared prefix, e.g. 'https://imagedelivery.net/<hash>/'
-  var BASE = '';
+  // Files live in /agant/<key>.png (served free by Cloudflare Pages from the repo).
+  // A missing file removes itself (onerror below) — never a broken-image icon — so
+  // every pose is wired now and simply appears the moment you commit its PNG.
+  var BASE = '/agant/';
 
-  // pose key → image URL   (fill these once hosted)
+  // pose key → filename in /agant/
   var POSES = {
-    boss:      '',  // Boss Stand / Arms Crossed — hero corner, "on duty"
-    gate:      '',  // Gatekeeper w/ clipboard — verifying / checking state
-    welcome:   '',  // "The line's this way" — onboarding / CTA
-    coin:      '',  // Holding the 72 — pricing / payment
-    approved:  '',  // Approved / Thumbs Up — payment or call approved
-    call:      '',  // On the Phone — connected / in-call
-    onit:      '',  // On It / running — loading / processing
-    closed:    '',  // Rope's Closed — member offline / not taking calls
-    splat:     '',  // SPLAT — time-waster / "pick your brain" spam
-    phonebill: '',  // "…did you pay your phone bill?" — call-failed error
-    director:  '',  // Director — owner / creator dashboard
-    backend:   '',  // Backend (laptop) — member dashboard / settings
-    zen:       '',  // Stay Zen — waiting / empty states
-    seeya:     '',  // See Ya / Let's Go — call ended, sign-off
-    vibe:      ''   // Vibe Check / The Look — 404, "you sure?"
+    boss:      'boss.png',      // Boss Stand / Arms Crossed — hero corner, "on duty"
+    gate:      'gate.png',      // "You've got 72." — greeting / verifying
+    welcome:   'welcome.png',   // "The line's this way" — onboarding / connecting
+    coin:      'coin.png',      // Holding the 72 — pricing / payment
+    approved:  'approved.png',  // "Conversation approved." — payment / call captured
+    call:      'call.png',      // On the Phone — connected / in-call
+    onit:      'onit.png',      // "One moment…" — loading / processing
+    closed:    'closed.png',    // "Rope's closed." — member offline
+    splat:     'splat.png',     // SPLAT — time-waster / "pick your brain" spam
+    phonebill: 'phonebill.png', // "…did you pay your phone bill?" — call not connected
+    director:  'director.png',  // Director — owner / creator dashboard
+    backend:   'backend.png',   // Backend (laptop) — member dashboard
+    zen:       'zen.png',       // Stay Zen — waiting / empty states
+    seeya:     'seeya.png',     // See Ya / Let's Go — call ended, sign-off
+    vibe:      'vibe.png'       // Vibe Check / The Look — 404, "you sure?"
   };
 
   function url(pose) { var u = POSES[pose]; return u ? (BASE + u) : ''; }
@@ -48,6 +50,8 @@
     img.className = 'agant agant-' + pose + (opts.className ? ' ' + opts.className : '');
     img.loading = 'lazy';
     img.decoding = 'async';
+    // Missing pose file → remove cleanly (never a broken-image icon).
+    img.onerror = function () { if (img.parentNode) img.parentNode.removeChild(img); };
     return img;
   }
 

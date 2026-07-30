@@ -3,291 +3,164 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>The Drop — 172collect.com (proposal)</title>
-<meta name="robots" content="noindex" />
-<meta name="theme-color" content="#080808" />
-<link rel="canonical" href="https://172collect.com/" />
-<meta property="og:title" content="The Drop — 172collect.com" />
-<meta property="og:description" content="$5 gets you behind the rope. Every dollar builds the fund. The 17.2 is in the name." />
-<meta property="og:url" content="https://172collect.com/" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<title>1·72·COLLECT — reverse the charges</title>
+<meta name="description" content="The collect call, reborn. Get a line, set your toll, and the caller pays to reach you. You keep 72%." />
+<meta name="theme-color" content="#06111f" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2306111f'/%3E%3Ctext x='32' y='44' font-family='monospace' font-size='30' font-weight='700' fill='%2324e08a' text-anchor='middle'%3E72%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   :root{
-    --bg:#080808;--surface:#111;--surface-2:#181818;--border:#252525;
-    --text:#f0f0e8;--muted:#8a8a80;--accent:#D4A017;--accent-light:#f0c040;
-    --accent-dim:rgba(212,160,23,.12);--green:#4caf7d;--green-dim:rgba(76,175,125,.14);
-    --red:#e05555;--radius:14px;--flag:#3b6fb0;
+    --bg:#06111f; --surface:#0c1c30; --surface2:#102640; --border:#1c3350;
+    --text:#e6f0f5; --muted:#7d99b0; --accent:#24e08a; --accent-dim:rgba(36,224,138,.12);
+    --amber:#ffb703; --radius:12px;
   }
-  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);
-    line-height:1.55;min-height:100vh;-webkit-font-smoothing:antialiased;
-    background-image:radial-gradient(900px 500px at 50% -8%,rgba(212,160,23,.10),transparent 70%)}
-  .wrap{max-width:440px;margin:0 auto;padding:14px 20px 48px}
-
-  /* proposal ribbon — this is a pitch mock, not a live fundraiser */
-  .ribbon{display:flex;align-items:center;gap:8px;justify-content:center;font-size:.66rem;font-weight:800;
-    letter-spacing:.14em;text-transform:uppercase;color:var(--accent);background:var(--accent-dim);
-    border:1px solid rgba(212,160,23,.35);border-radius:999px;padding:6px 12px;margin:6px auto 22px;width:fit-content}
-  .ribbon .d{width:6px;height:6px;border-radius:50%;background:var(--accent)}
-
-  .rope{font-size:.66rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:20px}
-  .rope b{color:var(--accent)}
-
-  /* creator */
-  .who{display:flex;align-items:center;gap:14px;margin-bottom:20px}
-  .avatar{width:60px;height:60px;border-radius:50%;flex-shrink:0;
-    background:linear-gradient(145deg,#1a1a1a,#050505);border:1px solid var(--border);
-    color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:900;letter-spacing:-.03em}
-  .who-name{font-size:1.32rem;font-weight:900;letter-spacing:-.02em;line-height:1.1}
-  .who-handle{font-size:.82rem;color:var(--muted)}
-  .avail{display:inline-flex;align-items:center;gap:6px;font-size:.74rem;font-weight:700;margin-top:4px;color:var(--green)}
-  .avail .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px var(--green-dim);animation:pulse 2s infinite}
-  @keyframes pulse{0%,100%{box-shadow:0 0 0 3px var(--green-dim)}50%{box-shadow:0 0 0 6px rgba(76,175,125,.05)}}
-
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Space Grotesk',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(ellipse 70% 50% at 50% -10%,rgba(36,224,138,.10) 0%,transparent 60%),linear-gradient(180deg,#06111f 0%,#081627 100%);min-height:100vh}
+  .mono{font-family:'DM Mono',monospace}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  /* header */
+  header{position:sticky;top:0;z-index:50;background:rgba(6,17,31,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+  .navrow{display:flex;align-items:center;gap:14px;height:60px}
+  .logo{font-family:'DM Mono',monospace;font-weight:500;font-size:1.05rem;letter-spacing:1px;color:var(--text)}
+  .logo b{color:var(--accent);font-weight:500}
+  .pillnav{margin-left:auto;display:flex;gap:8px}
+  .pill{font-size:.8rem;font-weight:600;color:var(--muted);border:1px solid var(--border);background:var(--surface);padding:7px 15px;border-radius:999px;text-decoration:none;transition:all .2s}
+  .pill:hover{border-color:var(--accent);color:var(--text)}
+  .pill.solid{background:var(--accent);color:#04120b;border-color:var(--accent)}
   /* hero */
-  .hero h1{font-size:clamp(1.7rem,7vw,2.15rem);font-weight:900;letter-spacing:-.03em;line-height:1.08;margin-bottom:12px}
-  .hero h1 em{font-style:normal;color:var(--accent)}
-  .hero .lead{font-size:.98rem;color:rgba(240,240,232,.8);margin-bottom:22px}
-  .hero .lead b{color:var(--text)}
-
-  /* offer card */
-  .offer{background:var(--surface);border:1px solid rgba(212,160,23,.28);border-radius:18px;
-    padding:22px 20px;position:relative;overflow:hidden;margin-bottom:14px}
-  .offer::before{content:'';position:absolute;inset:0;background:radial-gradient(400px 160px at 100% 0,rgba(212,160,23,.10),transparent 70%);pointer-events:none}
-  .price-row{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
-  .price{font-size:2.8rem;font-weight:900;color:var(--accent);letter-spacing:-.04em;line-height:1}
-  .price-sub{font-size:.86rem;color:var(--muted);font-weight:600}
-  .guar{font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin:14px 0 10px}
-  .offer ul{list-style:none;margin:0 0 6px;padding:0}
-  .offer li{font-size:.9rem;color:rgba(240,240,232,.86);padding-left:26px;position:relative;margin-bottom:9px;line-height:1.45}
-  .offer li::before{content:'✓';position:absolute;left:0;top:0;color:var(--green);font-weight:900;font-size:.95rem}
-  .offer li b{color:var(--accent)}
-
-  .ontop{margin-top:16px;padding-top:16px;border-top:1px dashed var(--border)}
-  .ontop .tag{display:inline-block;font-size:.64rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
-    color:var(--accent);background:var(--accent-dim);border:1px solid rgba(212,160,23,.35);padding:4px 10px;border-radius:999px;margin-bottom:10px}
-  .ontop li::before{content:'★';color:var(--accent)}
-
-  .btn{display:block;width:100%;padding:17px;border:none;border-radius:var(--radius);
-    background:var(--accent);color:#0a0a0a;font-family:inherit;font-size:1.08rem;font-weight:900;letter-spacing:-.01em;
-    cursor:pointer;transition:background .15s,transform .1s;text-align:center;margin-top:18px}
-  .btn:hover{background:var(--accent-light)} .btn:active{transform:translateY(1px)}
-  .btn .sub{display:block;font-size:.72rem;font-weight:700;opacity:.72;margin-top:3px;letter-spacing:0}
-
-  /* where the $5 goes — the trust weapon */
-  .split{background:var(--surface-2);border:1px solid var(--border);border-radius:16px;padding:20px;margin:14px 0}
-  .split h3{font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;text-align:center}
-  .bar{height:14px;border-radius:8px;overflow:hidden;display:flex;margin-bottom:14px;border:1px solid #000}
-  .bar span{height:100%}
-  .seg-creator{background:var(--accent)} .seg-fund{background:var(--green)} .seg-plat{background:#5a5a52}
-  .legend{display:flex;flex-direction:column;gap:9px}
-  .leg{display:flex;align-items:center;gap:10px;font-size:.86rem}
-  .leg .sw{width:12px;height:12px;border-radius:3px;flex-shrink:0}
-  .leg .lbl{color:rgba(240,240,232,.86)} .leg .lbl b{font-weight:800}
-  .leg .pct{margin-left:auto;font-weight:900;letter-spacing:-.02em}
-  .leg.creator .pct{color:var(--accent)} .leg.fund .pct{color:var(--green)} .leg.plat .pct{color:var(--muted)}
-  .split .least{margin-top:14px;font-size:.78rem;color:var(--muted);text-align:center;line-height:1.5}
-  .split .least b{color:var(--text)}
-
-  /* steps */
-  .steps{margin:22px 0 6px}
-  .steps h3{font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
-  .step{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
-  .step .n{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--accent-dim);border:1px solid rgba(212,160,23,.4);
-    color:var(--accent);font-weight:800;font-size:.85rem;display:flex;align-items:center;justify-content:center}
-  .step h4{font-size:.95rem;font-weight:800;margin-bottom:2px}
-  .step p{font-size:.85rem;color:var(--muted);line-height:1.5}
-
-  /* promises */
-  .promises{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-top:10px}
-  .promises h3{font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
-  .promises li{list-style:none;font-size:.84rem;color:rgba(240,240,232,.82);padding-left:24px;position:relative;margin-bottom:8px;line-height:1.45}
-  .promises li::before{content:'🔒';position:absolute;left:0;font-size:.8rem}
-
-  /* deal toggle (for the artist) */
-  .deal{margin-top:22px;border:1px solid var(--border);border-radius:14px;overflow:hidden}
-  .deal summary{list-style:none;cursor:pointer;padding:15px 18px;font-size:.82rem;font-weight:800;color:var(--accent);
-    display:flex;align-items:center;justify-content:space-between;background:var(--surface)}
-  .deal summary::-webkit-details-marker{display:none}
-  .deal summary .chev{transition:transform .2s}
-  .deal[open] summary .chev{transform:rotate(180deg)}
-  .deal .body{padding:4px 18px 20px;font-size:.86rem;color:rgba(240,240,232,.82);line-height:1.6}
-  .deal .body b{color:var(--text)}
-  .deal .math{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;margin:12px 0;font-size:.82rem}
-  .deal .math .row{display:flex;justify-content:space-between;padding:4px 0}
-  .deal .math .row.tot{border-top:1px solid var(--border);margin-top:6px;padding-top:8px;font-weight:800;color:var(--text)}
-  .deal .math .row .v{font-weight:800;font-variant-numeric:tabular-nums}
-
-  .foot{margin-top:26px;font-size:.72rem;color:var(--muted);text-align:center;line-height:1.7}
-  .foot a{color:var(--accent);text-decoration:none}
-
-  /* "you're in" success (demo) */
-  .din{text-align:center;padding:10px 0}
-  .din .check{width:64px;height:64px;border-radius:50%;background:var(--green-dim);border:1px solid var(--green);
-    color:var(--green);font-size:1.8rem;display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
-  .din h2{font-size:1.5rem;font-weight:900;letter-spacing:-.02em;margin-bottom:8px}
-  .din .p{font-size:.92rem;color:rgba(240,240,232,.8);margin-bottom:22px}
-  .code-card{background:var(--surface);border:1px dashed rgba(212,160,23,.5);border-radius:14px;padding:18px;margin-bottom:12px}
-  .code-card .k{font-size:.66rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
-  .code-card .code{font-size:1.9rem;font-weight:900;letter-spacing:.12em;color:var(--accent);font-variant-numeric:tabular-nums}
-  .din .draw{font-size:.86rem;color:var(--muted);margin-bottom:20px}
-  .din .draw b{color:var(--text)}
-  .din .vipbtn{background:var(--accent);color:#0a0a0a}
-  .din .again{display:block;margin-top:14px;font-size:.8rem;color:var(--muted);text-decoration:none}
-  .din .again:hover{color:var(--accent)}
+  .hero{text-align:center;padding:72px 0 40px}
+  .tag{display:inline-flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);background:var(--accent-dim);border:1px solid rgba(36,224,138,.3);padding:6px 14px;border-radius:999px;margin-bottom:26px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:blink 1.6s infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+  h1{font-size:clamp(2.6rem,7vw,5rem);font-weight:700;letter-spacing:-.03em;line-height:.98}
+  h1 em{font-style:normal;color:var(--accent)}
+  .sub{color:var(--muted);font-size:clamp(1rem,2.2vw,1.25rem);max-width:560px;margin:22px auto 0;line-height:1.6}
+  .cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+  .btn{font-family:'Space Grotesk';font-weight:700;font-size:.98rem;padding:15px 28px;border-radius:12px;border:none;cursor:pointer;text-decoration:none;transition:transform .15s}
+  .btn.primary{background:var(--accent);color:#04120b}
+  .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+  .btn:hover{transform:translateY(-2px)}
+  .receipt{max-width:360px;margin:44px auto 0;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;text-align:left;font-family:'DM Mono',monospace;font-size:.82rem;color:var(--muted);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+  .receipt .rrow{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed var(--border)}
+  .receipt .rrow:last-child{border-bottom:none;color:var(--text)}
+  .receipt .rrow b{color:var(--accent);font-weight:500}
+  /* sections */
+  section{padding:56px 0}
+  .label{font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);text-align:center;margin-bottom:14px}
+  h2{font-size:clamp(1.7rem,4vw,2.5rem);font-weight:700;letter-spacing:-.02em;text-align:center;line-height:1.1}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+  .step{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:26px 22px}
+  .step .n{font-family:'DM Mono',monospace;font-size:.8rem;color:var(--accent);border:1px solid rgba(36,224,138,.4);background:var(--accent-dim);width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+  .step h3{font-size:1.1rem;font-weight:600;margin-bottom:6px}
+  .step p{color:var(--muted);font-size:.92rem}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:640px;margin:26px auto 0}
+  .chip{font-family:'DM Mono',monospace;font-size:.8rem;color:var(--text);background:var(--surface);border:1px solid var(--border);padding:8px 15px;border-radius:999px}
+  .who-p{color:var(--muted);font-size:1rem;max-width:560px;margin:0 auto;text-align:center;line-height:1.7}
+  /* signup */
+  .signup{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:44px 28px;text-align:center;max-width:600px;margin:0 auto}
+  .signup h2{margin-bottom:10px}
+  .signup p{color:var(--muted);font-size:.95rem;margin-bottom:24px}
+  .field{display:flex;gap:10px;max-width:420px;margin:0 auto;flex-wrap:wrap}
+  .field input{flex:1;min-width:200px;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:14px 16px;border-radius:12px;font-family:'DM Mono',monospace;font-size:.9rem;outline:none}
+  .field input:focus{border-color:var(--accent)}
+  .note{font-family:'DM Mono',monospace;font-size:.78rem;color:var(--muted);margin-top:16px}
+  .note b{color:var(--accent);font-weight:500}
+  /* footer */
+  footer{border-top:1px solid var(--border);padding:32px 0;text-align:center;color:var(--muted);font-size:.84rem}
+  footer a{color:var(--muted);text-decoration:none}
+  footer a:hover{color:var(--accent)}
+  @media(max-width:680px){.steps{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="ribbon"><span class="d"></span> Proposal preview · demo — no real charges</div>
-    <div class="rope"><b>172collect.com</b> · powered by 72</div>
-
-    <div id="stage">
-      <div class="who">
-        <div class="avatar">TM</div>
-        <div>
-          <div class="who-name">Tom&nbsp;MacDonald</div>
-          <div class="who-handle">@IAMTOMMACDONALD · Hangover Gang</div>
-          <div class="avail"><span class="dot"></span>Line's open</div>
-        </div>
-      </div>
-
-      <div class="hero">
-        <h1>Behind the rope, Gang.<br><em>And maybe I pick up.</em></h1>
-        <p class="lead"><b>$5</b> gets you in the VIP room — real, yours the second you pay. And every line I'm answering live today, one of you picks up. Every dollar goes to <b>U.S. VETS</b> — same fight, bigger hammer.</p>
-      </div>
-
-      <div class="offer">
-        <div class="price-row">
-          <div class="price">$5</div>
-          <div class="price-sub">one time · instant access</div>
-        </div>
-
-        <div class="guar">You get this — guaranteed</div>
-        <ul>
-          <li><b>VIP room access</b>, unlocked by your own code the second you pay — gated, members only</li>
-          <li>The <b>unreleased drop</b> + members-only merch inside</li>
-          <li>Your <b>draw number</b> — you're in every prize pull today</li>
-        </ul>
-
-        <div class="ontop">
-          <span class="tag">★ On top — the thrill</span>
-          <ul>
-            <li>I'm <b>answering lines live</b> — pick up random, talk to real ones</li>
-            <li>Numbered draws hit for <b>bigger prizes</b> all day</li>
-          </ul>
-        </div>
-
-        <button class="btn" id="buyBtn">
-          Get my VIP code — $5
-          <span class="sub">Yours instantly · every dollar → the fund</span>
-        </button>
-      </div>
-
-      <div class="split">
-        <h3>Where every $5 goes</h3>
-        <div class="bar">
-          <span class="seg-creator" style="width:72%"></span>
-          <span class="seg-fund" style="width:17.2%"></span>
-          <span class="seg-plat" style="width:10.8%"></span>
-        </div>
-        <div class="legend">
-          <div class="leg creator"><span class="sw seg-creator"></span><span class="lbl"><b>Tom</b> — the artist</span><span class="pct">72%</span></div>
-          <div class="leg fund"><span class="sw seg-fund"></span><span class="lbl"><b>U.S. VETS</b> — the fund</span><span class="pct">17.2%</span></div>
-          <div class="leg plat"><span class="sw seg-plat"></span><span class="lbl"><b>72</b> — runs the rail</span><span class="pct">10.8%</span></div>
-        </div>
-        <div class="least">Card fees come off the top, then it splits. <b>The platform takes the least in the room.</b><br>The <b>17.2</b> to the fund is right in the name — <b>172collect</b>.</div>
-      </div>
-
-      <div class="steps">
-        <h3>How it works</h3>
-        <div class="step"><div class="n">1</div><div><h4>Pay $5</h4><p>Secure checkout through Stripe. Takes ten seconds.</p></div></div>
-        <div class="step"><div class="n">2</div><div><h4>Get your code + draw number</h4><p>Your VIP code unlocks the room instantly. Your number's in every pull.</p></div></div>
-        <div class="step"><div class="n">3</div><div><h4>Watch the line</h4><p>You're in. Today I'm picking up random — keep your ringer on.</p></div></div>
-      </div>
-
-      <div class="promises">
-        <h3>The promises</h3>
-        <li><b>Guaranteed:</b> VIP access delivered to every single person who pays. No exceptions.</li>
-        <li><b>Real fund:</b> the 17.2% goes straight to <b>U.S. VETS</b> — tracked, receipts posted.</li>
-        <li><b>No grift:</b> the platform takes the smallest slice. On purpose. That's 72.</li>
-      </div>
-
-      <details class="deal">
-        <summary><span>See the deal — for the artist</span><span class="chev">▾</span></summary>
-        <div class="body">
-          <p>Tom — you already do this. <b>$137K.</b> <b>$100K+.</b> Veterans, by hand, through merch drops, every year, and the Gang shows up every time. This is that <b>same fight with a bigger hammer</b> — a rail built to do it again, repeatable, and scale past what a merch drop can hold.</p>
-          <p>You drop your <b>72 line</b>. Fans pay <b>$5</b> for guaranteed VIP — a code-gated room, scales to everyone at once, no bottleneck. You answer random lines live; numbered draws hit for bigger prizes. Because the $5 delivers <b>real value</b>, the calls and prizes ride on top — a promo, not a lottery.</p>
-          <div class="math">
-            <div class="row"><span>Say 100,000 of the Gang buy in</span><span class="v">$500,000</span></div>
-            <div class="row"><span>You keep — 72%</span><span class="v" style="color:var(--accent)">$360,000</span></div>
-            <div class="row"><span>U.S. VETS — 17.2%</span><span class="v" style="color:var(--green)">$86,000</span></div>
-            <div class="row tot"><span>72 platform — 10.8%</span><span class="v">$54,000</span></div>
-          </div>
-          <p>And 72 doesn't just take the least — <b>we put 17.2% of the whole raise into the fund ourselves.</b> The platform in the deal that gives the <b>most</b> back. Nobody can copy that without breaking their own model.</p>
-          <p style="margin-top:10px;color:var(--muted)">Your line. Your Gang. Your cause. 72 handles the money, the codes, the promises, the payout — you just pick up.</p>
-        </div>
-      </details>
-
-      <div class="foot">
-        <b>172collect.com</b> · a 72 creator drop · demo preview, no live charges<br>
-        <a href="/why72.html">What is 72?</a> · <a href="/terms.html">Terms</a> · <a href="/privacy.html">Privacy</a>
-      </div>
+  <header>
+    <div class="wrap navrow">
+      <div class="logo">1<b>·</b>72<b>·</b>COLLECT</div>
+      <nav class="pillnav">
+        <a class="pill" href="#how">How it works</a>
+        <a class="pill" href="#claim">Get a line</a>
+        <a class="pill solid" href="#claim">Sign up</a>
+      </nav>
     </div>
+  </header>
+
+  <div class="wrap">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="tag"><span class="dot"></span> The collect call, reborn</div>
+      <h1>Reverse<br>the <em>charges.</em></h1>
+      <p class="sub">Get a line. Set your toll. When someone calls, <b style="color:var(--text)">they</b> pay to reach <b style="color:var(--text)">you</b> — not the other way around. You keep 72%.</p>
+      <div class="cta-row">
+        <a class="btn primary" href="#claim">Get your line →</a>
+        <a class="btn ghost" href="#how">How it works</a>
+      </div>
+
+      <div class="receipt">
+        <div class="rrow"><span>INCOMING CALL</span><span>+1 ···· ·· 72</span></div>
+        <div class="rrow"><span>CALLER</span><span>unknown</span></div>
+        <div class="rrow"><span>WHITELIST</span><span>not listed</span></div>
+        <div class="rrow"><span>TOLL</span><span>$5.00</span></div>
+        <div class="rrow"><span>STATUS</span><b>PAID · CONNECTED</b></div>
+      </div>
+    </section>
+
+    <!-- HOW -->
+    <section id="how">
+      <div class="label">// how it works</div>
+      <h2>Three steps. Then the phone pays.</h2>
+      <div class="steps">
+        <div class="step"><div class="n">01</div><h3>Claim a line</h3><p>Get your dedicated number. Whitelist up to 5 people who always ring free.</p></div>
+        <div class="step"><div class="n">02</div><h3>Set the toll</h3><p>Name your price to be reached — $5 and up, no ceiling. Move it anytime.</p></div>
+        <div class="step"><div class="n">03</div><h3>They pay, you talk</h3><p>Anyone not on your list pays the toll before the call connects. You keep 72%.</p></div>
+      </div>
+    </section>
+
+    <!-- WHO -->
+    <section>
+      <div class="label">// who uses it</div>
+      <h2>If your phone's a firehose,<br>put a meter on it.</h2>
+      <p class="who-p" style="margin-top:18px">Freelancers dodging "quick question" calls. Experts done giving it away free. Anyone whose attention got too cheap. Charge the toll — the serious callers pay it, the time-wasters don't.</p>
+      <div class="chips">
+        <span class="chip">consultants</span>
+        <span class="chip">tradespeople</span>
+        <span class="chip">advisors</span>
+        <span class="chip">coaches</span>
+        <span class="chip">fixers</span>
+        <span class="chip">the too-busy</span>
+      </div>
+    </section>
+
+    <!-- CLAIM -->
+    <section id="claim">
+      <div class="signup">
+        <div class="label">// get on the line</div>
+        <h2>Put a price on your attention.</h2>
+        <p>Drop your email — we'll set you up with a line as numbers roll out to early users.</p>
+        <div class="field">
+          <input type="email" id="email" placeholder="you@email.com" autocomplete="email" />
+          <button class="btn primary" onclick="claim()">Claim →</button>
+        </div>
+        <p class="note" id="note"><b>First 30 days free.</b> Then $7.20/mo. Cancel anytime.</p>
+      </div>
+    </section>
   </div>
 
+  <footer>
+    <div class="wrap">
+      1·72·COLLECT — reverse the charges · <a href="mailto:hello@172collect.com">hello@172collect.com</a><br>
+      <span style="font-size:.78rem;opacity:.7">Runs on the same engine as velvetrope2you. Different rope, same lock.</span>
+    </div>
+  </footer>
+
 <script>
-  // ── Config — mirrors the live 72 rail (call-first.html / 72-stripe-worker.js) ──
-  const API = 'https://api.velvetrope2you.com';
-  const VIP_PRICE = 5.00;
-  // Split shown on the page (marquee / cause deal). Fees off the top, then split.
-  const SPLIT = { creator: 0.72, fund: 0.172, platform: 0.108 };
-  // Home: 172collect.com — the collect/fund-drop domain (the 17.2 is in the name).
-  // Demo mode ON by default — this is a proposal, not a live fundraiser. Wire to a
-  // real /create-vip-checkout endpoint (same shape as /create-call-checkout) to go live.
-  const DEMO = true;
-
-  const $ = id => document.getElementById(id);
-  const rid = (n=4) => { const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s=''; for(let i=0;i<n;i++)s+=a[Math.floor(Math.random()*a.length)]; return s; };
-
-  $('buyBtn').addEventListener('click', buy);
-
-  async function buy(){
-    if (DEMO) return showIn();
-    // ── Live path (when wired): authorize $5, deliver code on capture ──
-    try{
-      const res = await fetch(`${API}/create-vip-checkout`, {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ handle:'iamtommacdonald', promo:'tom-drop', amount:VIP_PRICE, split:SPLIT })
-      });
-      const data = await res.json();
-      if(!res.ok || !data.url) throw new Error(data.error||'checkout');
-      location.href = data.url;
-    }catch(_){ alert('Could not start checkout. Try again or contact support@velvetrope2you.com.'); }
-  }
-
-  // Demo "you're in" — shows the guaranteed good arriving: a real VIP code + draw number.
-  function showIn(){
-    const code = `HOG-${rid(4)}`;
-    const draw = String(10000 + Math.floor(Math.random()*90000));
-    $('stage').innerHTML = `
-      <div class="din">
-        <div class="check">✓</div>
-        <h2>You're behind the rope, Gang.</h2>
-        <div class="p">Access delivered — instantly, guaranteed. This is exactly what every fan sees the second they pay.</div>
-        <div class="code-card">
-          <div class="k">Your VIP code</div>
-          <div class="code">${code}</div>
-        </div>
-        <div class="draw">Draw number <b>#${draw}</b> — you're in every pull today.</div>
-        <button class="btn vipbtn" id="enterVip">Enter the VIP room →</button>
-        <a class="again" id="again" href="#">← Back to the drop (demo)</a>
-      </div>`;
-    $('enterVip').addEventListener('click', ()=>alert('[demo] The code-gated VIP room opens here — the unreleased drop, members-only merch, and the live line. Nobody without a code gets in.'));
-    $('again').addEventListener('click',(e)=>{ e.preventDefault(); location.reload(); });
-    window.scrollTo({top:0,behavior:'smooth'});
+  function claim(){
+    var e=document.getElementById('email').value.trim();
+    var n=document.getElementById('note');
+    if(!e || e.indexOf('@')<1){ n.innerHTML='<b style="color:var(--amber)">Enter a valid email.</b>'; return; }
+    n.innerHTML='<b>✓ On the list.</b> We\'ll reach out as lines open up.';
   }
 </script>
 </body>

@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Ward Constructions Lexicon — Definitions before construction.</title>
+<meta name="description" content="The Ward Constructions Lexicon. Precise definitions for construction, builder, structure, foundation, blueprint, outcome, system and principle — the vocabulary every idea is tested against before it becomes a product." />
+<meta name="theme-color" content="#0a0b0c" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0b0c'/%3E%3Cpath d='M8 46h48M32 46V14M32 14 12 34M32 14l20 20' stroke='%238FA8BD' stroke-width='3' fill='none' stroke-linecap='square'/%3E%3C/svg%3E" />
+<meta property="og:title" content="The Ward Constructions Lexicon" />
+<meta property="og:description" content="Before the slogan, the definition. The vocabulary every idea is tested against." />
+<meta property="og:type" content="article" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0a0b0c;
+    --bg-2:      #0d0f11;
+    --surface:   #121518;
+    --border:    #1e2226;
+    --rule:      #2a2f35;
+    --text:      #e9ebec;
+    --dim:       #9aa1a7;
+    --muted:     #61686e;
+    --steel:     #8fa8bd;
+    --steel-dim: rgba(143, 168, 189, 0.14);
+    --datum:     #f4f6f7;
+    --maxw:      1180px;
+    --gut:       clamp(20px, 5vw, 64px);
+  }
+
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .mono {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .sheet-grid {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(to right,  rgba(143,168,189,0.055) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(143,168,189,0.055) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 120% 80% at 50% 0%, #000 10%, transparent 78%);
+    -webkit-mask-image: radial-gradient(ellipse 120% 80% at 50% 0%, #000 10%, transparent 78%);
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    min-width: 0;
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 0 var(--gut);
+  }
+
+  /* ── Rail ── */
+  .rail {
+    position: relative;
+    z-index: 3;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,11,12,0.82);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .rail-inner {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 14px var(--gut);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  .rail-mark {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .rail-mark svg { display: block; flex: none; }
+  .rail a.mono { text-decoration: none; transition: color .2s ease; white-space: nowrap; }
+  .rail a.mono:hover { color: var(--steel); }
+  @media (max-width: 620px) { .rail a.mono { display: none; } }
+
+  /* ── Masthead ── */
+  .masthead {
+    position: relative;
+    padding: clamp(56px, 11vh, 118px) 0 clamp(44px, 8vh, 88px);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: clamp(20px, 3.5vh, 34px);
+  }
+  .eyebrow::before {
+    content: "";
+    width: clamp(28px, 6vw, 56px);
+    height: 1px;
+    background: var(--steel);
+    opacity: 0.7;
+  }
+
+  h1 {
+    font-size: clamp(1.9rem, 7.4vw, 5.2rem);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    text-transform: uppercase;
+    color: var(--datum);
+  }
+  h1 .l2 { display: block; color: var(--steel); }
+
+  .thesis {
+    margin-top: clamp(26px, 4vh, 42px);
+    font-size: clamp(1.05rem, 2.5vw, 1.55rem);
+    font-weight: 300;
+    line-height: 1.4;
+    letter-spacing: -0.015em;
+    color: var(--dim);
+    max-width: 34ch;
+  }
+  .thesis strong { color: var(--datum); font-weight: 600; }
+
+  .sheet-rule {
+    margin-top: clamp(30px, 5vh, 50px);
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .sheet-rule .bar { flex: 1 1 60px; height: 1px; background: var(--rule); min-width: 40px; }
+
+  /* ── Index of terms ── */
+  .index {
+    padding: clamp(40px, 7vh, 76px) 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .index-list {
+    list-style: none;
+    display: grid;
+    /* 8 terms — fixed tracks so a row is never left part-empty */
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: clamp(22px, 3.5vh, 34px);
+  }
+  .index-list > li { background: var(--bg-2); }
+  .index-list a {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 16px 20px;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 600;
+    font-size: 0.98rem;
+    letter-spacing: -0.01em;
+    transition: background .2s ease, color .2s ease;
+  }
+  .index-list a:hover { background: var(--surface); color: var(--steel); }
+  .index-list .n {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.14em;
+    color: var(--steel);
+    flex: none;
+  }
+  @media (max-width: 880px) { .index-list { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 460px) { .index-list { grid-template-columns: 1fr; } }
+
+  /* ── Entries ── */
+  .entries { counter-reset: entry; }
+
+  .entry {
+    padding: clamp(52px, 9vh, 104px) 0;
+    border-bottom: 1px solid var(--border);
+    scroll-margin-top: 70px;
+  }
+  .entry-head {
+    display: flex;
+    align-items: baseline;
+    gap: clamp(12px, 2.5vw, 22px);
+    margin-bottom: clamp(24px, 4vh, 40px);
+  }
+  .entry-head .n {
+    counter-increment: entry;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    color: var(--steel);
+    flex: none;
+  }
+  .entry-head .n::before { content: counter(entry, decimal-leading-zero); }
+  .entry-head h2 {
+    font-size: clamp(1.7rem, 5.6vw, 3.4rem);
+    font-weight: 900;
+    letter-spacing: -0.035em;
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--datum);
+    flex: none;
+  }
+  .entry-head .tail {
+    flex: 1 1 30px;
+    height: 1px;
+    background: var(--rule);
+    min-width: 20px;
+  }
+
+  /* the load-bearing sentence */
+  .def {
+    border-left: 2px solid var(--steel);
+    padding: 4px 0 4px clamp(18px, 3vw, 28px);
+    font-size: clamp(1.12rem, 2.7vw, 1.62rem);
+    font-weight: 400;
+    line-height: 1.42;
+    letter-spacing: -0.02em;
+    color: var(--datum);
+    max-width: 48ch;
+  }
+
+  .body {
+    margin-top: clamp(24px, 4vh, 38px);
+    font-size: clamp(0.99rem, 2vw, 1.12rem);
+    font-weight: 300;
+    line-height: 1.62;
+    color: var(--dim);
+    max-width: 58ch;
+  }
+  .body + .body { margin-top: 1em; }
+  .body strong { color: var(--text); font-weight: 600; }
+
+  /* negative definition — what it is not */
+  .nots {
+    list-style: none;
+    margin-top: clamp(24px, 4vh, 38px);
+    border-top: 1px solid var(--border);
+    max-width: 48ch;
+  }
+  .nots > li {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: clamp(1rem, 2.2vw, 1.18rem);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    color: var(--muted);
+  }
+  .nots > li::before {
+    content: "not";
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--steel);
+    border: 1px solid var(--steel-dim);
+    padding: 3px 7px;
+    flex: none;
+  }
+
+  /* material chips */
+  .materials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: clamp(24px, 4vh, 38px);
+  }
+  .materials span {
+    border: 1px solid var(--rule);
+    background: var(--bg-2);
+    padding: 10px 18px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+  .materials .old { border-color: var(--steel-dim); color: var(--muted); }
+
+  /* field test callout */
+  .test {
+    margin-top: clamp(26px, 4vh, 40px);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-left: 2px solid var(--steel);
+    padding: clamp(22px, 3.6vw, 34px);
+    max-width: 52ch;
+  }
+  .test p {
+    margin-top: 12px;
+    font-size: clamp(1.02rem, 2.2vw, 1.22rem);
+    font-weight: 400;
+    line-height: 1.45;
+    letter-spacing: -0.018em;
+    color: var(--text);
+  }
+  .test p b { color: var(--datum); font-weight: 700; }
+
+  /* the practice definition — distinguished slab */
+  .practice {
+    padding: clamp(52px, 9vh, 100px) 0;
+    border-bottom: 1px solid var(--border);
+    background:
+      radial-gradient(ellipse 70% 100% at 12% 50%, rgba(143,168,189,0.07) 0%, transparent 70%);
+  }
+  .practice .plabel { display: block; margin-bottom: clamp(20px, 3vh, 30px); }
+  .practice .pdef {
+    font-size: clamp(1.3rem, 3.6vw, 2.3rem);
+    font-weight: 500;
+    line-height: 1.28;
+    letter-spacing: -0.03em;
+    color: var(--datum);
+    max-width: 30ch;
+  }
+  .practice .pdef em { font-style: normal; color: var(--steel); }
+  .practice .ptail {
+    margin-top: clamp(26px, 4vh, 40px);
+    display: grid;
+    gap: 6px;
+    font-size: clamp(1rem, 2.2vw, 1.2rem);
+    font-weight: 300;
+    color: var(--dim);
+  }
+  .practice .ptail b { color: var(--text); font-weight: 600; }
+
+  /* ── Closer ── */
+  .closer {
+    padding: clamp(72px, 13vh, 150px) 0;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+  }
+  .closer .big {
+    font-size: clamp(1.5rem, 4.6vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+    color: var(--datum);
+    max-width: 22ch;
+    margin: clamp(22px, 3.5vh, 34px) auto 0;
+  }
+  .closer .sub {
+    margin: clamp(24px, 4vh, 38px) auto 0;
+    font-size: clamp(1rem, 2.2vw, 1.2rem);
+    font-weight: 300;
+    color: var(--dim);
+    max-width: 46ch;
+  }
+  .closer .sub b { color: var(--steel); font-weight: 600; }
+
+  /* ── Foot ── */
+  .foot { padding: clamp(48px, 8vh, 90px) 0 clamp(36px, 5vh, 56px); }
+  .nextsheet {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    border: 1px solid var(--rule);
+    background: var(--bg-2);
+    padding: 18px 24px;
+    text-decoration: none;
+    transition: background .2s ease, border-color .2s ease;
+  }
+  .nextsheet:hover { background: var(--surface); border-color: var(--steel-dim); }
+  .nextsheet .t { font-weight: 700; color: var(--datum); letter-spacing: -0.02em; }
+  .nextsheet .arrow { color: var(--steel); font-weight: 700; }
+
+  .titleblock {
+    border-top: 1px solid var(--rule);
+    margin-top: clamp(40px, 6vh, 70px);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  }
+  .titleblock > div {
+    padding: 18px 20px 18px 0;
+    border-right: 1px solid var(--border);
+  }
+  .titleblock > div:last-child { border-right: 0; }
+  .titleblock .val {
+    margin-top: 6px;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  footer {
+    padding: 26px 0 44px;
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 300;
+  }
+
+  .rv { opacity: 0; transform: translateY(14px); transition: opacity .7s ease, transform .7s ease; }
+  .rv.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .rv { opacity: 1; transform: none; transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet-grid" aria-hidden="true"></div>
+
+<header class="rail">
+  <div class="rail-inner">
+    <a class="rail-mark" href="ward-constructions.html">
+      <svg width="18" height="18" viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M6 50h52M32 50V12M32 12 10 36M32 12l22 24" stroke="#8fa8bd" stroke-width="4" fill="none" stroke-linecap="square"/>
+      </svg>
+      Ward Constructions
+    </a>
+    <a class="mono" href="ward-constructions.html">← Sheet A-001 · Charter</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- ────────── MASTHEAD ────────── -->
+  <section class="masthead">
+    <div class="wrap">
+      <div class="eyebrow"><span class="mono">Sheet A-000 · The sheet before the sheets</span></div>
+
+      <h1>The Ward Constructions<span class="l2">Lexicon</span></h1>
+
+      <p class="thesis">
+        We don't start with a slogan. <strong>We start with a definition.</strong>
+      </p>
+
+      <div class="sheet-rule">
+        <span class="mono">Version 1.0</span>
+        <span class="bar"></span>
+        <span class="mono">30 July 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────── INDEX ────────── -->
+  <section class="index">
+    <div class="wrap">
+      <span class="mono rv">Eight terms</span>
+      <ul class="index-list rv">
+        <li><a href="#construction"><span class="n">01</span> Construction</a></li>
+        <li><a href="#builder"><span class="n">02</span> Builder</a></li>
+        <li><a href="#structure"><span class="n">03</span> Structure</a></li>
+        <li><a href="#foundation"><span class="n">04</span> Foundation</a></li>
+        <li><a href="#blueprint"><span class="n">05</span> Blueprint</a></li>
+        <li><a href="#outcome"><span class="n">06</span> Outcome</a></li>
+        <li><a href="#system"><span class="n">07</span> System</a></li>
+        <li><a href="#principle"><span class="n">08</span> Principle</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="entries">
+
+    <!-- 01 ── CONSTRUCTION ── -->
+    <section class="entry" id="construction">
+      <div class="wrap">
+        <div class="entry-head rv">
+          <span class="n"></span>
+          <h2>Construction</h2>
+          <span class="tail"></span>
+        </div>
+
+        <p class="def rv">
+          Construction is the deliberate process of transforming potential into a structure
+          capable of reliably carrying its intended purpose.
+        </p>
+
+        <ul class="nots rv">
+          <li>Assembly</li>
+          <li>Creation</li>
+          <li>Invention</li>
+        </ul>
+
+        <p class="body rv">
+          Construction is the act of bringing independent parts into a relationship where the whole
+          becomes <strong>stronger, more capable and more enduring</strong> than the parts alone.
+        </p>
+
+        <div class="materials rv">
+          <span class="old">Wood</span>
+          <span class="old">Steel</span>
+          <span class="old">Concrete</span>
+          <span>Code</span>
+          <span>Data</span>
+          <span>People</span>
+          <span>Ideas</span>
+          <span>Knowledge</span>
+        </div>
+
+        <p class="body rv">
+          The material is irrelevant. <strong>The principles remain.</strong>
+        </p>
+      </div>
+    </section>
+
+    <!-- ── THE PRACTICE ── -->
+    <section class="practice">
+      <div class="wrap">
+        <span class="mono plabel rv">Applied — the practice itself</span>
+        <p class="pdef rv">
+          Ward Constructions is the disciplined practice of discovering, designing and building
+          <em>enduring structures</em> — physical, digital, organizational or conceptual — that
+          reliably fulfill their intended purpose.
+        </p>
+        <div class="ptail rv">
+          <span>We are not defined by <b>what</b> we build.</span>
+          <span>We are defined by <b>how</b> we build.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 ── BUILDER ── -->
+    <section class="entry" id="builder">
+      <div class="wrap">
+        <div class="entry-head rv">
+          <span class="n"></span>
+          <h2>Builder</h2>
+          <span class="tail"></span>
+        </div>
+
+        <p class="def rv">
+          A builder is someone who accepts responsibility for whether a structure will stand
+          after they leave.
+        </p>
+
+        <p class="body rv">
+          That responsibility never changes. <strong>Only the materials do.</strong>
+        </p>
+      </div>
+    </section>
+
+    <!-- 03 ── STRUCTURE ── -->
+    <section class="entry" id="structure">
+      <div class="wrap">
+        <div class="entry-head rv">
+          <span class="n"></span>
+          <h2>Structure</h2>
+          <span class="tail"></span>
+        </div>
+
+        <p class="def rv">
+          A structure is an organized relationship between parts that allows the whole to carry
+          a purpose that the individual parts cannot.
+        </p>
+
+        <div class="test rv">
+          <span class="mono">Field test</span>
+          <p>If removing one piece causes everything to fail — <b>you've discovered part of the structure.</b></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 ── FOUNDATION ── -->
+    <section class="entry" id="foundation">
+      <div class="wrap">
+        <div class="entry-head rv">
+          <span class="n"></span>
+          <h2>Foundation</h2>
+          <span class="tail"></span>
+        </div>
+
+        <p class="def rv">
+          A foundation is the minimum set of truths upon which every successful construction depends.
+        </p>
+
+        <p class="body rv">
+          Everything else rests on it. If the foundation is wrong,
+          <strong>nothing built above it matters.</strong>
+        </p>
+      </div>
+    </section>
+
+    <!-- 05 ── BLUEPRINT ── -->
+    <section class="entry" id="blueprint">
+      <div class="wrap">
+        <div class="entry-head rv">
+          <span class="n"></span>
+          <h2>Blueprint</h2>
+          <span class="tail"></span>
+        </div>
+
+        <p class="def rv">
+          A blueprint is an explicit representation of intended structure before construction begins.
+        </p>
+
+        <p class="body rv">
+          A blueprint <strong>reduces uncertainty.</strong> It does not eliminate discovery.
+        </p>
+      </div>
+    </section>
+
+    <!-- 06 ── OUTCOME ── -->
+    <section class="entry" id="outcome">
+      <div class="wrap">
+        <div class="entry-head rv">
+          <span class="n"></span>
+          <h2>Outcome</h2>
+          <span class="tail"></span>
+        </div>
+
+        <p class="def rv">
+          An outcome is the condition that remains after the construction has been placed into reality.
+        </p>
+
+        <p class="body rv">
+          We measure success by outcomes. <strong>Never by effort.</strong>
+        </p>
+      </div>
+    </section>
+
+    <!-- 07 ── SYSTEM ── -->
+    <section class="entry" id="system">
+      <div class="wrap">
+        <div class="entry-head rv">
+          <span class="n"></span>
+          <h2>System</h2>
+          <span class="tail"></span>
+        </div>
+
+        <p class="def rv">
+          A system is a structure whose parts continue producing an intended outcome through
+          their interaction over time.
+        </p>
+
+        <div class="test rv">
+          <span class="mono">The distinction</span>
+          <p>A structure can exist. <b>A system continues working.</b></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 08 ── PRINCIPLE ── -->
+    <section class="entry" id="principle">
+      <div class="wrap">
+        <div class="entry-head rv">
+          <span class="n"></span>
+          <h2>Principle</h2>
+          <span class="tail"></span>
+        </div>
+
+        <p class="def rv">
+          A principle is a truth that remains valid regardless of the material used to implement it.
+        </p>
+
+        <p class="body rv">
+          <strong>Good principles survive changing tools.</strong>
+        </p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ────────── CLOSER ────────── -->
+  <section class="closer">
+    <div class="wrap">
+      <span class="mono rv">Why this is the first document</span>
+      <p class="big rv">Every idea is tested against these definitions before it becomes a product.</p>
+      <p class="sub rv">
+        Once everyone agrees what construction, structure, foundation and system mean, everything
+        else becomes easier to reason about. That is more durable than branding — <b>it is a language.</b>
+      </p>
+    </div>
+  </section>
+
+  <!-- ────────── FOOT ────────── -->
+  <section class="foot">
+    <div class="wrap">
+      <a class="nextsheet rv" href="ward-constructions.html">
+        <span class="mono">Next sheet</span>
+        <span class="t">A-001 · The Charter</span>
+        <span class="arrow">→</span>
+      </a>
+
+      <div class="titleblock rv">
+        <div><span class="mono">Sheet</span><div class="val">A-000 · Lexicon</div></div>
+        <div><span class="mono">Revision</span><div class="val">1.0</div></div>
+        <div><span class="mono">Issued</span><div class="val">2026-07-30</div></div>
+        <div><span class="mono">Drawn by</span><div class="val">R. Ward</div></div>
+        <div><span class="mono">Status</span><div class="val">Vocabulary set</div></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">© 2026 Ward Constructions. Definitions before construction.</div>
+</footer>
+
+<script>
+  (function () {
+    var els = document.querySelectorAll('.rv');
+    if (!('IntersectionObserver' in window) ||
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      els.forEach(function (el) { el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
+    els.forEach(function (el) { io.observe(el); });
+  })();
+</script>
+
+</body>
+</html>

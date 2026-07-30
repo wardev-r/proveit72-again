@@ -1,0 +1,21 @@
+{
+  "name": "twilio-softphone",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Standalone browser + SIP softphone for a single Twilio number",
+  "scripts": {
+    "test": "node scripts/test.mjs",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "setup": "./scripts/setup-twilio.sh",
+    "vendor": "cp node_modules/@twilio/voice-sdk/dist/twilio.min.js public/vendor/twilio.min.js"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  },
+  "dependencies": {
+    "@twilio/voice-sdk": "^2.18.3"
+  }
+}

@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Softphone</title>
+<style>
+  :root {
+    --bg: #0b0b0d;
+    --panel: #15151a;
+    --panel-2: #1d1d24;
+    --line: #2c2c36;
+    --ink: #f2f2f5;
+    --ink-dim: #9a9aa8;
+    --gold: #d9b061;
+    --green: #3fbf7f;
+    --red: #e0574f;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.5 ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 24px 16px 48px;
+  }
+  .app { width: 100%; max-width: 380px; }
+
+  header { text-align: center; margin-bottom: 20px; }
+  .num {
+    font-size: 20px; font-weight: 600; letter-spacing: .02em;
+    color: var(--gold);
+  }
+  .sub { font-size: 12px; color: var(--ink-dim); margin-top: 2px; }
+
+  .status {
+    display: flex; align-items: center; gap: 8px;
+    justify-content: center;
+    font-size: 12px; color: var(--ink-dim);
+    margin-top: 10px;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--ink-dim); flex: none;
+  }
+  .dot.on { background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .dot.busy { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+  .dot.err { background: var(--red); }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px;
+  }
+  .card + .card { margin-top: 14px; }
+
+  label { display: block; font-size: 12px; color: var(--ink-dim); margin-bottom: 6px; }
+  input {
+    width: 100%; padding: 12px 14px;
+    background: var(--panel-2); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 10px;
+    font-size: 16px; font-family: inherit;
+  }
+  input:focus { outline: none; border-color: var(--gold); }
+  #dest { text-align: center; letter-spacing: .04em; font-size: 20px; }
+
+  button {
+    font: inherit; font-weight: 600; cursor: pointer;
+    border: 1px solid var(--line); border-radius: 10px;
+    background: var(--panel-2); color: var(--ink);
+    padding: 12px 14px;
+  }
+  button:hover:not(:disabled) { border-color: var(--gold); }
+  button:disabled { opacity: .4; cursor: not-allowed; }
+  .primary {
+    background: var(--gold); color: #17140c;
+    border-color: var(--gold); width: 100%;
+  }
+  .call { background: var(--green); border-color: var(--green); color: #07170f; }
+  .hang { background: var(--red); border-color: var(--red); color: #fff; }
+
+  .pad {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 8px; margin: 14px 0;
+  }
+  .pad button {
+    padding: 14px 0; font-size: 19px; font-weight: 500;
+  }
+  .pad small { display: block; font-size: 9px; color: var(--ink-dim); letter-spacing: .12em; }
+
+  .row { display: flex; gap: 8px; }
+  .row > * { flex: 1; }
+
+  .live { text-align: center; }
+  .live .who { font-size: 19px; font-weight: 600; }
+  .live .timer {
+    font-variant-numeric: tabular-nums; color: var(--ink-dim);
+    font-size: 13px; margin-top: 2px;
+  }
+  .live .controls { margin-top: 16px; }
+
+  .ring { border-color: var(--green); animation: pulse 1.4s ease-in-out infinite; }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(63,191,127,.35); }
+    50% { box-shadow: 0 0 0 10px rgba(63,191,127,0); }
+  }
+
+  .log { list-style: none; margin: 0; padding: 0; font-size: 13px; }
+  .log li {
+    display: flex; justify-content: space-between; gap: 10px;
+    padding: 7px 0; border-bottom: 1px solid var(--line);
+    color: var(--ink-dim);
+  }
+  .log li:last-child { border-bottom: none; }
+  .log .n { color: var(--ink); }
+  .log .dir { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
+
+  .note {
+    font-size: 12px; color: var(--ink-dim); margin-top: 12px;
+    text-align: center;
+  }
+  .err {
+    color: var(--red); font-size: 13px; margin-top: 10px;
+    text-align: center; min-height: 18px;
+  }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <div class="num" id="myNumber">Softphone</div>
+    <div class="sub" id="mySub">not connected</div>
+    <div class="status">
+      <span class="dot" id="dot"></span>
+      <span id="statusText">Enter passcode to go online</span>
+    </div>
+  </header>
+
+  <!-- Sign in -->
+  <section class="card" id="signinCard">
+    <label for="passcode">Passcode</label>
+    <input id="passcode" type="password" autocomplete="current-password"
+           placeholder="••••••••" />
+    <div style="height:12px"></div>
+    <button class="primary" id="goOnline">Go online</button>
+    <div class="err" id="signinErr"></div>
+    <div class="note">Your mic is requested once, so incoming calls can
+      connect instantly.</div>
+  </section>
+
+  <!-- Dialer -->
+  <section class="card hidden" id="dialCard">
+    <label for="dest">Call</label>
+    <input id="dest" type="tel" placeholder="(602) 555-0123"
+           autocomplete="off" />
+    <div class="pad" id="pad"></div>
+    <div class="row">
+      <button id="backspace">⌫</button>
+      <button class="call" id="dialBtn">Call</button>
+    </div>
+    <div class="err" id="dialErr"></div>
+  </section>
+
+  <!-- Incoming -->
+  <section class="card ring hidden" id="incomingCard">
+    <div class="live">
+      <div class="sub">Incoming call</div>
+      <div class="who" id="incomingFrom">—</div>
+      <div class="controls row">
+        <button class="hang" id="rejectBtn">Decline</button>
+        <button class="call" id="acceptBtn">Answer</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- On a call -->
+  <section class="card hidden" id="liveCard">
+    <div class="live">
+      <div class="sub" id="liveDir">On a call</div>
+      <div class="who" id="liveWho">—</div>
+      <div class="timer" id="liveTimer">00:00</div>
+      <div class="controls row">
+        <button id="muteBtn">Mute</button>
+        <button class="hang" id="hangBtn">Hang up</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent -->
+  <section class="card hidden" id="logCard">
+    <label>Recent</label>
+    <ul class="log" id="log"></ul>
+  </section>
+
+</div>
+
+<script>
+/**
+ * Browser softphone for one Twilio number.
+ *
+ * Loads the Twilio Voice SDK, trades a passcode for a short-lived access
+ * token from this same origin, then registers so the number can ring
+ * here. Nothing is persisted beyond the tab session.
+ */
+(() => {
+  'use strict';
+
+  // The SDK is vendored into this worker, so the dialer has no external
+  // dependency and keeps working behind a restrictive network. The CDNs
+  // are only a safety net if the vendored copy is ever missing.
+  // Refresh the local copy with: npm run vendor
+  const SDK_URLS = [
+    '/vendor/twilio.min.js',
+    'https://cdn.jsdelivr.net/npm/@twilio/voice-sdk@2/dist/twilio.min.js',
+    'https://sdk.twilio.com/js/voice/releases/2.18.3/twilio.min.js',
+  ];
+
+  const el = (id) => document.getElementById(id);
+  const ui = {
+    myNumber: el('myNumber'), mySub: el('mySub'),
+    dot: el('dot'), statusText: el('statusText'),
+    signinCard: el('signinCard'), passcode: el('passcode'),
+    goOnline: el('goOnline'), signinErr: el('signinErr'),
+    dialCard: el('dialCard'), dest: el('dest'), pad: el('pad'),
+    dialBtn: el('dialBtn'), backspace: el('backspace'), dialErr: el('dialErr'),
+    incomingCard: el('incomingCard'), incomingFrom: el('incomingFrom'),
+    acceptBtn: el('acceptBtn'), rejectBtn: el('rejectBtn'),
+    liveCard: el('liveCard'), liveDir: el('liveDir'), liveWho: el('liveWho'),
+    liveTimer: el('liveTimer'), muteBtn: el('muteBtn'), hangBtn: el('hangBtn'),
+    logCard: el('logCard'), log: el('log'),
+  };
+
+  let device = null;
+  let activeCall = null;
+  let pendingCall = null;
+  let passcode = '';
+  let timerId = null;
+  let online = false;
+  const history = [];
+
+  /**
+   * Twilio's raw device errors are opaque. Translate the ones a user can
+   * actually act on; anything else falls back to the SDK's own message.
+   */
+  const ERROR_HINTS = {
+    // 31000 is the SDK's catch-all, but during registration it is almost
+    // always the signaling connection being blocked.
+    31000: 'Could not connect to Twilio. Check your internet connection, ' +
+           'or a firewall may be blocking calls.',
+    31005: 'Could not reach Twilio. Check your internet connection and try again.',
+    31009: 'Could not reach Twilio. Check your internet connection and try again.',
+    20101: 'Session token was rejected. Check the worker’s Twilio secrets.',
+    20104: 'Session token expired. Try going online again.',
+    31201: 'Microphone access was denied.',
+    31401: 'Microphone access was denied.',
+    31402: 'No microphone was found.',
+  };
+
+  function describeError(err) {
+    if (!err) return 'Something went wrong.';
+    const code = err.code || (err.originalError && err.originalError.code);
+    return ERROR_HINTS[code] || err.message || 'Something went wrong.';
+  }
+
+  /* ---------------- helpers ---------------- */
+
+  function setStatus(text, state) {
+    ui.statusText.textContent = text;
+    ui.dot.className = 'dot' + (state ? ' ' + state : '');
+  }
+
+  function show(node, visible) {
+    node.classList.toggle('hidden', !visible);
+  }
+
+  /** Pretty-print +16025551234 as (602) 555-1234. */
+  function pretty(raw) {
+    if (!raw) return 'Unknown';
+    if (/^client:/i.test(raw)) return raw.replace(/^client:/i, '');
+    const d = String(raw).replace(/\D/g, '');
+    const ten = d.length === 11 && d.startsWith('1') ? d.slice(1) : d;
+    if (ten.length === 10) {
+      return `(${ten.slice(0, 3)}) ${ten.slice(3, 6)}-${ten.slice(6)}`;
+    }
+    return raw;
+  }
+
+  function loadScript(url) {
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = url;
+      s.onload = resolve;
+      s.onerror = () => reject(new Error('failed to load ' + url));
+      document.head.appendChild(s);
+    });
+  }
+
+  async function loadSdk() {
+    if (window.Twilio && window.Twilio.Device) return;
+    for (const url of SDK_URLS) {
+      try {
+        await loadScript(url);
+        if (window.Twilio && window.Twilio.Device) return;
+      } catch (err) {
+        console.warn(err.message);
+      }
+    }
+    throw new Error('Could not load the Twilio Voice SDK.');
+  }
+
+  async function fetchToken() {
+    const res = await fetch('/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ passcode }),
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.error || `Token request failed (${res.status})`);
+    }
+    return res.json();
+  }
+
+  function addHistory(dir, number) {
+    history.unshift({
+      dir,
+      number: pretty(number),
+      at: new Date().toLocaleTimeString([], {
+        hour: 'numeric', minute: '2-digit',
+      }),
+    });
+    history.length = Math.min(history.length, 8);
+    ui.log.innerHTML = '';
+    for (const h of history) {
+      const li = document.createElement('li');
+      const left = document.createElement('span');
+      left.className = 'n';
+      left.textContent = h.number;
+      const right = document.createElement('span');
+      right.className = 'dir';
+      right.textContent = `${h.dir} · ${h.at}`;
+      li.append(left, right);
+      ui.log.appendChild(li);
+    }
+    show(ui.logCard, history.length > 0);
+  }
+
+  function startTimer() {
+    const t0 = Date.now();
+    stopTimer();
+    const tick = () => {
+      const s = Math.floor((Date.now() - t0) / 1000);
+      const mm = String(Math.floor(s / 60)).padStart(2, '0');
+      const ss = String(s % 60).padStart(2, '0');
+      ui.liveTimer.textContent = `${mm}:${ss}`;
+    };
+    tick();
+    timerId = setInterval(tick, 1000);
+  }
+
+  function stopTimer() {
+    if (timerId) clearInterval(timerId);
+    timerId = null;
+    ui.liveTimer.textContent = '00:00';
+  }
+
+  /* ---------------- call lifecycle ---------------- */
+
+  function toIdle() {
+    activeCall = null;
+    pendingCall = null;
+    stopTimer();
+    show(ui.incomingCard, false);
+    show(ui.liveCard, false);
+    show(ui.dialCard, true);
+    ui.muteBtn.textContent = 'Mute';
+    setStatus('Online — ready for calls', 'on');
+  }
+
+  /**
+   * Drop back to the passcode screen so a failed or lost connection can
+   * be retried. Without this a single network blip leaves the page dead
+   * until a manual reload.
+   */
+  function toSignedOut(message) {
+    online = false;
+    activeCall = null;
+    pendingCall = null;
+    stopTimer();
+
+    if (device) {
+      try { device.destroy(); } catch { /* already gone */ }
+      device = null;
+    }
+
+    show(ui.incomingCard, false);
+    show(ui.liveCard, false);
+    show(ui.dialCard, false);
+    show(ui.signinCard, true);
+    ui.goOnline.disabled = false;
+    ui.signinErr.textContent = message || '';
+    setStatus('Not connected', 'err');
+  }
+
+  /** Wire the events shared by inbound and outbound calls. */
+  function attach(call, dir, who) {
+    call.on('accept', () => {
+      activeCall = call;
+      pendingCall = null;
+      show(ui.incomingCard, false);
+      show(ui.dialCard, false);
+      show(ui.liveCard, true);
+      ui.liveDir.textContent = dir === 'in' ? 'On a call' : 'Connected';
+      ui.liveWho.textContent = who;
+      startTimer();
+      setStatus('On a call', 'busy');
+    });
+
+    const end = () => {
+      if (activeCall === call || pendingCall === call) toIdle();
+    };
+    call.on('disconnect', end);
+    call.on('cancel', end);
+    call.on('reject', end);
+    call.on('error', (err) => {
+      console.error('Call error', err);
+      ui.dialErr.textContent = err && err.message ? err.message : 'Call failed';
+      end();
+    });
+  }
+
+  async function dial() {
+    if (!device || activeCall) return;
+    const raw = ui.dest.value.trim();
+    if (!raw) return;
+
+    ui.dialErr.textContent = '';
+    setStatus('Dialing…', 'busy');
+    try {
+      const call = await device.connect({ params: { To: raw } });
+      attach(call, 'out', pretty(raw));
+      addHistory('out', raw);
+      // Show the live panel while it is still ringing.
+      show(ui.dialCard, false);
+      show(ui.liveCard, true);
+      ui.liveDir.textContent = 'Calling…';
+      ui.liveWho.textContent = pretty(raw);
+      activeCall = call;
+    } catch (err) {
+      console.error(err);
+      ui.dialErr.textContent = err.message || 'Could not place the call';
+      toIdle();
+    }
+  }
+
+  function onIncoming(call) {
+    // One call at a time: an unexpected second call is turned away rather
+    // than silently stealing the line.
+    if (activeCall) {
+      call.reject();
+      return;
+    }
+
+    const from = call.parameters && call.parameters.From;
+    pendingCall = call;
+    ui.incomingFrom.textContent = pretty(from);
+    show(ui.dialCard, false);
+    show(ui.incomingCard, true);
+    setStatus('Incoming call', 'busy');
+    attach(call, 'in', pretty(from));
+    addHistory('in', from);
+
+    ui.acceptBtn.onclick = () => call.accept();
+    ui.rejectBtn.onclick = () => { call.reject(); toIdle(); };
+  }
+
+  /* ---------------- going online ---------------- */
+
+  async function goOnline() {
+    passcode = ui.passcode.value;
+    if (!passcode) {
+      ui.signinErr.textContent = 'Passcode required.';
+      return;
+    }
+
+    ui.goOnline.disabled = true;
+    ui.signinErr.textContent = '';
+    setStatus('Connecting…', 'busy');
+
+    try {
+      await loadSdk();
+      const { token, identity, number } = await fetchToken();
+
+      // Ask for the mic up front so answering is instant later.
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        stream.getTracks().forEach((t) => t.stop());
+      } catch {
+        throw new Error('Microphone access is required to make calls.');
+      }
+
+      device = new window.Twilio.Device(token, {
+        codecPreferences: ['opus', 'pcmu'],
+        // Let the SDK survive a brief network blip mid-call.
+        maxCallSignalingTimeoutMs: 30000,
+      });
+
+      device.on('registered', () => {
+        online = true;
+        toIdle();
+      });
+      device.on('unregistered', () => {
+        if (online) setStatus('Offline — reconnecting…', 'err');
+      });
+      device.on('incoming', onIncoming);
+      device.on('error', (err) => {
+        console.error('Device error', err);
+        // Errors can arrive on this event instead of rejecting register(),
+        // so failing before we are online has to reset the form itself.
+        if (!online) {
+          toSignedOut(describeError(err));
+        } else if (!activeCall) {
+          setStatus(describeError(err), 'err');
+        }
+      });
+      device.on('tokenWillExpire', async () => {
+        try {
+          const fresh = await fetchToken();
+          device.updateToken(fresh.token);
+        } catch (err) {
+          console.error('Token refresh failed', err);
+          setStatus('Session expired — reload to reconnect', 'err');
+        }
+      });
+
+      await device.register();
+
+      ui.myNumber.textContent = number ? pretty(number) : 'Softphone';
+      ui.mySub.textContent = `ringing as “${identity}”`;
+      show(ui.signinCard, false);
+      show(ui.dialCard, true);
+      ui.dest.focus();
+    } catch (err) {
+      console.error(err);
+      toSignedOut(describeError(err));
+    }
+  }
+
+  /* ---------------- dialpad wiring ---------------- */
+
+  const KEYS = [
+    ['1', ''], ['2', 'ABC'], ['3', 'DEF'],
+    ['4', 'GHI'], ['5', 'JKL'], ['6', 'MNO'],
+    ['7', 'PQRS'], ['8', 'TUV'], ['9', 'WXYZ'],
+    ['*', ''], ['0', '+'], ['#', ''],
+  ];
+  for (const [digit, letters] of KEYS) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.innerHTML = digit + (letters ? `<small>${letters}</small>` : '');
+    b.onclick = () => {
+      // Mid-call, keypresses are DTMF tones rather than dialer input.
+      if (activeCall) {
+        activeCall.sendDigits(digit);
+        return;
+      }
+      ui.dest.value += digit;
+    };
+    ui.pad.appendChild(b);
+  }
+
+  ui.backspace.onclick = () => {
+    ui.dest.value = ui.dest.value.slice(0, -1);
+  };
+  ui.dialBtn.onclick = dial;
+  ui.dest.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') dial();
+  });
+
+  ui.goOnline.onclick = goOnline;
+  ui.passcode.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') goOnline();
+  });
+
+  ui.hangBtn.onclick = () => {
+    if (activeCall) activeCall.disconnect();
+    else toIdle();
+  };
+  ui.muteBtn.onclick = () => {
+    if (!activeCall) return;
+    const next = !activeCall.isMuted();
+    activeCall.mute(next);
+    ui.muteBtn.textContent = next ? 'Unmute' : 'Mute';
+  };
+
+  // Don't let a closing tab drop a live call silently.
+  window.addEventListener('beforeunload', (e) => {
+    if (activeCall) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
+})();
+</script>
+</body>
+</html>

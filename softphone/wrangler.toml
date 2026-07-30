@@ -1,0 +1,40 @@
+name = "twilio-softphone"
+main = "softphone-worker.js"
+compatibility_date = "2025-01-15"
+
+# The browser softphone UI ships with the worker, so there is one deploy
+# and one URL for both the page and its webhooks. Static files win for
+# matching paths; everything else falls through to the worker.
+[assets]
+directory = "./public"
+
+[vars]
+# The number this softphone owns.
+SOFTPHONE_NUMBER = "+16025615116"
+
+# Identity the browser client registers as. Referenced by <Client> in the
+# inbound TwiML, so changing it here changes both sides at once.
+CLIENT_IDENTITY = "laptop"
+
+# --- Adding a phone later -------------------------------------------
+# Flip to "true" once a SIP softphone app is actually registered to the
+# domain below. Until then inbound calls ring only the laptop, with no
+# dead SIP leg holding up the ring.
+SIP_ENABLED = "false"
+SIP_DOMAIN = ""
+SIP_USERNAME = ""
+
+# Pin the public origin used to verify Twilio's request signature. Set
+# this if the worker is served on a custom domain.
+# PUBLIC_BASE_URL = "https://softphone.example.com"
+
+# --- Secrets (never committed) --------------------------------------
+# Run scripts/setup-twilio.sh; it provisions Twilio and prints these
+# commands with the real values filled in.
+#
+#   wrangler secret put TWILIO_ACCOUNT_SID
+#   wrangler secret put TWILIO_AUTH_TOKEN
+#   wrangler secret put TWILIO_API_KEY_SID
+#   wrangler secret put TWILIO_API_KEY_SECRET
+#   wrangler secret put TWIML_APP_SID
+#   wrangler secret put SOFTPHONE_PASSCODE

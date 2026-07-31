@@ -70,9 +70,18 @@
     numText.textContent = pretty; numText.href = 'tel:' + num;
     cta.href = 'tel:' + num;
   } else {
-    numText.textContent = 'Number sent by text';
+    // No number reached this page, so there is nothing to dial. Nothing texts it
+    // either — say so plainly rather than promising a message that never comes.
+    // The worker now blocks checkout in this case, so this is a last-resort net
+    // for links made before that guard existed.
+    numText.textContent = 'Not available';
     cta.style.display = 'none';
-    document.getElementById('who').textContent = 'Your access code is below — we\'ll text you the number to call.';
+    document.getElementById('who').textContent =
+      'Something went wrong setting up this call — we could not get the number to dial.';
+    const s = document.getElementById('status');
+    s.className = 'status nil';
+    s.textContent = 'Your card was authorized but not charged. It is released ' +
+      'automatically. Email support@velvetrope2you.com and we will sort it out.';
   }
 
   // Live status: reflect capture/void the moment the phone leg resolves.

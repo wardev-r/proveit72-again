@@ -226,9 +226,19 @@
       const data = await res.json();
       if (!res.ok || !data.url) throw new Error(data.error || 'checkout');
       location.href = data.url;
-    } catch(_) {
-      if (mode === 'join') { alert(`Couldn't apply the member rate — continuing at ${money(FIRST_CALL)}.`); goCheckout('first-call'); }
-      else alert('Could not start checkout. Please try again or contact support@velvetrope2you.com.');
+    } catch(err) {
+      // The worker sends a specific reason in `error`. Swallowing it and showing
+      // a generic line leaves the caller — and us — with nothing to act on.
+      const reason = err && err.message && err.message !== 'checkout' ? err.message : '';
+      // The member rate can fail legitimately (caller isn't a member yet), so that
+      // one still falls back to the standard price instead of dead-ending. Every
+      // other failure is real and gets shown as-is.
+      if (mode === 'join' && /member/i.test(reason)) {
+        alert(`Couldn't apply the member rate — continuing at ${money(FIRST_CALL)}.`);
+        goCheckout('first-call');
+      } else {
+        alert(reason || 'Could not start checkout. Please try again or contact support@velvetrope2you.com.');
+      }
     }
   }
 

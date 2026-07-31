@@ -336,6 +336,17 @@ async function handleCallCheckout(request, env) {
   const pin = String(Math.floor(100000 + Math.random() * 900000));
   const dialNumber = creator.twilioNumber || env.PLATFORM_CALL_NUMBER || '';
 
+  // Never authorize a card for a call we cannot connect. The 'code' path needs a
+  // number for the caller to dial; without one connect.html has nothing to show
+  // and the caller is left holding a PIN with no way to use it. Front desk calls
+  // the caller instead, and video goes to the browser room, so neither needs this.
+  if (channel !== 'video' && callMode !== 'frontdesk' && !dialNumber) {
+    throw new Error(
+      `${name} has not finished phone setup yet — no number to call. ` +
+      `Nothing was charged.`
+    );
+  }
+
   // Base product = phone call (connect.html: call the 772 number + code). Video is the
   // upsell (channel='video' → the browser room). Both share the same money/capture engine.
   // Success routing by delivery mode: video room (upsell) → room.html; front-desk →

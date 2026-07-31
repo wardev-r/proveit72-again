@@ -600,7 +600,7 @@
       showToast('Bank account connected! Payouts enabled.');
     }
     if (params.get('signup') === 'success') {
-      showToast('Welcome to 72! Your account is active.');
+      await confirmMembership();
     }
 
     await loadCreator();
@@ -609,6 +609,35 @@
     checkPayoutStatus();
     renderNumberDock();
     startRingWatch();
+  }
+
+  // Returning from Stripe. Activation depends on the webhook landing, and if it
+  // is slow, unconfigured, or failing, the member stays inactive — every gated
+  // action (claiming a number most of all) then refuses. Confirm against the
+  // checkout session instead of announcing success and hoping, which is exactly
+  // what left a paying member stuck with no number and no reason why.
+  async function confirmMembership() {
+    const sessionId = params.get('session');
+    if (!sessionId) { showToast('Welcome to 72!'); return; }
+
+    if (!userId || userId === 'demo') {
+      showToast('Payment went through, but we lost track of your account in this ' +
+        'browser. Email support@velvetrope2you.com and we will activate it.', true);
+      return;
+    }
+
+    try {
+      const res = await fetch(`${WORKER_URL}/membership-confirm`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, sessionId }),
+      });
+      const d = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(d.error || 'could not confirm membership');
+      showToast('Welcome to 72! Your membership is active.');
+    } catch (err) {
+      showToast(`Payment went through, but activation did not finish: ${err.message}. ` +
+        `Email support@velvetrope2you.com — you will not be charged twice.`, true);
+    }
   }
 
   // ── Your 72 number — claimed on request (not auto-provisioned) ──────────────
@@ -656,9 +685,15 @@
         btn.disabled = false; btn.textContent = 'Claim number →';
         showToast(d.reason || 'Not available yet — try again shortly.', true);
       }
-    } catch (_) {
+    } catch (err) {
+      // The worker says exactly why it refused ("An active membership is
+      // required…", "member not found", a Twilio failure). Replacing that with
+      // "try again" sends people into a retry loop against a cause retrying
+      // cannot fix.
       btn.disabled = false; btn.textContent = 'Claim number →';
-      showToast('Could not claim a number — please try again.', true);
+      showToast(err && err.message && err.message !== 'failed'
+        ? err.message
+        : 'Could not claim a number — please try again.', true);
     }
   }
 

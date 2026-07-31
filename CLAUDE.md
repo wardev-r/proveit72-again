@@ -15,11 +15,26 @@ this project keeps hitting = a fresh session lands on an old branch, can't find 
 real work, and re-does it. If a file looks unfinished, you're probably on the wrong
 branch — come back to emergence.
 
-**Branch map (2026-07-20):**
-- `claude/twilio-emergence-4qbonn` — ⭐ KING. All real work. Becomes live via `GOLIVE-EMERGENCE.md`.
-- `claude/twilio-deploy-bi6sbr` — the OLDER live-deploy branch (thinner copy). Emergence supersets it.
-- `claude/72-marketplace-deployment-ax8w3w` — kept in sync with bi6sbr; possible Pages prod branch. **Confirm the real Pages production branch in the Cloudflare `vrpi72-home` settings — that ambiguity is the root of the drift.**
+**Branch map (updated 2026-07-31 — the ambiguity is RESOLVED):**
+- `claude/twilio-emergence-4qbonn` — ⭐ KING. Edit here.
+- `claude/twilio-deploy-bi6sbr` — ✅ **THE PAGES PRODUCTION BRANCH.** Confirmed.
+  It has been production since 2026-07-16 and never changed. What drifted was
+  the paperwork, not the deploy. Pushing here is what puts the site live.
+- `claude/72-marketplace-deployment-ax8w3w` — kept in sync with bi6sbr. Not production.
 - everything else — dead/retired.
+
+As of 2026-07-31 all three are aligned on one commit. Ship by fast-forwarding
+bi6sbr (and marketplace) to emergence — no merge, no conflicts:
+
+```sh
+git push origin origin/claude/twilio-emergence-4qbonn:refs/heads/claude/twilio-deploy-bi6sbr
+git push origin origin/claude/twilio-emergence-4qbonn:refs/heads/claude/72-marketplace-deployment-ax8w3w
+```
+
+**⚠️ Git does NOT deploy the Worker.** A push ships only the static HTML via
+Pages. `72-stripe-worker.js` goes live solely through `wrangler deploy`. A
+worker fix merged to a green branch is still not running — this bit a real
+customer on 2026-07-31.
 
 **Before acting:** read the latest `.claude/handoffs/*.md`, then `agents.json`, then this file.
 

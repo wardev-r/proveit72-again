@@ -1,5 +1,22 @@
 # Consolidation Punch List — do it in this order
 
+> **STATUS 2026-07-31 — read before acting on the boxes below.**
+> Phases 1 and 2 are **done**. The site has been live on the domain since
+> 2026-07-16. The unchecked boxes below were never updated, which is the
+> whole reason this list read as "nothing shipped."
+>
+> **Pages production branch = `claude/twilio-deploy-bi6sbr`.** Not the
+> marketplace branch named in Phase 1 — that line was wrong, and chasing it
+> is what kept sending sessions to the wrong place.
+>
+> As of today `bi6sbr`, `twilio-emergence-4qbonn` and
+> `72-marketplace-deployment-ax8w3w` are all aligned on the same commit, so
+> the ambiguity is gone. Edit on emergence, fast-forward the other two.
+>
+> **The Worker is not deployed by git.** Pushing only ships the HTML via
+> Pages. `72-stripe-worker.js` goes live solely through `wrangler deploy`.
+> A worker fix sitting in a green branch is still not running.
+
 **GOLDEN RULE:** Never delete the old thing until the new thing is proven working.
 Move the domain ONLY after the new host is confirmed live. Change one thing,
 verify, then the next. The domain (velvetrope2you.com) is the live wire — treat
@@ -18,18 +35,17 @@ Killed: Netlify, Railway, extra Pages projects, Twilio paid support.
 - [ ] Test with card `4242 4242 4242 4242` → lands in the room ✅
 - [ ] Activate Stripe **Live mode** + remake link in Live = real money
 
-## PHASE 1 — Stand up the ONE host (DON'T touch the domain yet)
-- [ ] Cloudflare → Workers & Pages → **Create → Pages → Connect to Git** → `proveit72-again`
-- [ ] Production branch: **`claude/72-marketplace-deployment-ax8w3w`**
-- [ ] Framework: **None** · Build command: **(empty)** · Output dir: **`/`**
-- [ ] Deploy → open the **`.pages.dev`** URL
-- [ ] ✅ VERIFY it shows the current site (gold pills, visible headline) — do NOT proceed until this is right
+## PHASE 1 — Stand up the ONE host ✅ DONE (2026-07-16)
+- [x] Cloudflare → Workers & Pages → **Create → Pages → Connect to Git** → `proveit72-again`
+- [x] Production branch: **`claude/twilio-deploy-bi6sbr`** ← the real one
+- [x] Framework: **None** · Build command: **(empty)** · Output dir: **`/`**
+- [x] Deploy → open the **`.pages.dev`** URL
+- [x] ✅ VERIFIED — site serves correctly
 
-## PHASE 2 — Move the domain (the delicate step)
-- [ ] In that Pages project → **Custom domains → Set up** → `velvetrope2you.com`
-      (auto-configures since the domain's already on Cloudflare; add `www` too)
-- [ ] Wait for it to go green + SSL
-- [ ] ✅ VERIFY `velvetrope2you.com` (incognito / hard refresh) now loads the Pages site — do NOT proceed until confirmed
+## PHASE 2 — Move the domain ✅ DONE (2026-07-16)
+- [x] In that Pages project → **Custom domains → Set up** → `velvetrope2you.com`
+- [x] Green + SSL
+- [x] ✅ VERIFIED — `velvetrope2you.com` is live and has stayed live
 
 ## PHASE 3 — Now safe to tear down the old (site already works, nothing breaks)
 - [ ] **Netlify:** remove velvetrope2you.com from the Netlify project → then delete/pause the project → cancel any paid plan (no $9 charge)

@@ -140,8 +140,104 @@ accurate, the status is wrong.
 
 ---
 
-## 5. The one line
+## 5. What PAILOT must not produce
+
+*Binding on the build. Sections 1–4 are about PAILOT's records drifting. This section
+is about the opposite and more dangerous failure: records that can't drift, and are
+wrong.*
+
+### 5.1 The core hazard: sealing proves integrity, not truth
+A notary, timestamp, and hash prove exactly two things: **this text existed at this
+time**, and **it has not changed since.** They prove *nothing* about whether the content
+was accurate when it went in.
+
+That gap is the whole danger. Unverified assertion in → sealed, dated, anchored
+artifact out — which now *looks* like evidence. **The seal does not merely preserve a
+claim; it upgrades it.** A pipeline that can do that is a machine for laundering
+assertions into proof, and it will be used that way whether or not that was the intent.
+
+> **Rule:** PAILOT may never present "sealed" as a synonym for "true," in UI, in
+> export, or in marketing copy.
+
+### 5.2 Two claims, always shown separately
+Every output must distinguish, visibly and structurally:
+
+- **Provenance** — *"Recorded on [date] by [who], unchanged since."* PAILOT can prove
+  this. It is the product.
+- **Corroboration** — *"Independently supported by [what evidence]."* PAILOT cannot
+  prove this on its own, and must never imply it.
+
+If an artifact cannot display both separately, readers will read the weaker as the
+stronger. A record with no corroboration field is not neutral — it reads as verified.
+
+### 5.3 "Verify" is not a verb until it's defined
+A human verify-queue whose verb is undefined is a rubber stamp with a UI. Verified
+*what* — that it was typed? that a document was seen? that a fact was independently
+confirmed?
+
+> **Rule:** every record type declares what its verification step actually checks, and
+> that declaration travels **on the artifact**, not in documentation nobody opens.
+
+### 5.4 The paradox: drift-proof is also correction-proof
+Immutability cuts both ways. Everything that stops a record from quietly changing also
+stops an error from being quietly fixed. Anti-drift measures without a correction path
+do not produce truth — they produce **permanent mistakes with excellent provenance.**
+
+> **Rule:** the correction path must be as strong, as permanent, and as discoverable as
+> the seal. Amendments, retractions, and disputes attach to the original and travel with
+> it in every export and view. A record that cannot be answered is not a record; it is
+> an accusation.
+
+### 5.5 Records about people require the subject to have standing
+The verify-queue serves the **author**. Nobody serves the **subject** — the person the
+record describes, who may not know it exists and cannot contest it. That asymmetry is
+the exact harm `DRIFT.md` §4 identifies (the party with least access to the record pays
+for it), rebuilt on purpose and sealed shut.
+
+For any record naming an identifiable person:
+- **Accuracy is a duty, not a preference.** Publishing false factual claims about a real
+  person is defamation, and permanence is an aggravating factor, not a defense.
+- **The subject can know, and can answer.** A response attaches to the record with the
+  same weight as the original.
+- **Redact PII by default**, per the manifest's own security rules.
+- **Private by default; publication is a deliberate, separate act** with its own gate.
+
+### 5.6 The scope line — the one that decides what PAILOT is
+There are two products here and they must not ship under one roof by accident:
+
+| | **Own-facts PAILOT** | **Third-party PAILOT** |
+|---|---|---|
+| Records | your own dealings — what you filed, when, what you were told | claims about other people |
+| Effect | **arms the party with least access to the record** | **creates a dossier on someone who has none** |
+| Risk | low; you are the subject and the author | defamation, surveillance, permanent harm |
+| Status | **the product** | **out of scope without a deliberate, separately-designed consent and dispute regime** |
+
+The first version is the genuinely good one, and it is the one that fulfills the
+framework's own logic: a person keeping an unfalsifiable record of their own dealings is
+precisely the fix for the asymmetry in `DRIFT.md` §4. Pointed outward at other people,
+the same machine *creates* that asymmetry instead of curing it.
+
+> **Standing rule:** Mantra (accountability/records) stays **private and own-facts**
+> until a consent-and-dispute regime is designed on purpose. The manifest already says
+> "keep private." This is that instinct written as a rule instead of a preference.
+
+### 5.7 Pre-ship checklist
+No PAILOT output ships until every line is true:
+
+- [ ] The artifact states what was verified, and by what standard.
+- [ ] Provenance and corroboration are visually separate; neither implies the other.
+- [ ] "Sealed" never appears as a synonym for "true."
+- [ ] A correction/dispute can be attached, and travels with every copy and export.
+- [ ] No secrets in client code (see §2.4) — flagged is not stripped.
+- [ ] If any identifiable third party is named: subject has notice and a right of
+      response, PII is redacted, and publication was a deliberate separate act.
+
+---
+
+## 6. The one line
 
 PAILOT sells verified records. **A verified-records product with an unverified
-manifest is the product failing its own test on the front page.** Fixing the manifest
-isn't housekeeping — it's the first demo.
+manifest is the product failing its own test on the front page** — and a sealing
+product without a correction path is the product failing the person it sealed a
+mistake about. Fixing the manifest isn't housekeeping; it's the first demo. Building
+the correction path isn't a feature; it's the license to seal anything at all.

@@ -53,6 +53,10 @@ export default {
         result = await handleCallPayment(request, env);
       } else if (path === '/create-call-checkout' && request.method === 'POST') {
         result = await handleCallCheckout(request, env);
+      } else if (path === '/create-vip-checkout' && request.method === 'POST') {
+        result = await handleVipCheckout(request, env);
+      } else if (path.startsWith('/vip/') && request.method === 'GET') {
+        result = await handleVipStatus(env, path.slice('/vip/'.length));
       } else if (path === '/membership-start' && request.method === 'POST') {
         result = await handleMembershipStart(request, env);
       } else if (path === '/membership-confirm' && request.method === 'POST') {
@@ -419,6 +423,103 @@ async function handleCallCheckout(request, env) {
   return { url: session.url, room, pin };
 }
 
+// ─── VIP drop checkout (172collect promos) ───────────────────────────────────
+// A fan pays a flat price for a GUARANTEED digital good — code-gated VIP access —
+// with any live-call/prize element riding on top as surprise-and-delight. Because
+// real value is delivered on payment, capture is automatic (unlike a call, where the
+// hold voids if nobody connects).
+//
+// SAFETY: this route refuses to charge for a promo that isn't explicitly configured
+// in KV (`promo:<id>`). A missing/inactive promo returns a clear error instead of
+// improvising a charge — a creator's name and a charity's name must never be attached
+// to money by default. Configure a promo deliberately; there is no implicit fallback.
+async function handleVipCheckout(request, env) {
+  const { promo } = await request.json();
+  if (!promo) throw new Error('promo is required');
+
+  const cfg = await getPromo(env, promo);
+  if (!cfg) throw new Error(`Promo "${promo}" is not configured — nothing is on sale.`);
+  if (cfg.active !== true) throw new Error(`Promo "${promo}" is not open right now.`);
+
+  const creator = await getCreator(env, cfg.creatorId);
+  if (!creator) throw new Error('Promo creator not found');
+  if (!creator.stripeAccountId || creator.chargesEnabled === false) {
+    throw new Error('This creator has not finished payout setup yet');
+  }
+
+  // Split. The creator's 72% is inviolable, exactly as on calls. The remaining 28%
+  // is what the platform collects as the application fee — and on a cause drop it is
+  // split again downstream: the fund's share is recorded here so every cent is
+  // auditable, and the platform keeps only the remainder.
+  const amountCents = Math.round(Number(cfg.amountCents) || 0);
+  if (amountCents < 100) throw new Error('Promo amount is not set');
+  const creatorCents  = Math.round(amountCents * (1 - PLATFORM_FEE_PERCENT)); // 72%
+  const applicationFee = amountCents - creatorCents;                          // 28%
+  const fundPct = Math.min(Math.max(Number(cfg.fundPct) || 0, 0), PLATFORM_FEE_PERCENT);
+  const fundCents = Math.round(amountCents * fundPct);        // e.g. 17.2% → the fund
+  const platformCents = applicationFee - fundCents;           // what 72 actually keeps
+  if (platformCents < 0) throw new Error('Promo split is invalid — fund share exceeds the platform cut');
+
+  const code = 'HOG-' + randToken(4).toUpperCase();
+  const platformUrl = env.PLATFORM_URL || 'https://velvetrope2you.com';
+  const home = cfg.returnUrl || `${platformUrl}/`;
+  const label = cfg.label || `${creator.displayName || 'VIP'} — VIP access`;
+
+  const session = await stripe(env, 'POST', '/checkout/sessions', {
+    mode: 'payment',
+    payment_method_types: ['card'],
+    line_items: [{
+      price_data: { currency: 'usd', product_data: { name: label }, unit_amount: amountCents },
+      quantity: 1,
+    }],
+    payment_intent_data: {
+      // Guaranteed digital good — delivered on payment, so we capture immediately.
+      application_fee_amount: applicationFee,
+      transfer_data: { destination: creator.stripeAccountId },
+      description: label,
+      metadata: {
+        promo, code,
+        creator_id: creator.userId,
+        creator_earnings_cents: creatorCents,
+        fund_cents: fundCents,
+        fund_name: cfg.fundName || '',
+        platform_fee_cents: platformCents,
+      },
+    },
+    success_url: `${home}?code=${encodeURIComponent(code)}`,
+    cancel_url: home,
+    metadata: { kind: 'vip', promo, code, creator_id: creator.userId },
+  });
+
+  // Pending until Stripe confirms payment — the code only unlocks once it's paid.
+  if (env.KV_72) {
+    await env.KV_72.put(`vip:${code}`, JSON.stringify({
+      code, promo, creatorId: creator.userId,
+      amountCents, creatorCents, fundCents, platformCents,
+      fundName: cfg.fundName || null,
+      status: 'pending', createdAt: Date.now(),
+    }));
+  }
+
+  return { url: session.url, code };
+}
+
+// Does this VIP code unlock the room? Only once Stripe says it's paid.
+async function handleVipStatus(env, code) {
+  if (!code) throw new Error('code is required');
+  if (!env.KV_72) return { valid: false };
+  const raw = await env.KV_72.get(`vip:${decodeURIComponent(code)}`);
+  if (!raw) return { valid: false };
+  const v = JSON.parse(raw);
+  return { valid: v.status === 'paid', status: v.status, promo: v.promo, drawNumber: v.drawNumber || null };
+}
+
+async function getPromo(env, id) {
+  if (!env.KV_72) return null;
+  const raw = await env.KV_72.get(`promo:${id}`);
+  return raw ? JSON.parse(raw) : null;
+}
+
 // ─── Join-and-call: new-member acquisition signup (free month) ────────────────
 // A caller becoming a member to unlock the one-time 17.2%-covered call. Creates a
 // free-trial subscription (card on file, $0 now) and sends them back to the call
@@ -721,6 +822,22 @@ async function onCheckoutComplete(session, env) {
       activeRoomAt: Date.now(),
       updatedAt: Date.now(),
     });
+    return;
+  }
+
+  // A fan just bought VIP access — mark the code paid so it unlocks, and stamp the
+  // draw number. The fund's share is already recorded on the record for auditing.
+  if (session.metadata?.kind === 'vip') {
+    const code = session.metadata.code;
+    const raw = code ? await env.KV_72.get(`vip:${code}`) : null;
+    if (raw) {
+      const v = JSON.parse(raw);
+      v.status = 'paid';
+      v.paidAt = Date.now();
+      v.paymentIntentId = session.payment_intent || null;
+      v.drawNumber = v.drawNumber || String(10000 + Math.floor(Math.random() * 90000));
+      await env.KV_72.put(`vip:${code}`, JSON.stringify(v));
+    }
     return;
   }
 

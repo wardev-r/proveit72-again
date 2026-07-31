@@ -243,8 +243,10 @@
 <script>
   // ── Config — mirrors the live 72 rail (call-first.html / 72-stripe-worker.js) ──
   const API = 'https://api.velvetrope2you.com';
-  const VIP_PRICE = 5.00;
+  const VIP_PRICE = 5.00;          // display only — the worker holds the real price
+  const PROMO = 'tom-drop';        // must match a `promo:<id>` config in the worker's KV
   // Split shown on the page (marquee / cause deal). Fees off the top, then split.
+  // Display only, and it must match the promo config — the worker is the authority.
   const SPLIT = { creator: 0.72, fund: 0.172, platform: 0.108 };
   // Home: 172collect.com — the collect/fund-drop domain (the 17.2 is in the name).
   // Demo mode ON by default — this is a proposal, not a live fundraiser. Wire to a
@@ -262,14 +264,17 @@
 
   async function buy(){
     if (DEMO) return showIn();
-    // ── Live path (when wired): authorize $5, deliver code on capture ──
+    // ── Live path ──
+    // Price and split are NOT sent from here — the worker reads them from the promo
+    // config it holds (`promo:tom-drop`). A page can't talk the backend into a price.
+    // An unconfigured promo returns a clear error instead of charging anyone.
     try{
       const res = await fetch(`${API}/create-vip-checkout`, {
         method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ handle:'iamtommacdonald', promo:'tom-drop', amount:VIP_PRICE, split:SPLIT })
+        body: JSON.stringify({ promo: PROMO })
       });
       const data = await res.json();
-      if(!res.ok || !data.url) throw new Error(data.error||'checkout');
+      if(!res.ok || !data.url) throw new Error(data.error || 'checkout');
       location.href = data.url;
     }catch(err){
       // Show the real reason. Swallowing it is how a broken purchase path went

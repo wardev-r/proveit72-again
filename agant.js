@@ -2,10 +2,10 @@
    THE agANT — one place to light him up across all of 72.
 
    HOW TO TURN HIM ON:
-   1. Host each pose on Cloudflare (Images or R2), copy the URL.
-   2. Paste it next to the matching pose in POSES below.
-   That's it. Every page that references that pose shows him instantly.
-   An empty string = that slot stays clean (NO broken image ever).
+   Drop the pose file into /agant/ and name it to match POSES below. That's it —
+   every page referencing that pose shows him instantly. SVG is preferred (sharp at
+   any size, versioned in the repo, no upload/host step); PNG works the same way.
+   A missing file removes itself cleanly — NO broken image, ever.
 
    HOW HE GETS PLACED:
    • Static:  any element with  data-agant="closed"  gets him auto-mounted.
@@ -19,8 +19,10 @@
   var BASE = '/agant/';
 
   // pose key → filename in /agant/
+  // SVG poses are hand-authored and live in the repo (free, sharp at any size, no
+  // upload step). PNG slots stay wired and simply appear the moment a file lands.
   var POSES = {
-    boss:      'boss.png',      // Boss Stand / Arms Crossed — hero corner, "on duty"
+    boss:      'boss.svg',      // Boss Stand / Arms Crossed — hero corner, "on duty" ✅ LIVE
     gate:      'gate.png',      // "You've got 72." — greeting / verifying
     welcome:   'welcome.png',   // "The line's this way" — onboarding / connecting
     coin:      'coin.png',      // Holding the 72 — pricing / payment

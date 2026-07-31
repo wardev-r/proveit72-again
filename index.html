@@ -612,6 +612,33 @@
     <a href="why72.html" style="display:inline-flex;align-items:center;gap:8px;font-size:0.9rem;font-weight:700;color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(212,160,23,0.4);padding-bottom:2px;">Why 72 exists →</a>
   </section>
 
+  <!-- The rope band: the agANT unhooking the rope — the welcome line, drawn.
+       Stays hidden until /agant/welcome.png exists, then reveals itself. Wide pose,
+       so it gets its own full-bleed band instead of the small corner slot. -->
+  <section class="ropeband" id="ropeband" hidden>
+    <img class="ropeband-art" id="ropebandArt" alt="The 72 agANT unhooking the velvet rope" />
+    <p class="ropeband-line">Unhooking the rope,<br><em>leading you to the table.</em></p>
+  </section>
+  <style>
+    .ropeband{padding:8px 20px 44px;text-align:center;background:linear-gradient(180deg,#080808,#0b0b0b)}
+    .ropeband-art{display:block;width:100%;max-width:860px;height:auto;margin:0 auto;
+      filter:drop-shadow(0 18px 44px rgba(0,0,0,.55))}
+    .ropeband-line{font-family:'Inter',system-ui,sans-serif;font-size:clamp(1.15rem,3.4vw,1.7rem);
+      font-weight:800;letter-spacing:-.02em;line-height:1.25;color:#f0f0e8;margin:6px auto 0;max-width:520px}
+    .ropeband-line em{font-style:normal;color:var(--accent)}
+  </style>
+  <script>
+    // Reveal only if the pose is actually there — no broken image, no empty band.
+    (function(){
+      var probe = new Image();
+      probe.onload = function(){
+        document.getElementById('ropebandArt').src = probe.src;
+        document.getElementById('ropeband').hidden = false;
+      };
+      probe.src = '/agant/welcome.png';
+    })();
+  </script>
+
   <!-- Hero -->
   <section class="hero">
     <div class="hero-watermark">72</div>

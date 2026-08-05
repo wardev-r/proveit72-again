@@ -17,6 +17,7 @@
  *   GET  /creator/:id               Get creator profile
  *   PUT  /creator/:id               Update creator price/status
  *   GET  /creators                  List all creators (owner only)
+ *   POST /owner/first-creator       Seed/update the first live creator (owner only)
  *   POST /webhook                   Stripe webhook handler
  */
 
@@ -73,6 +74,8 @@ export default {
         result = await handleDashboardLink(request, env, url);
       } else if (path === '/creators' && request.method === 'GET') {
         result = await handleListCreators(request, env);
+      } else if (path === '/owner/first-creator' && request.method === 'POST') {
+        result = await handleFirstCreatorSetup(request, env);
       } else if (path === '/test/setup-jane' && request.method === 'GET') {
         result = await handleTestSetupJane(request, env);
       } else if (path === '/voice' && request.method === 'POST') {
@@ -1019,6 +1022,81 @@ async function getCreator(env, userId) {
   if (!env.KV_72) return null;
   const raw = await env.KV_72.get(`creator:${userId}`);
   return raw ? JSON.parse(raw) : null;
+}
+
+// ─── Owner setup helpers ─────────────────────────────────────────────────────
+// Owner-only production seed for the first real creator — useful when the founder
+// bought the first numbers and needs a live handle before broader onboarding exists.
+async function handleFirstCreatorSetup(request, env) {
+  if (!env.OWNER_API_KEY) throw new Error('OWNER_API_KEY must be configured before seeding the first creator');
+  requireOwnerKey(request, env);
+  if (!env.KV_72) throw new Error('KV_72 binding is required');
+
+  const body = await request.json().catch(() => ({}));
+  const now = Date.now();
+  const userId = cleanId(body.userId || env.FIRST_CREATOR_ID || 'owner');
+  const username = cleanHandle(body.username || env.FIRST_CREATOR_HANDLE || 'owner');
+  if (!userId) throw new Error('userId is required');
+  if (!username) throw new Error('username/handle is required');
+
+  const pricePerCall = Number(body.pricePerCall || env.FIRST_CREATOR_PRICE || 10);
+  if (!Number.isFinite(pricePerCall) || pricePerCall < 5) throw new Error('pricePerCall must be at least $5');
+
+  const twilioNumber = cleanPhone(body.twilioNumber || env.FIRST_CREATOR_TWILIO_NUMBER || env.PLATFORM_CALL_NUMBER || '');
+  const forwardNumber = cleanPhone(body.forwardNumber || env.FIRST_CREATOR_FORWARD_NUMBER || '');
+  const stripeAccountId = String(body.stripeAccountId || env.FIRST_CREATOR_STRIPE_ACCOUNT || '').trim();
+  const allowDirectCharge = body.allowDirectCharge !== undefined
+    ? body.allowDirectCharge === true
+    : !stripeAccountId;
+
+  const existing = await getCreator(env, userId) || {};
+  const creator = {
+    ...existing,
+    userId,
+    username,
+    displayName: String(body.displayName || env.FIRST_CREATOR_NAME || existing.displayName || '72 founder').trim(),
+    email: String(body.email || env.FIRST_CREATOR_EMAIL || existing.email || '').trim(),
+    role: 'creator',
+    isOnline: body.isOnline !== undefined ? body.isOnline !== false : existing.isOnline !== false,
+    pricePerCall,
+    callMode: body.callMode === 'frontdesk' ? 'frontdesk' : 'code',
+    twilioNumber: twilioNumber || existing.twilioNumber || null,
+    forwardNumber: forwardNumber || existing.forwardNumber || null,
+    stripeAccountId: stripeAccountId || existing.stripeAccountId || null,
+    allowDirectCharge,
+    chargesEnabled: body.chargesEnabled !== undefined
+      ? body.chargesEnabled !== false
+      : (stripeAccountId ? existing.chargesEnabled === true : allowDirectCharge),
+    payoutsEnabled: body.payoutsEnabled !== undefined
+      ? body.payoutsEnabled !== false
+      : (stripeAccountId ? existing.payoutsEnabled === true : allowDirectCharge),
+    subscriptionStatus: existing.subscriptionStatus || 'active',
+    firstCreator: true,
+    updatedAt: now,
+    createdAt: existing.createdAt || now,
+  };
+
+  await putCreator(env, userId, creator);
+  return {
+    ok: true,
+    creator,
+    callUrl: `${env.PLATFORM_URL || 'https://velvetrope2you.com'}/call/${encodeURIComponent(username)}`,
+    note: allowDirectCharge
+      ? 'Direct-charge mode is on: live charges land in the platform Stripe account until a Connect account is attached.'
+      : 'Connect mode is on: creator charges require the connected Stripe account to have charges enabled.',
+  };
+}
+
+function cleanId(value) {
+  return String(value || '').trim().replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 64);
+}
+
+function cleanHandle(value) {
+  return String(value || '').trim().replace(/^@+/, '').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 40);
+}
+
+function cleanPhone(value) {
+  return String(value || '').trim().replace(/[^\d+]/g, '');
 }
 
 // ─── One-time TEST helper: finish Jane's Connect account + seed her in KV ─────
